@@ -3,10 +3,11 @@
     left:70%;
     top:20px;
     z-index:1;
-    background: white;
+    background: rgba(173, 189, 245, 0.46);
     border: 1px black solid;
     box-shadow: 10px 10px 5px #888888;
     display: none;
+	
 }
   
 #content {

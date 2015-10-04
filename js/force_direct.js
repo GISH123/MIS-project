@@ -63,30 +63,32 @@ function loadGraph(sourceGEXF) {
 			.linkDistance(1)
 			.size([1, 1])
 			.gravity(.1)
-			.on("tick", redrawGraph)
+			.on("tick", redrawGraph);
 
 		zoom = d3.behavior.zoom()
 			.scaleExtent([.01, 1])
-			.on("zoom", zoomed);
+			.on("zoom", zoomed).scale(.02);;
 
 		allLinks = gD3.links();
 
-		d3.select("svg").call(zoom);
+		d3.select("svg").call(zoom) .attr("transform","scale(.02,.02)");
 		createControls();
 		zoomed();
 		draw();
+		force.start();
 	});
 }
 
 function highlightNeighbors(d, i) {
 	var nodeNeighbors = findNeighbors(d, i);
+	
 	d3.selectAll("g.node").each(function(p) {
 		var isNeighbor = nodeNeighbors.nodes.indexOf(p);
 		d3.select(this).select("circle")
 			.style("opacity", isNeighbor > -1 ? 1 : .25)
 			.style("stroke-width", isNeighbor > -1 ? 3 : 1)
-			.style("stroke", isNeighbor > -1 ? "blue" : "white")
-	})
+			.style("stroke", isNeighbor > -1 ? "blue" : "white");
+	});
 
 	d3.selectAll("line.link")
 		.style("stroke-width", function(d) {
@@ -94,7 +96,7 @@ function highlightNeighbors(d, i) {
 		})
 		.style("opacity", function(d) {
 			return nodeNeighbors.links.indexOf(d) > -1 ? 1 : .25
-		})
+		});
 }
 
 function findNeighbors(d, i) {
@@ -106,7 +108,7 @@ function findNeighbors(d, i) {
 			neighborArray.indexOf(p.source) == -1 ? neighborArray.push(p.source) : null;
 			neighborArray.indexOf(p.target) == -1 ? neighborArray.push(p.target) : null;
 			linkArray.push(p);
-		})
+		});
 		//        neighborArray = d3.set(neighborArray).keys();
 	return {
 		nodes: neighborArray,
@@ -129,17 +131,17 @@ function zoomed() {
 		redrawGraph();
 	}
 	var canvasTranslate = zoom.translate();
-	d3.select("#graphG").attr("transform", "translate(" + canvasTranslate[0] + "," + canvasTranslate[1] + ")")
+	d3.select("#graphG").attr("transform", "translate(" + canvasTranslate[0] + "," + canvasTranslate[1] + ")");
 		// force.start();
 }
 
 function createControls() {
 	d3.select("#controls").append("button").attr("class", "origButton").html("Force On").on("click", function() {
 		force.start();
-	})
+	});
 	d3.select("#controls").append("button").attr("class", "origButton").html("Force Off").on("click", function() {
 		force.stop();
-	})
+	});
 	d3.select("#controls").append("button").attr("class", "origButton").html("Reset Layout").on("click", function() {
 		force.stop();
 		gD3.nodes().forEach(function(el) {
@@ -151,20 +153,20 @@ function createControls() {
 		currentBrush = [0, 0];
 		draw();
 		redrawGraph();
-	})
+	});
 
-	d3.select("#controls").append("button").attr("class", "origButton").html("Reset Colors").on("click", function() {
-		var sizeScale = gD3.nodeScale();
-		d3.selectAll("circle")
-			.attr("r", function(d) {
-				return sizeScale(d.size)
-			})
-			.style("fill", function(d) {
-				return d.rgbColor
-			})
-			.style("opacity", 1);
-		d3.selectAll("line.link").style("stroke", "black");
-	})
+	// d3.select("#controls").append("button").attr("class", "origButton").html("Reset Colors").on("click", function() {
+	// 	var sizeScale = gD3.nodeScale();
+	// 	d3.selectAll("circle")
+	// 		.attr("r", function(d) {
+	// 			return sizeScale(d.size)
+	// 		})
+	// 		.style("fill", function(d) {
+	// 			return d.rgbColor
+	// 		})
+	// 		.style("opacity", 1);
+	// 	d3.selectAll("line.link").style("stroke", "black");
+	// })
 
 	// d3.select("#controls").selectAll("button.nodeButtons").data(gD3.nodeAttributes())
 	// 	.enter()
@@ -188,22 +190,22 @@ function createControls() {
 
 function nodeButtonClick(d, i) {
 	var nodeAttExtent = d3.extent(gD3.nodes(), function(p) {
-		return parseFloat(p.properties[d])
+		return parseFloat(p.properties[d]);
 	});
 	var colorScale = d3.scale.quantize().domain(nodeAttExtent).range(colorbrewer.YlGnBu[6]);
-	d3.selectAll("circle").style("fill", function(p) {
-		return colorScale(p.properties[d])
-	}).style("opacity", 1)
+	d3.selectAll("circle")
+		.style("fill", function(p) { return colorScale(p.properties[d]); })
+		.style("opacity", 1);
 }
 
 function linkButtonClick(d, i) {
 	var linkAttExtent = d3.extent(gD3.links(), function(p) {
-		return parseFloat(p.properties[d])
+		return parseFloat(p.properties[d]);
 	});
 	var colorScale = d3.scale.quantize().domain(linkAttExtent).range(colorbrewer.YlGnBu[6]);
-	d3.selectAll("line").style("stroke", function(p) {
-		return colorScale(p.properties[d])
-	}).style("opacity", 1)
+	d3.selectAll("line")
+		.style("stroke", function(p) { return colorScale(p.properties[d]); })
+		.style("opacity", 1);
 }
 
 function redrawGraph() {
@@ -235,30 +237,22 @@ function draw() {
 
 	d3.select("#graphG").selectAll("line.link")
 		.data(gD3.links(), function(d) {
-			return d.id
+			return d.id;
 		})
 		.enter()
 		.insert("line", "g.node")
 		.attr("class", "link")
-		.attr("x1", function(d) {
-			return xScale(d.source.x)
-		})
-		.attr("x2", function(d) {
-			return xScale(d.target.x)
-		})
-		.attr("y1", function(d) {
-			return yScale(d.source.y)
-		})
-		.attr("y2", function(d) {
-			return yScale(d.target.y)
-		})
+		.attr("x1", function(d) { return xScale(d.source.x); })
+		.attr("x2", function(d) { return xScale(d.target.x); })
+		.attr("y1", function(d) { return yScale(d.source.y); })
+		.attr("y2", function(d) { return yScale(d.target.y); })
 		.style("stroke", "black")
 		.style("stroke-width", "1px")
 		.style("opacity", .25)
 
-	d3.select("#graphG").selectAll("g.node").data(gD3.nodes(), function(d) {
-			return d.id
-		})
+	d3.select("#graphG")
+		.selectAll("g.node")
+		.data(gD3.nodes(), function(d) { return d.id; })
 		.enter()
 		.append("g")
 		.attr("class", "node")
@@ -291,16 +285,25 @@ function draw() {
 		if (nodeFocus) {
 			return;
 		}
+		
 		//Only do the element stuff if this came from mouseover
 		el.parentNode.appendChild(el);
-		d3.select(el).append("text").attr("class", "hoverLabel").attr("stroke", "white").attr("stroke-width", "5px")
+		
+		d3.select(el)
+			.append("text")
+			.attr("class", "hoverLabel")
+			.attr("stroke", "white")
+			.attr("stroke-width", "5px")
 			.style("opacity", .9)
 			.style("pointer-events", "none")
 			.text(d.label);
 
-		d3.select(el).append("text").attr("class", "hoverLabel")
+		d3.select(el)
+			.append("text")
+			.attr("class", "hoverLabel")
 			.style("pointer-events", "none")
 			.text(d.label);
+			
 		highlightNeighbors(d, i);
 	}
 
@@ -309,6 +312,7 @@ function draw() {
 		nodeOut();
 		nodeOver(d, i, this);
 		nodeFocus = true;
+		
 		var newContent = "<p>" + d.label + "</p>";
 		newContent += "<p>Attributes: </p><p><ul>";
 		for (x in gD3.nodeAttributes()) {
