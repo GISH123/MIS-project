@@ -85,17 +85,17 @@ function highlightNeighbors(d, i) {
 	d3.selectAll("g.node").each(function(p) {
 		var isNeighbor = nodeNeighbors.nodes.indexOf(p);
 		d3.select(this).select("circle")
-			.style("opacity", isNeighbor > -1 ? 1 : .25)
+			.style("opacity", isNeighbor > -1 ? 1 : 0.25)
 			.style("stroke-width", isNeighbor > -1 ? 3 : 1)
 			.style("stroke", isNeighbor > -1 ? "blue" : "white");
 	});
 
 	d3.selectAll("line.link")
 		.style("stroke-width", function(d) {
-			return nodeNeighbors.links.indexOf(d) > -1 ? 2 : 1
+			return nodeNeighbors.links.indexOf(d) > -1 ? 2 : 1;
 		})
 		.style("opacity", function(d) {
-			return nodeNeighbors.links.indexOf(d) > -1 ? 1 : .25
+			return nodeNeighbors.links.indexOf(d) > -1 ? 1 : 0.25;
 		});
 }
 
@@ -103,7 +103,7 @@ function findNeighbors(d, i) {
 	neighborArray = [d];
 	var linkArray = [];
 	var linksArray = d3.selectAll("line.link").filter(function(p) {
-			return p.source == d || p.target == d
+			return p.source == d || p.target == d;
 		}).each(function(p) {
 			neighborArray.indexOf(p.source) == -1 ? neighborArray.push(p.source) : null;
 			neighborArray.indexOf(p.target) == -1 ? neighborArray.push(p.target) : null;
@@ -248,7 +248,7 @@ function draw() {
 		.attr("y2", function(d) { return yScale(d.target.y); })
 		.style("stroke", "black")
 		.style("stroke-width", "1px")
-		.style("opacity", .25)
+		.style("opacity", 0.25);
 
 	d3.select("#graphG")
 		.selectAll("g.node")
@@ -257,7 +257,7 @@ function draw() {
 		.append("g")
 		.attr("class", "node")
 		.attr("transform", function(d) {
-			return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")"
+			return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
 		})
 		.on("mouseover", nodeOver)
 		.on("mouseout", nodeOut)
@@ -267,7 +267,7 @@ function draw() {
 			return findNeighbors(d, 0).nodes.length + 1;
 		})
 		.style("fill", function(d) {
-			return d.rgbColor
+			return d.rgbColor;
 		})
 		.style("stroke", "black")
 		.style("stroke-width", "1px")
@@ -294,7 +294,7 @@ function draw() {
 			.attr("class", "hoverLabel")
 			.attr("stroke", "white")
 			.attr("stroke-width", "5px")
-			.style("opacity", .9)
+			.style("opacity", 0.9)
 			.style("pointer-events", "none")
 			.text(d.label);
 
@@ -339,5 +339,5 @@ function nodeOut() {
 
 	d3.selectAll(".hoverLabel").remove();
 	d3.selectAll("circle").style("opacity", 1).style("stroke", "black").style("stroke-width", "1px");
-	d3.selectAll("line").style("opacity", .25);
+	d3.selectAll("line").style("opacity", 0.25);
 }
