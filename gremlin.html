@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>titan_rexster_gremlin</title>
+		<meta charset="utf-8">
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js""></script>
+		<script type="text/javascript">
+
+			var baseurl = "http://140.119.19.14:8182/graphs/";
+	
+			$(document).ready(function(){
+ 				$.ajax({  
+					url: baseurl,
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+   					success: function(response) {
+						$.each(response["graphs"], function(key, value) {
+							$("#graph").append("<option value='"+ value +"'>" + value + "</option>");  
+						});
+						addProperty();
+					}
+				});
+			});
+
+			function addProperty(){
+				$.ajax({  
+					url: baseurl + $("#graph option:selected").val() + "/keyindices/vertex",
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+   					success: function(response) {
+						$.each(response["results"], function(key, value) {
+							$("#property").append("<option value='"+ value +"'>" + value + "</option>");				
+						});
+					}
+				});
+			}
+
+			$(document).on("change", "#graph", function(e){
+  				$("#property").empty();
+				addProperty();
+			});
+
+			$(document).on("click", "#gremlin", function(e) {
+				$.ajax({
+					url: baseurl + $("#graph option:selected").val() + "/tp/gremlin?script=" + $("#gremlinText").val(),
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					success: function(response) {
+						$("#result").empty().append(JSON.stringify(response));
+					}
+				});
+			});
+
+
+	
+			$(document).on("click", "#getValue", function(e) {
+
+				$.ajax({
+					url: baseurl + $("#graph option:selected").val() + "/vertices?key=" + $("#property option:selected").val() + "&value=" + $("#value").val(),
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					success: function(response) {
+						if(response["results"].length != 0){
+							$("#result").empty().append(JSON.stringify(response));
+						} else {
+							$.ajax({
+								url: baseurl + $("#graph option:selected").val() + "/edges?key=" + $("#property option:selected").val() + "&value=" + $("#value").val(),
+								contentType: "application/json; charset=utf-8",
+								dataType: "json",
+								success: function(response) {
+									$("#result").empty().append(JSON.stringify(response));			
+								}
+							});	
+						}	
+					}
+				});
+			});
+
+
+			$(document).on("click", "#getAllVertices", function(e) {
+				$.ajax({
+					url: baseurl + $("#graph option:selected").val() + "/vertices",
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					success: function(response) {
+						$("#result").empty().append(JSON.stringify(response));
+					}
+				});
+			});
+
+			$(document).on("click", "#getAllEdges", function(e) {
+				$.ajax({
+					url: baseurl + $("#graph option:selected").val() + "/edges",
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					success: function(response) {
+						$("#result").empty().append(JSON.stringify(response));
+					}
+				});
+			});
+			
+		</script>
+	</head>
+	<body>
+		<div>Graphs Name
+			<select id="graph">
+			</select>
+		</div>
+		<div>Gremlin 指令
+			<input type="text" id="gremlinText" size="40px">
+			<input type="button" id="gremlin" value="submit">
+		</div>
+		<div>Property
+			<select id="property">
+			</select>
+			<input type="text" id="value" size="10px">
+			<input type="button" id="getValue" value="search">
+		</div>
+		<div>
+			<input type="button" id="getAllVertices" value="所有Vertices">
+			<input type="button" id="getAllEdges" value="所有Edges">
+		</div>
+		<div id="result"></div>
+	</body>
+</html>
