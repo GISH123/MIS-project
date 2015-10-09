@@ -7,12 +7,13 @@ docHash = {};
 allLinks = [];
 currentScale = 0;
 
+var gD3;
 var nodes_ori = [],
 	links_trade = [],
 	links_branch = [];
 
 function activate() {
-	d3.json("./data/5000.json", function(error, graph) {
+	d3.json("./data/100.json", function(error, graph) {
 		if (error) return;
 
 		var types = [],
@@ -65,6 +66,23 @@ function activate() {
 
 		loadGraph('branch');
 		createControls();
+
+		force = d3.layout.force()
+			.charge(-1)
+			.linkDistance(1)
+			.size([1, 1])
+			.gravity(0.1)
+			.on("tick", redrawGraph);
+
+		zoom = d3.behavior.zoom()
+			.scaleExtent([0.01, 1])
+			.on("zoom", zoomed).scale(0.02);
+
+		allLinks = gD3.links();
+
+		d3.select("svg").call(zoom).attr("transform","scale(.02,.02)");
+		zoomed();
+		draw();
 	});
 }
 
@@ -75,25 +93,32 @@ function loadGraph(show) {
 
 	newGEXF.edges = show === 'branch' ? links_branch : links_trade;
 	newGEXF.nodes = nodes_ori;
-	//console.log(nodes_ori);
-	gD3 = gexfD3().graph(newGEXF).size([1000, 1000]).nodeScale([5, 20]);
-
-	force = d3.layout.force()
-		.charge(-1)
-		.linkDistance(1)
-		.size([1, 1])
-		.gravity(0.1)
-		.on("tick", redrawGraph);
-
-	zoom = d3.behavior.zoom()
-		.scaleExtent([0.001, 1])
-		.on("zoom", zoomed).scale(0.02);
-
-	allLinks = gD3.links();
-
-	d3.select("svg").call(zoom).attr("transform","scale(.02,.02)");
-	zoomed();
-	draw();
+	console.log(newGEXF.nodes);
+	
+	if(!gD3) {
+		gD3 = gexfD3().graph(newGEXF).size([1000, 1000]).nodeScale([5, 20]);
+		//console.log(gD3.nodes());
+	} else {
+		newGEXF.nodes = gD3.nodes().map(function(n, i) {
+			return { 
+				id: i.toString(),
+				name: n.label,
+				label: n.label,
+				attributes: n.properties,
+				viz: {
+					color: "rgb(255,0,0)",
+					size: 5,
+					position: {
+						x: n.x,
+						y: n.y,
+						z: 0
+					}
+				}
+			};			
+		});
+	console.log(newGEXF.nodes);
+		gD3 = gexfD3().graph(newGEXF).size([1000, 1000]).nodeScale([5, 20]);
+	}
 }
 
 function highlightNeighbors(d, i) {
@@ -174,10 +199,18 @@ function createControls() {
 	d3.select("#controls").append("button").attr("class", "origButton").html("顯示分支機構關係").on("click", function() {
 		force.stop();
 		loadGraph('branch');
+		currentBrush = [0, 0];
+		//zoomed();
+		draw();
+		force.start();
 	});
 	d3.select("#controls").append("button").attr("class", "origButton").html("顯示交易關係").on("click", function() {
 		force.stop();
 		loadGraph('trade');
+		currentBrush = [0, 0];
+		//zoomed();
+		draw();
+		force.start();
 	});
 
 	// d3.select("#controls").append("button").attr("class", "origButton").html("Reset Colors").on("click", function() {
@@ -246,6 +279,9 @@ function redrawGraph() {
 		.attr("transform", function(d) {
 			return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
 		});
+
+	//d3.select("svg").call(zoom).attr("transform","scale(.02,.02)");
+	//zoomed();
 }
 
 function draw() {

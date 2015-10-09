@@ -90,7 +90,7 @@ gexfD3
 		};
 		this.links = function(incLinks) {
 			if (!arguments.length) return links;
-			links = incLinks
+			links = incLinks;
 			return this;
 		};
 		this.linkAttributes = function(incAtts) {
