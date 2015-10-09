@@ -7,20 +7,21 @@ docHash = {};
 allLinks = [];
 currentScale = 0;
 
+var nodes_ori = [],
+	links_trade = [],
+	links_branch = [];
 
-function loadGraph(sourceGEXF) {
-	d3.json("./data/100.json", function(error, graph) {
+function activate() {
+	d3.json("./data/5000.json", function(error, graph) {
 		if (error) return;
 
-		var nodes = [],
-			links = [],
-			types = [],
+		var types = [],
 			nodeHash = {};
 		// assign vertices to nodes array
 		graph.vertices.forEach(function(vertex, i) {
 			nodeHash[vertex._id] = i;
 
-			nodes.push({
+			nodes_ori.push({
 				id: i.toString(),
 				name: vertex.公司名稱,
 				label: vertex.公司名稱,
@@ -43,40 +44,56 @@ function loadGraph(sourceGEXF) {
 
 		// assign edges to links array
 		graph.edges.forEach(function(edge, i) {
-			links.push({
-				id: i.toString(),
-				source: nodeHash[edge._outV].toString(),
-				target: nodeHash[edge._inV].toString(),
-				label: edge._label,
-				weight: 1.0
-			});
+			if(edge._label === '分支機構 ') {
+				links_branch.push({
+					id: i.toString(),
+					source: nodeHash[edge._outV].toString(),
+					target: nodeHash[edge._inV].toString(),
+					label: edge._label,
+					weight: 1.0
+				});
+			} else {
+				links_trade.push({
+					id: i.toString(),
+					source: nodeHash[edge._outV].toString(),
+					target: nodeHash[edge._inV].toString(),
+					label: edge._label,
+					weight: 1.0
+				});
+			}
 		});
 
-		newGEXF = GexfParser.fetch(sourceGEXF);
-		console.log(newGEXF);
-		newGEXF.edges = links;
-		newGEXF.nodes = nodes;
-		gD3 = gexfD3().graph(newGEXF).size([1000, 1000]).nodeScale([5, 20]);
-
-		force = d3.layout.force()
-			.charge(-1)
-			.linkDistance(1)
-			.size([1, 1])
-			.gravity(.1)
-			.on("tick", redrawGraph);
-
-		zoom = d3.behavior.zoom()
-			.scaleExtent([.01, 1])
-			.on("zoom", zoomed).scale(.02);;
-
-		allLinks = gD3.links();
-
-		d3.select("svg").call(zoom) .attr("transform","scale(.02,.02)");
+		loadGraph('branch');
 		createControls();
-		zoomed();
-		draw();
-		force.start();
 	});
+}
+
+function loadGraph(show) {
+	var newGEXF = GexfParser.fetch('./data/lm.gexf');
+	
+	d3.selectAll("svg > g > *").remove();
+
+	newGEXF.edges = show === 'branch' ? links_branch : links_trade;
+	newGEXF.nodes = nodes_ori;
+	//console.log(nodes_ori);
+	gD3 = gexfD3().graph(newGEXF).size([1000, 1000]).nodeScale([5, 20]);
+
+	force = d3.layout.force()
+		.charge(-1)
+		.linkDistance(1)
+		.size([1, 1])
+		.gravity(0.1)
+		.on("tick", redrawGraph);
+
+	zoom = d3.behavior.zoom()
+		.scaleExtent([0.001, 1])
+		.on("zoom", zoomed).scale(0.02);
+
+	allLinks = gD3.links();
+
+	d3.select("svg").call(zoom).attr("transform","scale(.02,.02)");
+	zoomed();
+	draw();
 }
 
 function highlightNeighbors(d, i) {
@@ -154,6 +171,14 @@ function createControls() {
 		draw();
 		redrawGraph();
 	});
+	d3.select("#controls").append("button").attr("class", "origButton").html("顯示分支機構關係").on("click", function() {
+		force.stop();
+		loadGraph('branch');
+	});
+	d3.select("#controls").append("button").attr("class", "origButton").html("顯示交易關係").on("click", function() {
+		force.stop();
+		loadGraph('trade');
+	});
 
 	// d3.select("#controls").append("button").attr("class", "origButton").html("Reset Colors").on("click", function() {
 	// 	var sizeScale = gD3.nodeScale();
@@ -185,7 +210,6 @@ function createControls() {
 	// 	.html(function(d) {
 	// 		return d
 	// 	});
-
 }
 
 function nodeButtonClick(d, i) {
@@ -246,9 +270,12 @@ function draw() {
 		.attr("x2", function(d) { return xScale(d.target.x); })
 		.attr("y1", function(d) { return yScale(d.source.y); })
 		.attr("y2", function(d) { return yScale(d.target.y); })
-		.style("stroke", "black")
+		.style("stroke", function(d) {
+			if(d.label === '分支機構 ') { return 'cyan'; }
+			else { return 'black'; }
+		})
 		.style("stroke-width", "1px")
-		.style("opacity", 0.25);
+		.style("opacity", 0.5);
 
 	d3.select("#graphG")
 		.selectAll("g.node")
@@ -285,6 +312,7 @@ function draw() {
 		if (nodeFocus) {
 			return;
 		}
+		//console.log(d,i,e);
 		
 		//Only do the element stuff if this came from mouseover
 		el.parentNode.appendChild(el);
@@ -329,7 +357,6 @@ function draw() {
 
 		d3.select("#modal").style("display", "block").select("#content").html(newContent);
 	}
-
 }
 
 function nodeOut() {
