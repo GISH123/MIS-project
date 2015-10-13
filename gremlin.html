@@ -98,6 +98,12 @@
 					}
 				});
 			});
+			$.ajax({
+  type: 'POST',
+  url: 'http://106.186.118.151:7777',
+  data: {'ids': '1,2,3,629546' },
+  success: function(d){console.log(d)}
+});
 			
 		</script>
 	</head>
