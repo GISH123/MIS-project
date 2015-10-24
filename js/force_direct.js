@@ -7,14 +7,15 @@ docHash = {};
 allLinks = [];
 currentScale = 0;
 
+var highlight_nodes = [];
+
 var gD3;
 var nodes_ori = [],
 	links_trade = [],
 	links_branch = [];
 
+console.log('慶昌葯房 正法明藥行');
 
-var filtered_nodes = [],
-	filtered_edges = [];
 
 function activate() {
 	// define arrow markers for graph links
@@ -113,7 +114,7 @@ function activate() {
 			}
 		});
 
-		// loadGraph('branch');
+		loadGraph(nodes_ori, links_branch.concat(links_trade));
 		createControls();
 
 		force = d3.layout.force()
@@ -145,33 +146,7 @@ function loadGraph(nodes, edges) {
 	newGEXF.nodes = nodes;
 	newGEXF.edges = edges;
 
-	// console.log(newGEXF.nodes);
-	
-	if (!gD3) {
-		gD3 = gexfD3().graph(newGEXF).size([1000, 1000]).nodeScale([5, 20]);
-		//console.log(gD3.nodes());
-	} else {
-		newGEXF.nodes = gD3.nodes().map(function (n, i) {
-			return {
-				id: i.toString(),
-				name: n.label,
-				label: n.label,
-				attributes: n.properties,
-				viz: {
-					color: "rgb(255,0,0)",
-					size: 5,
-					position: {
-						x: n.x,
-						y: n.y,
-						z: 0
-					}
-				}
-			};
-		});
-		// console.log(newGEXF.nodes);
-		gD3 = gexfD3().graph(newGEXF).size([1000, 1000]).nodeScale([5, 20]);
-	}
-
+	gD3 = gexfD3().graph(newGEXF).size([1000, 1000]).nodeScale([5, 20]);
 }
 
 function highlightNeighbors(d, i) {
@@ -212,7 +187,7 @@ function findNeighbors(d, i) {
 }
 
 function zoomed() {
-	console.log(zoom.scale());
+	// console.log(zoom.scale());
 	force.stop();
 	var canvWidth = parseInt(d3.select("#vizcontainer").style("width"));
 	var canvHeight = parseInt(d3.select("#vizcontainer").style("height"));
@@ -399,9 +374,16 @@ function draw() {
 		.on("click", nodeClick)
 		.append("circle")
 		.attr("r", function (d) {
-			return findNeighbors(d, 0).nodes.length + 1;
+			return findNeighbors(d, 0).nodes.length + 3;
 		})
 		.style("fill", function (d) {
+			//console.log(d);
+			var highlight = false;
+			for(var i=0; i<highlight_nodes.length; i++) {
+				if(d.properties._id === highlight_nodes[i].attributes._id) {
+					return 'rgb(0, 255, 0)';
+				}
+			}
 			return d.rgbColor;
 		})
 		.style("stroke", "black")
@@ -496,69 +478,80 @@ function linkArrow(d) {
     return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
 }
 
-
+//////////////////////////////////////////////////////////////////////////////////////
 
 function query() {
+	var filtered_nodes = [],
+		filtered_edges = [];
 	filtered_nodes = nodes_ori;
 	filtered_edges = links_branch.concat(links_trade);
 
-	var v = $('#name').val();
+	var v = $('#query_prop').val();
+	var p = $('#property').val();
+	var l = $('#searchLevel').val();
+	console.log(l);
 
-	filtered_nodes = filtered_nodes.filter(function (n) {
-		return n.attributes['公司名稱'] === v;
+	highlight_nodes = filtered_nodes.filter(function (n) {
+		return n.attributes[p] === v;
 	});
 
-	var r = findAllRelations(filtered_nodes, 3);
+	var r = findAllRelations(highlight_nodes, l);
 	filtered_edges = r.edges;
 	filtered_nodes = r.nodes;
 
-	console.log(filtered_nodes, filtered_edges);
-	loadGraph(filtered_nodes, filtered_edges);
+	console.log(filtered_nodes.length, filtered_edges.length);
+	
+	//////////////////////////////
+	
+	if(filtered_nodes.length > 0) {
+		force.stop();
+		loadGraph(filtered_nodes, filtered_edges);
 
+		currentBrush = [0, 0];
+		force = d3.layout.force()
+			.charge(-1)
+			.linkDistance(1)
+			.size([1, 1])
+			.gravity(0.1)
+			.on("tick", redrawGraph);
 
-	currentBrush = [0, 0];
-	force = d3.layout.force()
-		.charge(-1)
-		.linkDistance(1)
-		.size([1, 1])
-		.gravity(0.1)
-		.on("tick", redrawGraph);
+		zoom = d3.behavior.zoom()
+			.scaleExtent([0.01, 3])
+			.on("zoom", zoomed).scale(0.02);
 
-	zoom = d3.behavior.zoom()
-		.scaleExtent([0.01, 3])
-		.on("zoom", zoomed).scale(0.6);
+		allLinks = gD3.links();
 
-	allLinks = gD3.links();
+		d3.select("svg").call(zoom).attr("transform", "scale(.02,.02)");
+		zoomed();
+		draw();
 
-	d3.select("svg").call(zoom).attr("transform", "scale(.6,.6)");
-	zoomed();
-	draw();
+		force.start();
+	} else {
+		d3.selectAll("svg > g > *").remove();
+	}
 }
-
 
 function findAllRelations(nodes, level) {
 	var r_edges = [], r_nodes = nodes;
 	var search_level = 0;
 
 	while (true) {
+		//console.log(e, n);
+		search_level++;
+		if (search_level > level) break;
+		
 		var e = findEdges(r_nodes);
 		var n = findNodes(e);
 
-		if (JSON.stringify(e) === JSON.stringify(r_edges) && 
-			JSON.stringify(n) === JSON.stringify(r_nodes)) { 
-				break;
+		if (JSON.stringify(e) === JSON.stringify(r_edges) &&
+			JSON.stringify(n) === JSON.stringify(r_nodes)) {
+			break;
 		}
 		else {
 			r_edges = e;
 			r_nodes = n;
 		}
-		
-		
-		console.log(e, n);
-		search_level++;
-		if(search_level > level) break;
 	}
-
 
 	return {
 		nodes: r_nodes,
