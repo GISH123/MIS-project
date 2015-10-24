@@ -8,6 +8,8 @@ docHash = {};
 allLinks = [];
 currentScale = 0;
 
+var path;
+
 var highlight_nodes = [];
 var highlight_edges = [];
 var filtered_nodes = [],
@@ -63,7 +65,6 @@ function activate() {
 		.append("path")
 		.attr("class", "link")
 		.attr("d", "M0,-5L0,5");
-
 
 	d3.json("./data/5000.json", function (error, graph) {
 		if (error) return;
@@ -127,6 +128,8 @@ function activate() {
 			.size([1, 1])
 			.gravity(0.1)
 			.on("tick", redrawGraph);
+
+
 	});
 }
 
@@ -167,8 +170,16 @@ function findNeighbors(d, i) {
 			return p.source == d || p.target == d;
 		})
 		.each(function (p) {
-			neighborArray.indexOf(p.source) == -1 ? neighborArray.push(p.source) : null;
-			neighborArray.indexOf(p.target) == -1 ? neighborArray.push(p.target) : null;
+			if(neighborArray.indexOf(p.source) == -1 ) {
+				var n = p.source;
+				n.type = p.label;
+				neighborArray.push(p.source);
+			}
+			if(neighborArray.indexOf(p.target) == -1 ) {
+				var n = p.target;
+				n.type = p.label;
+				neighborArray.push(p.target);
+			}
 			linkArray.push(p);
 		});
 	//        neighborArray = d3.set(neighborArray).keys();
@@ -273,17 +284,34 @@ function redrawGraph() {
 	var xScale = gD3.xScale();
 	var yScale = gD3.yScale();
 
-	d3.selectAll("line.link")
-		.attr("x1", function (d) { return xScale(d.source.x); })
-		.attr("y1", function (d) { return yScale(d.source.y); })
-		.attr("x2", function (d) { return xScale(d.target.x); })
-		.attr("y2", function (d) { return yScale(d.target.y); })
+	//d3.selectAll("line.link")
+		//.attr("x1", function (d) { return xScale(d.source.x); })
+		//.attr("y1", function (d) { return yScale(d.source.y); })
+		//.attr("x2", function (d) { return xScale(d.target.x); })
+		//.attr("y2", function (d) { return yScale(d.target.y); })
+		//.style("marker-end", function (d) { return d.label === "分支機構 " ? "url(#arrow-branch)" : "url(#arrow-trade)"; });
+
+	path
+		.attr("d", function(d) {
+			var dx = xScale(d.target.x) - xScale(d.source.x),
+				dy = yScale(d.target.y) - yScale(d.source.y),
+				dr = Math.sqrt(dx * dx + dy * dy);
+			return "M" + 
+				xScale(d.source.x) + "," + 
+				yScale(d.source.y) + "A" + 
+				dr + "," + dr + " 0 0,1 " + 
+				xScale(d.target.x) + "," + 
+				yScale(d.target.y);
+		})
 		.style("marker-end", function (d) { return d.label === "分支機構 " ? "url(#arrow-branch)" : "url(#arrow-trade)"; });
 
 	d3.selectAll("g.node")
 		.attr("transform", function (d) {
 			return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
 		});
+
+
+	// add the curvy lines
 }
 
 function draw() {
@@ -297,18 +325,18 @@ function draw() {
 		forceRunning = true;
 	}
 
-	d3.select("#graphG")
-		.selectAll("line.link")
-		.data(gD3.links(), function (d) {
-			return d.id;
+	path
+		.attr("d", function(d) {
+			var dx = xScale(d.target.x) - xScale(d.source.x),
+				dy = yScale(d.target.y) - yScale(d.source.y),
+				dr = Math.sqrt(dx * dx + dy * dy);
+			return "M" + 
+				xScale(d.source.x) + "," + 
+				yScale(d.source.y) + "A" + 
+				dr + "," + dr + " 0 0,1 " + 
+				xScale(d.target.x) + "," + 
+				yScale(d.target.y);
 		})
-		.enter()
-		.insert("line", "g.node")
-		.attr("class", "link")
-		.attr("x1", function (d) { return xScale(d.source.x); })
-		.attr("x2", function (d) { return xScale(d.target.x); })
-		.attr("y1", function (d) { return yScale(d.source.y); })
-		.attr("y2", function (d) { return yScale(d.target.y); })
 		.on("mouseover", edgeOver)
 		.on("mouseout", edgeOut)
 		.on("click", linkClick)
@@ -317,7 +345,7 @@ function draw() {
 			else { return 'black'; }
 		})
 		.style("stroke-width", "2px")
-		.style("opacity", 0.5);
+		.style("opacity", 0.8);
 
 	d3.select("#graphG")
 		.selectAll("g.node")
@@ -413,16 +441,18 @@ function draw() {
 		nodeOver(d, i, this);
 		nodeFocus = true;
 
-		var newContent = "<p>" + d.label + "</p>";
+		var newContent = "<h4 style='text-align:center;'>" + d.label + "</h4>";
 		newContent += "<p>Attributes: </p><p><ul>";
 		for (x in gD3.nodeAttributes()) {
-			newContent += "<li>" + gD3.nodeAttributes()[x] + ": " + d.properties[gD3.nodeAttributes()[x]] + "</li>";
+			if(d.properties[gD3.nodeAttributes()[x]] !== undefined) {
+				newContent += "<li>" + gD3.nodeAttributes()[x] + ": " + d.properties[gD3.nodeAttributes()[x]] + "</li>";
+			}
 		}
 		newContent += "</ul></p><p>Connections:</p><ul>";
 		var neighbors = findNeighbors(d, i);
 		for (x in neighbors.nodes) {
 			if (neighbors.nodes[x] != d) {
-				newContent += "<li>" + neighbors.nodes[x].label + "</li>";
+				newContent += "<li>" + neighbors.nodes[x].type.trim() + " ：" + neighbors.nodes[x].label + "</li>";
 			}
 		}
 		newContent += "</ul></p>";
@@ -466,10 +496,6 @@ function edgeOut() {
 	nodeOut();
 }
 
-function linkArrow(d) {
-    return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
-}
-
 function reloadForce() {
 	currentBrush = [0, 0];
 	force = d3.layout.force()
@@ -484,6 +510,14 @@ function reloadForce() {
 		.on("zoom", zoomed).scale(0.02);
 
 	allLinks = gD3.links();
+
+	// add the links and the arrows
+	path = d3.select("svg")
+		.append("svg:g").selectAll("path")
+		.data(allLinks)
+		.enter().append("svg:path")
+		.attr("class", "link");
+		//.attr("marker-end", "url(#arrow-trade)");
 
 	d3.select("svg").call(zoom).attr("transform", "scale(.02,.02)");
 	zoomed();
