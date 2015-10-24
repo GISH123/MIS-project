@@ -469,7 +469,7 @@ function query(type) {
 		l = $('#searchLevel').val();
 
 		highlight_nodes = filtered_nodes.filter(function (n) {
-			return n.attributes[p] === v;
+			return n.attributes[p].indexOf(v) !== -1;
 		});
 		var r = findAllRelations(highlight_nodes, l);
 		filtered_edges = r.edges;
