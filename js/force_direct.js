@@ -8,6 +8,8 @@ allLinks = [];
 currentScale = 0;
 
 var highlight_nodes = [];
+var filtered_nodes = [],
+	filtered_edges = [];
 
 var gD3;
 var nodes_ori = [],
@@ -23,7 +25,7 @@ function activate() {
 		.append("defs").append("marker")
 		.attr("id", "arrow-branch")
 		.attr("viewBox", "0 -5 10 10")
-		.attr("refX", 10)
+		.attr("refX", 15)
 		.attr("refY", 0)
 		.attr("markerWidth", 5)
 		.attr("markerHeight", 5)
@@ -37,7 +39,7 @@ function activate() {
     d3.select("defs").append("marker")
 		.attr("id", "arrow-trade")
 		.attr("viewBox", "0 -5 10 10")
-		.attr("refX", 10)
+		.attr("refX", 15)
 		.attr("refY", 0)
 		.attr("markerWidth", 5)
 		.attr("markerHeight", 5)
@@ -123,18 +125,6 @@ function activate() {
 			.size([1, 1])
 			.gravity(0.1)
 			.on("tick", redrawGraph);
-
-		// zoom = d3.behavior.zoom()
-		// 	.scaleExtent([0.01, 2])
-		// 	.on("zoom", zoomed).scale(0.02);
-
-		// allLinks = gD3.links();
-
-		// d3.select("svg").call(zoom).attr("transform", "scale(.02,.02)");
-		// zoomed();
-		// draw();
-		// force.start();
-		// console.log(gD3.links());
 	});
 }
 
@@ -187,24 +177,21 @@ function findNeighbors(d, i) {
 }
 
 function zoomed() {
-	// console.log(zoom.scale());
 	force.stop();
 	var canvWidth = parseInt(d3.select("#vizcontainer").style("width"));
 	var canvHeight = parseInt(d3.select("#vizcontainer").style("height"));
-	if (currentScale != zoom.scale()) {
 
-		currentScale = zoom.scale();
-		var halfCanvas = canvHeight / 2;
-		var zoomLevel = halfCanvas * currentScale;
+	currentScale = zoom.scale();
+	var halfCanvas = canvHeight / 2;
+	var zoomLevel = halfCanvas * currentScale;
 
-		// console.log(zoomLevel);
-		gD3.xScale().range([halfCanvas - zoomLevel, halfCanvas + zoomLevel]);
-		gD3.yScale().range([halfCanvas + zoomLevel, halfCanvas - zoomLevel]);
-		redrawGraph();
-	}
+	gD3.xScale().range([halfCanvas - zoomLevel, halfCanvas + zoomLevel]);
+	gD3.yScale().range([halfCanvas + zoomLevel, halfCanvas - zoomLevel]);
+	redrawGraph();
+
 	var canvasTranslate = zoom.translate();
 	d3.select("#graphG").attr("transform", "translate(" + canvasTranslate[0] + "," + canvasTranslate[1] + ")");
-	// force.start();
+	force.start();
 }
 
 function createControls() {
@@ -228,67 +215,36 @@ function createControls() {
 	});
 	d3.select("#controls").append("button").attr("class", "origButton").html("顯示分支機構關係").on("click", function () {
 		force.stop();
-		loadGraph(nodes_ori, links_branch);
-		currentBrush = [0, 0];
-		force = d3.layout.force()
-			.charge(-1)
-			.linkDistance(1)
-			.size([1, 1])
-			.gravity(0.1)
-			.on("tick", redrawGraph);
 
-		zoom = d3.behavior.zoom()
-			.scaleExtent([0.01, 3])
-			.on("zoom", zoomed).scale(0.6);
+		var n = filtered_nodes.length === 0 ? nodes_ori : filtered_nodes;
+		var e = filtered_edges.length === 0 ? links_branch : filtered_edges;
 
-		allLinks = gD3.links();
+		e = e.filter(function(edge) { return edge.label === '分支機構 '; });
+		//console.log(n,e);
 
-		d3.select("svg").call(zoom).attr("transform", "scale(.6,.6)");
-		zoomed();
-		draw();
+		loadGraph(n, e);
 
+		reloadForce();
 	});
 	d3.select("#controls").append("button").attr("class", "origButton").html("顯示交易關係").on("click", function () {
 		force.stop();
-		loadGraph(nodes_ori, links_trade);
-		currentBrush = [0, 0];
-		force = d3.layout.force()
-			.charge(-1)
-			.linkDistance(1)
-			.size([1, 1])
-			.gravity(0.1)
-			.on("tick", redrawGraph);
 
-		zoom = d3.behavior.zoom()
-			.scaleExtent([0.01, 3])
-			.on("zoom", zoomed).scale(0.6);
+		var n = filtered_nodes.length === 0 ? nodes_ori : filtered_nodes;
+		var e = filtered_edges.length === 0 ? links_trade : filtered_edges;
 
-		allLinks = gD3.links();
+		e = e.filter(function(edge) { return edge.label === '交易關係'; });
 
-		d3.select("svg").call(zoom).attr("transform", "scale(.6,.6)");
-		zoomed();
-		draw();
+		loadGraph(n, e);
+		reloadForce();
 	});
 	d3.select("#controls").append("button").attr("class", "origButton").html("顯示全部").on("click", function () {
 		force.stop();
-		loadGraph(nodes_ori, links_branch.concat(links_trade));
-		currentBrush = [0, 0];
-		force = d3.layout.force()
-			.charge(-1)
-			.linkDistance(1)
-			.size([1, 1])
-			.gravity(0.1)
-			.on("tick", redrawGraph);
 
-		zoom = d3.behavior.zoom()
-			.scaleExtent([0.01, 3])
-			.on("zoom", zoomed).scale(0.6);
+		var n = filtered_nodes.length === 0 ? nodes_ori : filtered_nodes;
+		var e = filtered_edges.length === 0 ? links_trade : filtered_edges;
 
-		allLinks = gD3.links();
-
-		d3.select("svg").call(zoom).attr("transform", "scale(.6,.6)");
-		zoomed();
-		draw();
+		loadGraph(n, e);
+		reloadForce();
 	});
 }
 
@@ -478,18 +434,37 @@ function linkArrow(d) {
     return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
 }
 
+function reloadForce() {
+	currentBrush = [0, 0];
+	force = d3.layout.force()
+		.charge(-1)
+		.linkDistance(1)
+		.size([1, 1])
+		.gravity(0.1)
+		.on("tick", redrawGraph);
+
+	zoom = d3.behavior.zoom()
+		.scaleExtent([0.01, 3])
+		.on("zoom", zoomed).scale(0.02);
+
+	allLinks = gD3.links();
+
+	d3.select("svg").call(zoom).attr("transform", "scale(.02,.02)");
+	zoomed();
+	draw();
+
+	force.start();
+}
+
 //////////////////////////////////////////////////////////////////////////////////////
 
 function query() {
-	var filtered_nodes = [],
-		filtered_edges = [];
 	filtered_nodes = nodes_ori;
 	filtered_edges = links_branch.concat(links_trade);
 
 	var v = $('#query_prop').val();
 	var p = $('#property').val();
 	var l = $('#searchLevel').val();
-	console.log(l);
 
 	highlight_nodes = filtered_nodes.filter(function (n) {
 		return n.attributes[p] === v;
@@ -504,28 +479,8 @@ function query() {
 	//////////////////////////////
 	
 	if(filtered_nodes.length > 0) {
-		force.stop();
 		loadGraph(filtered_nodes, filtered_edges);
-
-		currentBrush = [0, 0];
-		force = d3.layout.force()
-			.charge(-1)
-			.linkDistance(1)
-			.size([1, 1])
-			.gravity(0.1)
-			.on("tick", redrawGraph);
-
-		zoom = d3.behavior.zoom()
-			.scaleExtent([0.01, 3])
-			.on("zoom", zoomed).scale(0.02);
-
-		allLinks = gD3.links();
-
-		d3.select("svg").call(zoom).attr("transform", "scale(.02,.02)");
-		zoomed();
-		draw();
-
-		force.start();
+		reloadForce();
 	} else {
 		d3.selectAll("svg > g > *").remove();
 	}
