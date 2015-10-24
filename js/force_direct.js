@@ -391,9 +391,6 @@ function draw() {
 			return;
 		}
 		
-		//Only do the element stuff if this came from mouseover
-		el.parentNode.appendChild(el);
-		
 		var neighborN = [d.source, d.target];
 
 		d3.selectAll("line.link")
@@ -408,7 +405,6 @@ function draw() {
 				.style("stroke-width", isNeighbor > -1 ? 3 : 1)
 				.style("stroke", isNeighbor > -1 ? "blue" : "white");
 		});
-
 	}
 
 	function nodeClick(d, i) {
