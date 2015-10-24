@@ -203,8 +203,8 @@ function zoomed() {
 	redrawGraph();
 
 	var canvasTranslate = zoom.translate();
-	d3.select("#graphG").attr("transform", "translate(" + canvasTranslate[0] + "," + canvasTranslate[1] + ")");
 	path.attr("transform", "translate(" + canvasTranslate[0] + "," + canvasTranslate[1] + ")");
+	d3.select("#graphG").attr("transform", "translate(" + canvasTranslate[0] + "," + canvasTranslate[1] + ")");
 }
 
 function createControls() {
@@ -296,10 +296,11 @@ function redrawGraph() {
 		.attr("d", function(d) {
 			var dx = xScale(d.target.x) - xScale(d.source.x),
 				dy = yScale(d.target.y) - yScale(d.source.y),
-				dr = Math.sqrt(dx * dx + dy * dy);
+				dr = Math.sqrt(dx * dx + dy * dy)/d.properties.linknum;
+				//dr = Math.sqrt(dx * dx + dy * dy);
 			return "M" + 
 				xScale(d.source.x) + "," + 
-				yScale(d.source.y) + "A" + 
+				yScale(d.source.y) + " A" + 
 				dr + "," + dr + " 0 0,1 " + 
 				xScale(d.target.x) + "," + 
 				yScale(d.target.y);
@@ -330,11 +331,12 @@ function draw() {
 		.attr("d", function(d) {
 			var dx = xScale(d.target.x) - xScale(d.source.x),
 				dy = yScale(d.target.y) - yScale(d.source.y),
-				dr = Math.sqrt(dx * dx + dy * dy);
+				//dr = 75/d.properties.linknum;
+				dr = Math.sqrt(dx * dx + dy * dy)/d.properties.linknum;
 			return "M" + 
 				xScale(d.source.x) + "," + 
-				yScale(d.source.y) + "A" + 
-				dr + "," + dr + " 0 0,1 " + 
+				yScale(d.source.y) + " A" + 
+				dr + "," + 60 + " 0 0,3 " + 
 				xScale(d.target.x) + "," + 
 				yScale(d.target.y);
 		})
@@ -349,7 +351,7 @@ function draw() {
 			else { return 'black'; }
 		})
 		.style("stroke-width", "2px")
-		.style("opacity", 0.8);
+		.style("opacity", 0.2);
 
 	d3.select("#graphG")
 		.selectAll("g.node")
@@ -570,6 +572,25 @@ function query(type) {
 	//////////////////////////////
 	
 	if(filtered_nodes.length > 0) {
+		//sort links by source, then target
+		filtered_edges.sort(function(a,b) {
+			if (a.source > b.source) {return 1;}
+			else if (a.source < b.source) {return -1;}
+			else {
+				if (a.target > b.target) {return 1;}
+				if (a.target < b.target) {return -1;}
+				else {return 0;}
+			}
+		});
+		//any links with duplicate source and target get an incremented 'linknum'
+		for (var i=0; i<filtered_edges.length; i++) {
+			if (i !== 0 &&
+				filtered_edges[i].source == filtered_edges[i-1].source &&
+				filtered_edges[i].target == filtered_edges[i-1].target) {
+					filtered_edges[i].attributes.linknum = filtered_edges[i-1].attributes.linknum + 1;
+				}
+			else {filtered_edges[i].attributes.linknum = 1;}
+		}
 		loadGraph(filtered_nodes, filtered_edges);
 		reloadForce();
 	} else {
