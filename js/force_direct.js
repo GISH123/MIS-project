@@ -64,7 +64,6 @@ function activate() {
 		.attr("class", "link")
 		.attr("d", "M0,-5L0,5");
 
-
 	d3.json("./data/5000.json", function (error, graph) {
 		if (error) return;
 
@@ -167,8 +166,16 @@ function findNeighbors(d, i) {
 			return p.source == d || p.target == d;
 		})
 		.each(function (p) {
-			neighborArray.indexOf(p.source) == -1 ? neighborArray.push(p.source) : null;
-			neighborArray.indexOf(p.target) == -1 ? neighborArray.push(p.target) : null;
+			if(neighborArray.indexOf(p.source) == -1 ) {
+				var n = p.source;
+				n.type = p.label;
+				neighborArray.push(p.source);
+			}
+			if(neighborArray.indexOf(p.target) == -1 ) {
+				var n = p.target;
+				n.type = p.label;
+				neighborArray.push(p.target);
+			}
 			linkArray.push(p);
 		});
 	//        neighborArray = d3.set(neighborArray).keys();
@@ -317,7 +324,7 @@ function draw() {
 			else { return 'black'; }
 		})
 		.style("stroke-width", "2px")
-		.style("opacity", 0.5);
+		.style("opacity", 0.8);
 
 	d3.select("#graphG")
 		.selectAll("g.node")
@@ -413,16 +420,18 @@ function draw() {
 		nodeOver(d, i, this);
 		nodeFocus = true;
 
-		var newContent = "<p>" + d.label + "</p>";
+		var newContent = "<h4 style='text-align:center;'>" + d.label + "</h4>";
 		newContent += "<p>Attributes: </p><p><ul>";
 		for (x in gD3.nodeAttributes()) {
-			newContent += "<li>" + gD3.nodeAttributes()[x] + ": " + d.properties[gD3.nodeAttributes()[x]] + "</li>";
+			if(d.properties[gD3.nodeAttributes()[x]] !== undefined) {
+				newContent += "<li>" + gD3.nodeAttributes()[x] + ": " + d.properties[gD3.nodeAttributes()[x]] + "</li>";
+			}
 		}
 		newContent += "</ul></p><p>Connections:</p><ul>";
 		var neighbors = findNeighbors(d, i);
 		for (x in neighbors.nodes) {
 			if (neighbors.nodes[x] != d) {
-				newContent += "<li>" + neighbors.nodes[x].label + "</li>";
+				newContent += "<li>" + neighbors.nodes[x].type.trim() + " ：" + neighbors.nodes[x].label + "</li>";
 			}
 		}
 		newContent += "</ul></p>";
@@ -464,10 +473,6 @@ function edgeOut() {
 		return;
 	}
 	nodeOut();
-}
-
-function linkArrow(d) {
-    return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
 }
 
 function reloadForce() {
