@@ -204,6 +204,7 @@ function zoomed() {
 
 	var canvasTranslate = zoom.translate();
 	d3.select("#graphG").attr("transform", "translate(" + canvasTranslate[0] + "," + canvasTranslate[1] + ")");
+	path.attr("transform", "translate(" + canvasTranslate[0] + "," + canvasTranslate[1] + ")");
 }
 
 function createControls() {
@@ -336,6 +337,9 @@ function draw() {
 				dr + "," + dr + " 0 0,1 " + 
 				xScale(d.target.x) + "," + 
 				yScale(d.target.y);
+		})
+		.attr("transform", function (d) {
+			return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
 		})
 		.on("mouseover", edgeOver)
 		.on("mouseout", edgeOut)
