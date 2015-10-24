@@ -391,11 +391,24 @@ function draw() {
 			return;
 		}
 		
-		console.log(el);
 		//Only do the element stuff if this came from mouseover
 		el.parentNode.appendChild(el);
+		
+		var neighborN = [d.source, d.target];
 
-		d3.select(el).style("stroke-width", 4);
+		d3.selectAll("line.link")
+			.style("opacity", function (edge) {
+				return [d].indexOf(edge) > -1 ? 1 : 0.25;
+			});
+
+		d3.selectAll("g.node").each(function (p) {
+			var isNeighbor = neighborN.indexOf(p);
+			d3.select(this).select("circle")
+				.style("opacity", isNeighbor > -1 ? 1 : 0.25)
+				.style("stroke-width", isNeighbor > -1 ? 3 : 1)
+				.style("stroke", isNeighbor > -1 ? "blue" : "white");
+		});
+
 	}
 
 	function nodeClick(d, i) {
@@ -454,9 +467,7 @@ function edgeOut() {
 	if (edgeFocus) {
 		return;
 	}
-
-	d3.selectAll(".hoverLabel").remove();
-	d3.selectAll("line").style("stroke-width", "2px");
+	nodeOut();
 }
 
 function linkArrow(d) {
