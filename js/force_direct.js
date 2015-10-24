@@ -12,51 +12,55 @@ var nodes_ori = [],
 	links_trade = [],
 	links_branch = [];
 
+
+var filtered_nodes = [],
+	filtered_edges = [];
+
 function activate() {
 	// define arrow markers for graph links
     d3.select("svg")
-			.append("defs").append("marker")
-            .attr("id", "arrow-branch")
-            .attr("viewBox", "0 -5 10 10")
-            .attr("refX", 10)
-            .attr("refY", 0)
-            .attr("markerWidth", 5)
-            .attr("markerHeight", 5)
-            .attr("orient", "auto")
-            .append("path")
-            .attr("fill", "#0FF")
-            .attr("stroke", "#0FF")
-            .attr("stroke-width", "0.1px")
-            .attr("d", "M0,-5L10,0L0,5Z");
+		.append("defs").append("marker")
+		.attr("id", "arrow-branch")
+		.attr("viewBox", "0 -5 10 10")
+		.attr("refX", 10)
+		.attr("refY", 0)
+		.attr("markerWidth", 5)
+		.attr("markerHeight", 5)
+		.attr("orient", "auto")
+		.append("path")
+		.attr("fill", "#0FF")
+		.attr("stroke", "#0FF")
+		.attr("stroke-width", "0.1px")
+		.attr("d", "M0,-5L10,0L0,5Z");
 
     d3.select("defs").append("marker")
-            .attr("id", "arrow-trade")
-            .attr("viewBox", "0 -5 10 10")
-            .attr("refX", 10)
-            .attr("refY", 0)
-            .attr("markerWidth", 5)
-            .attr("markerHeight", 5)
-            .attr("orient", "auto")
-            .append("path")
-            .attr("fill", "#000")
-            .attr("stroke", "#000")
-            .attr("stroke-width", "0.1px")
-            .attr("d", "M0,-5L10,0L0,5Z");
+		.attr("id", "arrow-trade")
+		.attr("viewBox", "0 -5 10 10")
+		.attr("refX", 10)
+		.attr("refY", 0)
+		.attr("markerWidth", 5)
+		.attr("markerHeight", 5)
+		.attr("orient", "auto")
+		.append("path")
+		.attr("fill", "#000")
+		.attr("stroke", "#000")
+		.attr("stroke-width", "0.1px")
+		.attr("d", "M0,-5L10,0L0,5Z");
 
     d3.select("defs").append("marker")
-            .attr("id", "tail-crossed")
-            .attr("viewBox", "0 -5 10 10")
-            .attr("refX", -35)
-            .attr("refY", 0)
-            .attr("markerWidth", 8)
-            .attr("markerHeight", 8)
-            .attr("orient", "auto")
-            .append("path")
-            .attr("class", "link")
-            .attr("d", "M0,-5L0,5");
-	
-	
-	d3.json("./data/100.json", function (error, graph) {
+		.attr("id", "tail-crossed")
+		.attr("viewBox", "0 -5 10 10")
+		.attr("refX", -35)
+		.attr("refY", 0)
+		.attr("markerWidth", 8)
+		.attr("markerHeight", 8)
+		.attr("orient", "auto")
+		.append("path")
+		.attr("class", "link")
+		.attr("d", "M0,-5L0,5");
+
+
+	d3.json("./data/5000.json", function (error, graph) {
 		if (error) return;
 
 		var types = [],
@@ -109,7 +113,7 @@ function activate() {
 			}
 		});
 
-		loadGraph('branch');
+		// loadGraph('branch');
 		createControls();
 
 		force = d3.layout.force()
@@ -119,31 +123,27 @@ function activate() {
 			.gravity(0.1)
 			.on("tick", redrawGraph);
 
-		zoom = d3.behavior.zoom()
-			.scaleExtent([0.01, 2])
-			.on("zoom", zoomed).scale(0.02);
+		// zoom = d3.behavior.zoom()
+		// 	.scaleExtent([0.01, 2])
+		// 	.on("zoom", zoomed).scale(0.02);
 
-		allLinks = gD3.links();
+		// allLinks = gD3.links();
 
-		d3.select("svg").call(zoom).attr("transform", "scale(.02,.02)");
-		zoomed();
-		draw();
-		force.start();
+		// d3.select("svg").call(zoom).attr("transform", "scale(.02,.02)");
+		// zoomed();
+		// draw();
+		// force.start();
 		// console.log(gD3.links());
 	});
 }
 
-function loadGraph(show) {
+function loadGraph(nodes, edges) {
 	var newGEXF = GexfParser.fetch('./data/lm.gexf');
 
 	d3.selectAll("svg > g > *").remove();
 
-	newGEXF.nodes = nodes_ori;
-	
-	if(show === 'branch') { newGEXF.edges = links_branch; }
-	else if(show === 'trade') { newGEXF.edges = links_trade; }
-	else { newGEXF.edges = links_branch.concat(links_trade); }
-
+	newGEXF.nodes = nodes;
+	newGEXF.edges = edges;
 
 	// console.log(newGEXF.nodes);
 	
@@ -194,13 +194,16 @@ function highlightNeighbors(d, i) {
 function findNeighbors(d, i) {
 	neighborArray = [d];
 	var linkArray = [];
-	var linksArray = d3.selectAll("line.link").filter(function (p) {
-		return p.source == d || p.target == d;
-	}).each(function (p) {
-		neighborArray.indexOf(p.source) == -1 ? neighborArray.push(p.source) : null;
-		neighborArray.indexOf(p.target) == -1 ? neighborArray.push(p.target) : null;
-		linkArray.push(p);
-	});
+	var linksArray = d3
+		.selectAll("line.link")
+		.filter(function (p) {
+			return p.source == d || p.target == d;
+		})
+		.each(function (p) {
+			neighborArray.indexOf(p.source) == -1 ? neighborArray.push(p.source) : null;
+			neighborArray.indexOf(p.target) == -1 ? neighborArray.push(p.target) : null;
+			linkArray.push(p);
+		});
 	//        neighborArray = d3.set(neighborArray).keys();
 	return {
 		nodes: neighborArray,
@@ -250,7 +253,7 @@ function createControls() {
 	});
 	d3.select("#controls").append("button").attr("class", "origButton").html("顯示分支機構關係").on("click", function () {
 		force.stop();
-		loadGraph('branch');
+		loadGraph(nodes_ori, links_branch);
 		currentBrush = [0, 0];
 		force = d3.layout.force()
 			.charge(-1)
@@ -272,7 +275,7 @@ function createControls() {
 	});
 	d3.select("#controls").append("button").attr("class", "origButton").html("顯示交易關係").on("click", function () {
 		force.stop();
-		loadGraph('trade');
+		loadGraph(nodes_ori, links_trade);
 		currentBrush = [0, 0];
 		force = d3.layout.force()
 			.charge(-1)
@@ -293,7 +296,7 @@ function createControls() {
 	});
 	d3.select("#controls").append("button").attr("class", "origButton").html("顯示全部").on("click", function () {
 		force.stop();
-		loadGraph('all');
+		loadGraph(nodes_ori, links_branch.concat(links_trade));
 		currentBrush = [0, 0];
 		force = d3.layout.force()
 			.charge(-1)
@@ -343,7 +346,7 @@ function redrawGraph() {
 		.attr("y1", function (d) { return yScale(d.source.y); })
 		.attr("x2", function (d) { return xScale(d.target.x); })
 		.attr("y2", function (d) { return yScale(d.target.y); })
-		.style("marker-end", function(d) { return d.label === "分支機構 " ? "url(#arrow-branch)" : "url(#arrow-trade)"; });
+		.style("marker-end", function (d) { return d.label === "分支機構 " ? "url(#arrow-branch)" : "url(#arrow-trade)"; });
 
 	d3.selectAll("g.node")
 		.attr("transform", function (d) {
@@ -465,12 +468,12 @@ function draw() {
 		nodeFocus = false;
 		nodeOut();
 		nodeFocus = true;
-		
+
 		var newContent = "<p>" + d.label + "</p>";
 		newContent += "<p>Attributes: </p><p><ul>";
 
-		for (x in gD3.linkAttributes()) {
-			newContent += "<li>" + gD3.linkAttributes()[x] + ": " + d.properties[gD3.linkAttributes()[x]] + "</li>";
+		for (x in d.properties) {
+			newContent += "<li>" + x + ": " + d.properties[x] + "</li>";
 		}
 
 		newContent += "</ul></p>";
@@ -489,6 +492,104 @@ function nodeOut() {
 	d3.selectAll("line").style("opacity", 0.8);
 }
 
-    function linkArrow(d) {
-        return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
-    }
+function linkArrow(d) {
+    return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
+}
+
+
+
+function query() {
+	filtered_nodes = nodes_ori;
+	filtered_edges = links_branch.concat(links_trade);
+
+	var v = $('#name').val();
+
+	filtered_nodes = filtered_nodes.filter(function (n) {
+		return n.attributes['公司名稱'] === v;
+	});
+
+	var r = findAllRelations(filtered_nodes, 3);
+	filtered_edges = r.edges;
+	filtered_nodes = r.nodes;
+
+	console.log(filtered_nodes, filtered_edges);
+	loadGraph(filtered_nodes, filtered_edges);
+
+
+	currentBrush = [0, 0];
+	force = d3.layout.force()
+		.charge(-1)
+		.linkDistance(1)
+		.size([1, 1])
+		.gravity(0.1)
+		.on("tick", redrawGraph);
+
+	zoom = d3.behavior.zoom()
+		.scaleExtent([0.01, 3])
+		.on("zoom", zoomed).scale(0.6);
+
+	allLinks = gD3.links();
+
+	d3.select("svg").call(zoom).attr("transform", "scale(.6,.6)");
+	zoomed();
+	draw();
+}
+
+
+function findAllRelations(nodes, level) {
+	var r_edges = [], r_nodes = nodes;
+	var search_level = 0;
+
+	while (true) {
+		var e = findEdges(r_nodes);
+		var n = findNodes(e);
+
+		if (JSON.stringify(e) === JSON.stringify(r_edges) && 
+			JSON.stringify(n) === JSON.stringify(r_nodes)) { 
+				break;
+		}
+		else {
+			r_edges = e;
+			r_nodes = n;
+		}
+		
+		
+		console.log(e, n);
+		search_level++;
+		if(search_level > level) break;
+	}
+
+
+	return {
+		nodes: r_nodes,
+		edges: r_edges
+	};
+}
+
+function findEdges(nodes) {
+	var edges = links_branch.concat(links_trade)
+		.filter(function (e) {
+			var ans = false;
+			for (var i = 0; i < nodes.length; i++) {
+				ans = (nodes[i].attributes._id === e.attributes._inV || nodes[i].attributes._id === e.attributes._outV);
+				if (ans) return ans;
+			}
+			return ans;
+		});
+
+	return edges;
+}
+
+function findNodes(edges) {
+	var nodes = nodes_ori
+		.filter(function (n) {
+			var ans = false;
+			for (var i = 0; i < edges.length; i++) {
+				ans = (n.attributes._id === edges[i].attributes._inV || n.attributes._id === edges[i].attributes._outV);
+				if (ans) return ans;
+			}
+			return ans;
+		});
+
+	return nodes;
+}
