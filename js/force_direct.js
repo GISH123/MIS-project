@@ -8,6 +8,7 @@ allLinks = [];
 currentScale = 0;
 
 var highlight_nodes = [];
+var highlight_edges = [];
 var filtered_nodes = [],
 	filtered_edges = [];
 
@@ -191,7 +192,6 @@ function zoomed() {
 
 	var canvasTranslate = zoom.translate();
 	d3.select("#graphG").attr("transform", "translate(" + canvasTranslate[0] + "," + canvasTranslate[1] + ")");
-	force.start();
 }
 
 function createControls() {
@@ -458,21 +458,38 @@ function reloadForce() {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-function query() {
+function query(type) {
 	filtered_nodes = nodes_ori;
 	filtered_edges = links_branch.concat(links_trade);
 
-	var v = $('#query_prop').val();
-	var p = $('#property').val();
-	var l = $('#searchLevel').val();
+	var v, p, l;
+	if(type === 'node') {
+		v = $('#query_node').val();
+		p = $('#node_property').val();
+		l = $('#searchLevel').val();
 
-	highlight_nodes = filtered_nodes.filter(function (n) {
-		return n.attributes[p] === v;
-	});
+		highlight_nodes = filtered_nodes.filter(function (n) {
+			return n.attributes[p] === v;
+		});
+		var r = findAllRelations(highlight_nodes, l);
+		filtered_edges = r.edges;
+		filtered_nodes = r.nodes;
+	} else {
+		v = parseInt($('#query_edge').val(), 10);
+		p = $('#edge_property').val();
+		t = $('#searchType').val();
+		l = 1;
 
-	var r = findAllRelations(highlight_nodes, l);
-	filtered_edges = r.edges;
-	filtered_nodes = r.nodes;
+		highlight_edges = filtered_edges.filter(function (e) {
+			if(t === 'eq') { return e.attributes[p] === v; }
+			if(t === 'gt') { return e.attributes[p] > v; }
+			if(t === 'lt') { return e.attributes[p] < v; }
+		});
+		var n = findNodes(highlight_edges);
+		
+		filtered_edges = highlight_edges;
+		filtered_nodes = n;
+	}
 
 	console.log(filtered_nodes.length, filtered_edges.length);
 	
