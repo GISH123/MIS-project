@@ -2,6 +2,7 @@ var width = window.innerWidth - 10,
 	height = window.innerHeight - 20,
 	color = d3.scale.category10();
 nodeFocus = false;
+edgeFocus = false;
 currentBrush = [0, 0];
 docHash = {};
 allLinks = [];
@@ -308,6 +309,8 @@ function draw() {
 		.attr("x2", function (d) { return xScale(d.target.x); })
 		.attr("y1", function (d) { return yScale(d.source.y); })
 		.attr("y2", function (d) { return yScale(d.target.y); })
+		.on("mouseover", edgeOver)
+		.on("mouseout", edgeOut)
 		.on("click", linkClick)
 		.style("stroke", function (d) {
 			if (d.label === '分支機構 ') { return 'cyan'; }
@@ -379,6 +382,22 @@ function draw() {
 		highlightNeighbors(d, i);
 	}
 
+	function edgeOver(d, i, e) {
+		var el = this;
+		if (!d3.event.fromElement) {
+			el = e;
+		}
+		if (edgeFocus) {
+			return;
+		}
+		
+		console.log(el);
+		//Only do the element stuff if this came from mouseover
+		el.parentNode.appendChild(el);
+
+		d3.select(el).style("stroke-width", 4);
+	}
+
 	function nodeClick(d, i) {
 		nodeFocus = false;
 		nodeOut();
@@ -403,9 +422,10 @@ function draw() {
 	}
 
 	function linkClick(d, i) {
-		nodeFocus = false;
-		nodeOut();
-		nodeFocus = true;
+		edgeFocus = false;
+		edgeOut();
+		edgeOver(d, i, this);
+		edgeFocus = true;
 
 		var newContent = "<p>" + d.label + "</p>";
 		newContent += "<p>Attributes: </p><p><ul>";
@@ -428,6 +448,15 @@ function nodeOut() {
 	d3.selectAll(".hoverLabel").remove();
 	d3.selectAll("circle").style("opacity", 1).style("stroke", "black").style("stroke-width", "2px");
 	d3.selectAll("line").style("opacity", 0.8);
+}
+
+function edgeOut() {
+	if (edgeFocus) {
+		return;
+	}
+
+	d3.selectAll(".hoverLabel").remove();
+	d3.selectAll("line").style("stroke-width", "2px");
 }
 
 function linkArrow(d) {
