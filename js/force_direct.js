@@ -8,6 +8,8 @@ docHash = {};
 allLinks = [];
 currentScale = 0;
 
+var path;
+
 var highlight_nodes = [];
 var highlight_edges = [];
 var filtered_nodes = [],
@@ -27,7 +29,7 @@ function activate() {
 		.append("defs").append("marker")
 		.attr("id", "arrow-branch")
 		.attr("viewBox", "0 -5 10 10")
-		.attr("refX", 15)
+		.attr("refX", 18)
 		.attr("refY", 0)
 		.attr("markerWidth", 5)
 		.attr("markerHeight", 5)
@@ -41,7 +43,7 @@ function activate() {
     d3.select("defs").append("marker")
 		.attr("id", "arrow-trade")
 		.attr("viewBox", "0 -5 10 10")
-		.attr("refX", 15)
+		.attr("refX", 18)
 		.attr("refY", 0)
 		.attr("markerWidth", 5)
 		.attr("markerHeight", 5)
@@ -126,6 +128,8 @@ function activate() {
 			.size([1, 1])
 			.gravity(0.1)
 			.on("tick", redrawGraph);
+
+
 	});
 }
 
@@ -151,7 +155,8 @@ function highlightNeighbors(d, i) {
 			.style("stroke", isNeighbor > -1 ? "blue" : "white");
 	});
 
-	d3.selectAll("line.link")
+	//d3.selectAll("line.link")
+		path
 		.style("opacity", function (d) {
 			return nodeNeighbors.links.indexOf(d) > -1 ? 1 : 0.25;
 		});
@@ -199,17 +204,18 @@ function zoomed() {
 	redrawGraph();
 
 	var canvasTranslate = zoom.translate();
+	//path.attr("transform", "translate(" + canvasTranslate[0] + "," + canvasTranslate[1] + ")");
 	d3.select("#graphG").attr("transform", "translate(" + canvasTranslate[0] + "," + canvasTranslate[1] + ")");
 }
 
 function createControls() {
-	d3.select("#controls").append("button").attr("class", "origButton").html("Force On").on("click", function () {
+	d3.select("#controls").append("button").attr("class", "btn btn-success").html("Force On").on("click", function () {
 		force.start();
 	});
-	d3.select("#controls").append("button").attr("class", "origButton").html("Force Off").on("click", function () {
+	d3.select("#controls").append("button").attr("class", "btn btn-danger").html("Force Off").on("click", function () {
 		force.stop();
 	});
-	d3.select("#controls").append("button").attr("class", "origButton").html("Reset Layout").on("click", function () {
+	d3.select("#controls").append("button").attr("class", "btn btn-default").html("Reset Layout").on("click", function () {
 		force.stop();
 		gD3.nodes().forEach(function (el) {
 			el.x = el.originalX;
@@ -221,7 +227,7 @@ function createControls() {
 		draw();
 		redrawGraph();
 	});
-	d3.select("#controls").append("button").attr("class", "origButton").html("顯示分支機構關係").on("click", function () {
+	d3.select("#controls").append("button").attr("class", "btn btn-default").html("顯示分支機構關係").on("click", function () {
 		force.stop();
 
 		var n = filtered_nodes.length === 0 ? nodes_ori : filtered_nodes;
@@ -234,7 +240,7 @@ function createControls() {
 
 		reloadForce();
 	});
-	d3.select("#controls").append("button").attr("class", "origButton").html("顯示交易關係").on("click", function () {
+	d3.select("#controls").append("button").attr("class", "btn btn-default").html("顯示交易關係").on("click", function () {
 		force.stop();
 
 		var n = filtered_nodes.length === 0 ? nodes_ori : filtered_nodes;
@@ -245,7 +251,7 @@ function createControls() {
 		loadGraph(n, e);
 		reloadForce();
 	});
-	d3.select("#controls").append("button").attr("class", "origButton").html("顯示全部").on("click", function () {
+	d3.select("#controls").append("button").attr("class", "btn btn-default").html("顯示全部").on("click", function () {
 		force.stop();
 
 		var n = filtered_nodes.length === 0 ? nodes_ori : filtered_nodes;
@@ -280,17 +286,35 @@ function redrawGraph() {
 	var xScale = gD3.xScale();
 	var yScale = gD3.yScale();
 
-	d3.selectAll("line.link")
-		.attr("x1", function (d) { return xScale(d.source.x); })
-		.attr("y1", function (d) { return yScale(d.source.y); })
-		.attr("x2", function (d) { return xScale(d.target.x); })
-		.attr("y2", function (d) { return yScale(d.target.y); })
+	//d3.selectAll("line.link")
+		//.attr("x1", function (d) { return xScale(d.source.x); })
+		//.attr("y1", function (d) { return yScale(d.source.y); })
+		//.attr("x2", function (d) { return xScale(d.target.x); })
+		//.attr("y2", function (d) { return yScale(d.target.y); })
+		//.style("marker-end", function (d) { return d.label === "分支機構 " ? "url(#arrow-branch)" : "url(#arrow-trade)"; });
+
+	path
+		.attr("d", function(d) {
+			var dx = xScale(d.target.x) - xScale(d.source.x),
+				dy = yScale(d.target.y) - yScale(d.source.y),
+				dr = Math.sqrt(dx * dx + dy * dy)*2/d.properties.linknum;
+				//dr = Math.sqrt(dx * dx + dy * dy);
+			return "M" + 
+				xScale(d.source.x) + "," + 
+				yScale(d.source.y) + " A" + 
+				dr + "," + dr + " 0 0,1 " + 
+				xScale(d.target.x) + "," + 
+				yScale(d.target.y);
+		})
 		.style("marker-end", function (d) { return d.label === "分支機構 " ? "url(#arrow-branch)" : "url(#arrow-trade)"; });
 
 	d3.selectAll("g.node")
 		.attr("transform", function (d) {
 			return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
 		});
+
+
+	// add the curvy lines
 }
 
 function draw() {
@@ -304,18 +328,22 @@ function draw() {
 		forceRunning = true;
 	}
 
-	d3.select("#graphG")
-		.selectAll("line.link")
-		.data(gD3.links(), function (d) {
-			return d.id;
+	path
+		.attr("d", function(d) {
+			var dx = xScale(d.target.x) - xScale(d.source.x),
+				dy = yScale(d.target.y) - yScale(d.source.y),
+				//dr = 75/d.properties.linknum;
+				dr = Math.sqrt(dx * dx + dy * dy)*2/d.properties.linknum;
+			return "M" + 
+				xScale(d.source.x) + "," + 
+				yScale(d.source.y) + " A" + 
+				dr + "," + 60 + " 0 0,3 " + 
+				xScale(d.target.x) + "," + 
+				yScale(d.target.y);
 		})
-		.enter()
-		.insert("line", "g.node")
-		.attr("class", "link")
-		.attr("x1", function (d) { return xScale(d.source.x); })
-		.attr("x2", function (d) { return xScale(d.target.x); })
-		.attr("y1", function (d) { return yScale(d.source.y); })
-		.attr("y2", function (d) { return yScale(d.target.y); })
+		.attr("transform", function (d) {
+			return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
+		})
 		.on("mouseover", edgeOver)
 		.on("mouseout", edgeOut)
 		.on("click", linkClick)
@@ -340,7 +368,7 @@ function draw() {
 		.on("click", nodeClick)
 		.append("circle")
 		.attr("r", function (d) {
-			return findNeighbors(d, 0).nodes.length + 3;
+			return findNeighbors(d, 0).nodes.length + 6;
 		})
 		.style("fill", function (d) {
 			//console.log(d);
@@ -400,7 +428,8 @@ function draw() {
 		
 		var neighborN = [d.source, d.target];
 
-		d3.selectAll("line.link")
+		//d3.selectAll("line.link")
+		path
 			.style("opacity", function (edge) {
 				return [d].indexOf(edge) > -1 ? 1 : 0.25;
 			});
@@ -465,7 +494,8 @@ function nodeOut() {
 
 	d3.selectAll(".hoverLabel").remove();
 	d3.selectAll("circle").style("opacity", 1).style("stroke", "black").style("stroke-width", "2px");
-	d3.selectAll("line").style("opacity", 0.8);
+	path.style("opacity", 0.8);
+	//d3.selectAll("line").style("opacity", 0.8);
 }
 
 function edgeOut() {
@@ -489,6 +519,15 @@ function reloadForce() {
 		.on("zoom", zoomed).scale(0.02);
 
 	allLinks = gD3.links();
+
+	console.log(d3.select('svg#graphG'));
+	// add the links and the arrows
+	path = d3.select("#graphG")
+		.append("g").selectAll("path")
+		.data(allLinks)
+		.enter().append("path")
+		.attr("class", "link");
+		//.attr("marker-end", "url(#arrow-trade)");
 
 	d3.select("svg").call(zoom).attr("transform", "scale(.02,.02)");
 	zoomed();
@@ -532,11 +571,30 @@ function query(type) {
 		filtered_nodes = n;
 	}
 
-	console.log(filtered_nodes.length, filtered_edges.length);
+	//console.log(filtered_nodes.length, filtered_edges.length);
 	
 	//////////////////////////////
 	
 	if(filtered_nodes.length > 0) {
+		//sort links by source, then target
+		filtered_edges.sort(function(a,b) {
+			if (a.source > b.source) {return 1;}
+			else if (a.source < b.source) {return -1;}
+			else {
+				if (a.target > b.target) {return 1;}
+				if (a.target < b.target) {return -1;}
+				else {return 0;}
+			}
+		});
+		//any links with duplicate source and target get an incremented 'linknum'
+		for (var i=0; i<filtered_edges.length; i++) {
+			if (i !== 0 &&
+				filtered_edges[i].source == filtered_edges[i-1].source &&
+				filtered_edges[i].target == filtered_edges[i-1].target) {
+					filtered_edges[i].attributes.linknum = filtered_edges[i-1].attributes.linknum + 1;
+				}
+			else {filtered_edges[i].attributes.linknum = 1;}
+		}
 		loadGraph(filtered_nodes, filtered_edges);
 		reloadForce();
 	} else {
