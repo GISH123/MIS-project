@@ -20,7 +20,7 @@ var nodes_ori = [],
 	links_trade = [],
 	links_branch = [];
 
-console.log('慶昌葯房 正法明藥行');
+console.log('慶昌葯房 正法明藥行 統一');
 
 
 function activate() {
@@ -116,8 +116,6 @@ function activate() {
 			.size([1, 1])
 			.gravity(0.1)
 			.on("tick", redrawGraph);
-
-
 	});
 }
 
@@ -143,8 +141,7 @@ function highlightNeighbors(d, i) {
 			.style("stroke", isNeighbor > -1 ? "blue" : "white");
 	});
 
-	//d3.selectAll("line.link")
-		path
+	path
 		.style("opacity", function (d) {
 			return nodeNeighbors.links.indexOf(d) > -1 ? 1 : 0.25;
 		});
@@ -170,7 +167,6 @@ function findNeighbors(d, i) {
 			}
 			linkArray.push(p);
 		});
-	//        neighborArray = d3.set(neighborArray).keys();
 	return {
 		nodes: neighborArray,
 		links: linkArray
@@ -191,7 +187,6 @@ function zoomed() {
 	redrawGraph();
 
 	var canvasTranslate = zoom.translate();
-	//path.attr("transform", "translate(" + canvasTranslate[0] + "," + canvasTranslate[1] + ")");
 	d3.select("#graphG").attr("transform", "translate(" + canvasTranslate[0] + "," + canvasTranslate[1] + ")");
 }
 
@@ -221,7 +216,6 @@ function createControls() {
 		var e = filtered_edges.length === 0 ? links_branch : filtered_edges;
 
 		e = e.filter(function(edge) { return edge.label === '分支機構 '; });
-		//console.log(n,e);
 
 		loadGraph(n, e);
 
@@ -273,25 +267,19 @@ function redrawGraph() {
 	var xScale = gD3.xScale();
 	var yScale = gD3.yScale();
 
-	//d3.selectAll("line.link")
-		//.attr("x1", function (d) { return xScale(d.source.x); })
-		//.attr("y1", function (d) { return yScale(d.source.y); })
-		//.attr("x2", function (d) { return xScale(d.target.x); })
-		//.attr("y2", function (d) { return yScale(d.target.y); })
-		//.style("marker-end", function (d) { return d.label === "分支機構 " ? "url(#arrow-branch)" : "url(#arrow-trade)"; });
-
 	path
 		.attr("d", function(d) {
+			var line;
 			var dx = xScale(d.target.x) - xScale(d.source.x),
 				dy = yScale(d.target.y) - yScale(d.source.y),
 				dr = Math.sqrt(dx * dx + dy * dy)*2/d.properties._linknum;
-				//dr = Math.sqrt(dx * dx + dy * dy);
-			return "M" + 
-				xScale(d.source.x) + "," + 
-				yScale(d.source.y) + " A" + 
-				dr + "," + dr + " 0 0,1 " + 
-				xScale(d.target.x) + "," + 
-				yScale(d.target.y);
+
+			if(d.properties._linknum === 1) {
+				line = "M" + xScale(d.source.x) + "," + yScale(d.source.y) + " l" + dx + "," + dy;
+			} else {
+				line = "M" + xScale(d.source.x) + "," + yScale(d.source.y) + " A" + dr + "," + dr + " 0 0,1 " + xScale(d.target.x) + "," + yScale(d.target.y);
+			}
+			return line;
 		});
 		// .style("marker-end", function (d) { return d.label === "分支機構 " ? "url(#arrow-branch)" : "url(#arrow-trade)"; });
 
@@ -299,9 +287,6 @@ function redrawGraph() {
 		.attr("transform", function (d) {
 			return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
 		});
-
-
-	// add the curvy lines
 }
 
 function draw() {
@@ -317,16 +302,16 @@ function draw() {
 
 	path
 		.attr("d", function(d) {
+			var line;
 			var dx = xScale(d.target.x) - xScale(d.source.x),
 				dy = yScale(d.target.y) - yScale(d.source.y),
-				//dr = 75/d.properties._linknum;
 				dr = Math.sqrt(dx * dx + dy * dy)*2/d.properties._linknum;
-			return "M" + 
-				xScale(d.source.x) + "," + 
-				yScale(d.source.y) + " A" + 
-				dr + "," + 60 + " 0 0,3 " + 
-				xScale(d.target.x) + "," + 
-				yScale(d.target.y);
+			if(d.properties._linknum === 1) {
+				line = "M" + xScale(d.source.x) + "," + yScale(d.source.y) +  " l" + dx + "," + dy;
+			} else {
+				line = "M" + xScale(d.source.x) + "," + yScale(d.source.y) + " A" + dr + "," + dr + " 0 0,1 " + xScale(d.target.x) + "," + yScale(d.target.y);
+			}
+			return line;
 		})
 		.attr("transform", function (d) {
 			return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
@@ -358,12 +343,8 @@ function draw() {
 			return findNeighbors(d, 0).nodes.length + 6;
 		})
 		.style("fill", function (d) {
-			//console.log(d);
-			var highlight = false;
 			for(var i=0; i<highlight_nodes.length; i++) {
-				if(d.properties._id === highlight_nodes[i].attributes._id) {
-					return 'rgb(0, 255, 0)';
-				}
+				if(d.properties._id === highlight_nodes[i].attributes._id) { return 'rgb(0, 255, 0)'; }
 			}
 			return d.rgbColor;
 		})
@@ -415,7 +396,6 @@ function draw() {
 		
 		var neighborN = [d.source, d.target];
 
-		//d3.selectAll("line.link")
 		path
 			.style("opacity", function (edge) {
 				return [d].indexOf(edge) > -1 ? 1 : 0.25;
@@ -507,8 +487,6 @@ function reloadForce() {
 
 	allLinks = gD3.links();
 
-console.log(allLinks);
-	console.log(d3.select('svg#graphG'));
 	// add the links and the arrows
 	path = d3.select("#graphG")
 		.append("g").selectAll("path")
@@ -603,7 +581,6 @@ function findAllRelations(nodes, level) {
 	var search_level = 0;
 
 	while (true) {
-		//console.log(e, n);
 		search_level++;
 		if (search_level > level) break;
 		
@@ -636,7 +613,6 @@ function findEdges(nodes) {
 			}
 			return ans;
 		});
-
 	return edges;
 }
 
@@ -650,6 +626,5 @@ function findNodes(edges) {
 			}
 			return ans;
 		});
-
 	return nodes;
 }
