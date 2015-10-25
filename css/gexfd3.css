@@ -9,6 +9,15 @@
     display: none;
 	
 }
+
+
+marker#trade {
+  fill: #000;
+}
+  
+marker#branch {
+  fill: #0ff;
+}
   
 #content {
     max-height: 600px;

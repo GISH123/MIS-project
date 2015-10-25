@@ -27,9 +27,9 @@ function activate() {
 	// define arrow markers for graph links
     d3.select("svg")
 		.append("defs").append("marker")
-		.attr("id", "arrow-branch")
+		.attr("id", "branch")
 		.attr("viewBox", "0 -5 10 10")
-		.attr("refX", 18)
+		.attr("refX", 25)
 		.attr("refY", 0)
 		.attr("markerWidth", 5)
 		.attr("markerHeight", 5)
@@ -41,9 +41,9 @@ function activate() {
 		.attr("d", "M0,-5L10,0L0,5Z");
 
     d3.select("defs").append("marker")
-		.attr("id", "arrow-trade")
+		.attr("id", "trade")
 		.attr("viewBox", "0 -5 10 10")
-		.attr("refX", 18)
+		.attr("refX", 25)
 		.attr("refY", 0)
 		.attr("markerWidth", 5)
 		.attr("markerHeight", 5)
@@ -53,18 +53,6 @@ function activate() {
 		.attr("stroke", "#000")
 		.attr("stroke-width", "0.1px")
 		.attr("d", "M0,-5L10,0L0,5Z");
-
-    d3.select("defs").append("marker")
-		.attr("id", "tail-crossed")
-		.attr("viewBox", "0 -5 10 10")
-		.attr("refX", -35)
-		.attr("refY", 0)
-		.attr("markerWidth", 8)
-		.attr("markerHeight", 8)
-		.attr("orient", "auto")
-		.append("path")
-		.attr("class", "link")
-		.attr("d", "M0,-5L0,5");
 
 	d3.json("./data/5000.json", function (error, graph) {
 		if (error) return;
@@ -165,8 +153,7 @@ function highlightNeighbors(d, i) {
 function findNeighbors(d, i) {
 	neighborArray = [d];
 	var linkArray = [];
-	var linksArray = d3
-		.selectAll("line.link")
+	var linksArray =path
 		.filter(function (p) {
 			return p.source == d || p.target == d;
 		})
@@ -215,7 +202,7 @@ function createControls() {
 	d3.select("#controls").append("button").attr("class", "btn btn-danger").html("Force Off").on("click", function () {
 		force.stop();
 	});
-	d3.select("#controls").append("button").attr("class", "btn btn-default").html("Reset Layout").on("click", function () {
+	d3.select("#controls").append("button").attr("class", "btn btn-info").html("Reset Layout").on("click", function () {
 		force.stop();
 		gD3.nodes().forEach(function (el) {
 			el.x = el.originalX;
@@ -297,7 +284,7 @@ function redrawGraph() {
 		.attr("d", function(d) {
 			var dx = xScale(d.target.x) - xScale(d.source.x),
 				dy = yScale(d.target.y) - yScale(d.source.y),
-				dr = Math.sqrt(dx * dx + dy * dy)*2/d.properties.linknum;
+				dr = Math.sqrt(dx * dx + dy * dy)*2/d.properties._linknum;
 				//dr = Math.sqrt(dx * dx + dy * dy);
 			return "M" + 
 				xScale(d.source.x) + "," + 
@@ -305,8 +292,8 @@ function redrawGraph() {
 				dr + "," + dr + " 0 0,1 " + 
 				xScale(d.target.x) + "," + 
 				yScale(d.target.y);
-		})
-		.style("marker-end", function (d) { return d.label === "分支機構 " ? "url(#arrow-branch)" : "url(#arrow-trade)"; });
+		});
+		// .style("marker-end", function (d) { return d.label === "分支機構 " ? "url(#arrow-branch)" : "url(#arrow-trade)"; });
 
 	d3.selectAll("g.node")
 		.attr("transform", function (d) {
@@ -332,8 +319,8 @@ function draw() {
 		.attr("d", function(d) {
 			var dx = xScale(d.target.x) - xScale(d.source.x),
 				dy = yScale(d.target.y) - yScale(d.source.y),
-				//dr = 75/d.properties.linknum;
-				dr = Math.sqrt(dx * dx + dy * dy)*2/d.properties.linknum;
+				//dr = 75/d.properties._linknum;
+				dr = Math.sqrt(dx * dx + dy * dy)*2/d.properties._linknum;
 			return "M" + 
 				xScale(d.source.x) + "," + 
 				yScale(d.source.y) + " A" + 
@@ -352,7 +339,7 @@ function draw() {
 			else { return 'black'; }
 		})
 		.style("stroke-width", "2px")
-		.style("opacity", 0.8);
+		.style("opacity", 0.7);
 
 	d3.select("#graphG")
 		.selectAll("g.node")
@@ -452,7 +439,7 @@ function draw() {
 		var newContent = "<h4 style='text-align:center;'>" + d.label + "</h4>";
 		newContent += "<p>Attributes: </p><p><ul>";
 		for (x in gD3.nodeAttributes()) {
-			if(d.properties[gD3.nodeAttributes()[x]] !== undefined) {
+			if(Boolean(d.properties[gD3.nodeAttributes()[x]]) && d.properties[gD3.nodeAttributes()[x]] !== 'null') {
 				newContent += "<li>" + gD3.nodeAttributes()[x] + ": " + d.properties[gD3.nodeAttributes()[x]] + "</li>";
 			}
 		}
@@ -494,7 +481,7 @@ function nodeOut() {
 
 	d3.selectAll(".hoverLabel").remove();
 	d3.selectAll("circle").style("opacity", 1).style("stroke", "black").style("stroke-width", "2px");
-	path.style("opacity", 0.8);
+	path.style("opacity", 0.7);
 	//d3.selectAll("line").style("opacity", 0.8);
 }
 
@@ -516,20 +503,21 @@ function reloadForce() {
 
 	zoom = d3.behavior.zoom()
 		.scaleExtent([0.01, 3])
-		.on("zoom", zoomed).scale(0.02);
+		.on("zoom", zoomed).scale(0.04);
 
 	allLinks = gD3.links();
 
+console.log(allLinks);
 	console.log(d3.select('svg#graphG'));
 	// add the links and the arrows
 	path = d3.select("#graphG")
 		.append("g").selectAll("path")
 		.data(allLinks)
 		.enter().append("path")
-		.attr("class", "link");
-		//.attr("marker-end", "url(#arrow-trade)");
+		.attr("class", "link")
+		.style("marker-end", function (d) { return d.label === "分支機構 " ? "url(#branch)" : "url(#trade)"; });
 
-	d3.select("svg").call(zoom).attr("transform", "scale(.02,.02)");
+	d3.select("svg").call(zoom).attr("transform", "scale(.04,.04)");
 	zoomed();
 	draw();
 
@@ -542,7 +530,7 @@ function query(type) {
 	filtered_nodes = nodes_ori;
 	filtered_edges = links_branch.concat(links_trade);
 
-	var v, p, l;
+	var v, p, l, t;
 	if(type === 'node') {
 		v = $('#query_node').val();
 		p = $('#node_property').val();
@@ -559,12 +547,20 @@ function query(type) {
 		p = $('#edge_property').val();
 		t = $('#searchType').val();
 		l = 1;
-
-		highlight_edges = filtered_edges.filter(function (e) {
-			if(t === 'eq') { return e.attributes[p] === v; }
-			if(t === 'gt') { return e.attributes[p] > v; }
-			if(t === 'lt') { return e.attributes[p] < v; }
-		});
+		
+		if(p === '商品名稱'){
+			highlight_edges = filtered_edges.filter(function (e) { 
+				if(e.label !== '交易關係') { return false; }
+				return e.attributes[p].indexOf($('#query_edge').val()) !== -1; 					
+			});		
+		} else {
+			highlight_edges = filtered_edges.filter(function (e) {
+				if(e.label !== '交易關係') { return false; }
+				if(t === 'eq') { return e.attributes[p] === v; }
+				if(t === 'gt') { return e.attributes[p] > v; }
+				if(t === 'lt') { return e.attributes[p] < v; }
+			});			
+		}
 		var n = findNodes(highlight_edges);
 		
 		filtered_edges = highlight_edges;
@@ -586,14 +582,14 @@ function query(type) {
 				else {return 0;}
 			}
 		});
-		//any links with duplicate source and target get an incremented 'linknum'
+		//any links with duplicate source and target get an incremented '_linknum'
 		for (var i=0; i<filtered_edges.length; i++) {
 			if (i !== 0 &&
 				filtered_edges[i].source == filtered_edges[i-1].source &&
 				filtered_edges[i].target == filtered_edges[i-1].target) {
-					filtered_edges[i].attributes.linknum = filtered_edges[i-1].attributes.linknum + 1;
+					filtered_edges[i].attributes._linknum = filtered_edges[i-1].attributes._linknum + 1;
 				}
-			else {filtered_edges[i].attributes.linknum = 1;}
+			else {filtered_edges[i].attributes._linknum = 1;}
 		}
 		loadGraph(filtered_nodes, filtered_edges);
 		reloadForce();

@@ -20,12 +20,12 @@
 		<form class="form-inline" style="margin: 5px;">
 			<div class="form-group">
 				<label for="query_node">搜尋公司</label>
-				<select id="node_property" class="form-control" style="width:103px;">
+				<select id="node_property" class="form-control" style="width:150px;">
 					<option value='公司名稱'>公司名稱</option>
 					<option value='組織別'>組織別</option>
 					<option value='行業代碼'>行業代碼</option>
 				</select>
-				<select id="searchLevel" class="form-control">
+				<select id="searchLevel" class="form-control" >
 					<option value=1>一層</option>
 					<option value=2>兩層</option>
 					<option value=3>三層</option>
@@ -37,9 +37,11 @@
 		<form class="form-inline" style="margin: 5px;">
 			<div class="form-group">
 				<label for="query_edge">搜尋關係</label>
-				<select id="edge_property" class="form-control">
+				<select id="edge_property" class="form-control" style="width:150px;">
 					<option value='總金額'>交易總金額</option>
-					<option value='單價'>單價</option>
+					<option value='單價'>單價</option>	
+					<option value='數量'>購買數量</option>
+					<option value='商品名稱'>商品名稱</option>
 				</select>
 				<select id="searchType" class="form-control">
 					<option value='eq'>等於</option>
