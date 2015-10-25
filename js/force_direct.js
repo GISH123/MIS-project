@@ -29,10 +29,10 @@ function activate() {
 		.append("defs").append("marker")
 		.attr("id", "arrow-branch")
 		.attr("viewBox", "0 -5 10 10")
-		.attr("refX", 20)
+		.attr("refX", 18)
 		.attr("refY", 0)
-		.attr("markerWidth", 3)
-		.attr("markerHeight", 3)
+		.attr("markerWidth", 5)
+		.attr("markerHeight", 5)
 		.attr("orient", "auto")
 		.append("path")
 		.attr("fill", "#0FF")
@@ -43,10 +43,10 @@ function activate() {
     d3.select("defs").append("marker")
 		.attr("id", "arrow-trade")
 		.attr("viewBox", "0 -5 10 10")
-		.attr("refX", 20)
+		.attr("refX", 18)
 		.attr("refY", 0)
-		.attr("markerWidth", 3)
-		.attr("markerHeight", 3)
+		.attr("markerWidth", 5)
+		.attr("markerHeight", 5)
 		.attr("orient", "auto")
 		.append("path")
 		.attr("fill", "#000")
@@ -204,7 +204,7 @@ function zoomed() {
 	redrawGraph();
 
 	var canvasTranslate = zoom.translate();
-	path.attr("transform", "translate(" + canvasTranslate[0] + "," + canvasTranslate[1] + ")");
+	//path.attr("transform", "translate(" + canvasTranslate[0] + "," + canvasTranslate[1] + ")");
 	d3.select("#graphG").attr("transform", "translate(" + canvasTranslate[0] + "," + canvasTranslate[1] + ")");
 }
 
@@ -520,11 +520,12 @@ function reloadForce() {
 
 	allLinks = gD3.links();
 
+	console.log(d3.select('svg#graphG'));
 	// add the links and the arrows
-	path = d3.select("svg")
-		.append("svg:g").selectAll("path")
+	path = d3.select("#graphG")
+		.append("g").selectAll("path")
 		.data(allLinks)
-		.enter().append("svg:path")
+		.enter().append("path")
 		.attr("class", "link");
 		//.attr("marker-end", "url(#arrow-trade)");
 
