@@ -54,7 +54,7 @@ function activate() {
 		.attr("stroke-width", "0.1px")
 		.attr("d", "M0,-5L10,0L0,5Z");
 
-	d3.json("./data/5000.json", function (error, graph) {
+	d3.json("../data/5000.json", function (error, graph) {
 		if (error) return;
 
 		var types = [],
@@ -120,7 +120,7 @@ function activate() {
 }
 
 function loadGraph(nodes, edges) {
-	var newGEXF = GexfParser.fetch('./data/lm.gexf');
+	var newGEXF = GexfParser.fetch('../data/lm.gexf');
 
 	d3.selectAll("svg > g > *").remove();
 

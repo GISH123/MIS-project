@@ -26,11 +26,6 @@ $(document).on("click", "#search_proerty", function() {
 	$("#tab3").load("html/search.html");
 });
 
-$(document).on("click", "#gremlin_code", function() {
-	$("#information").hide();
-	$("#tab4").load("html/gremlin.html");
-});
-
 $.ajaxSetup({
 	cache : false
 });
