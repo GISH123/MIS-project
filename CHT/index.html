@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>CHT Project</title>
+		<meta charset="utf-8">
+		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/main.js"></script>
+		<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+	</head>
+	<body>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<nav class="navbar navbar-default" role="navigation">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+							<a class="navbar-brand" href="#">CHT Project</a>
+						</div>
+						<div class="collapse navbar-collapse" id="navbar-collapse">
+							<ul class="nav navbar-nav" id="menu">
+								<li>
+									<a href="#tab1" data-toggle="tab" id="company_data" style="display:none">公司資料</a>
+								</li>
+								<li>
+									<a href="#tab2" data-toggle="tab" id="invoice_data" style="display:none">電子發票資料</a>
+								</li>
+								<li>
+									<a href="#tab3" data-toggle="tab" id="search_proerty">搜尋</a>
+								</li>
+								<li>
+									<a href="#tab4" data-toggle="tab" id="gremlin_code">Gremlin</a>
+								</li>
+							</ul>
+						</div>
+					</nav>
+				</div>
+			</div>
+		</div>
+		<div class="container-fluid">
+			<div class="row" style="margin:5px;">
+				<div id="information"></div>
+				<div class="tab-content">
+					<div class="tab-pane active" id="tab"></div>
+					<div class="tab-pane" id="tab1"></div>
+					<div class="tab-pane" id="tab2"></div>
+					<div class="tab-pane" id="tab3"></div>
+					<div class="tab-pane" id="tab4"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
