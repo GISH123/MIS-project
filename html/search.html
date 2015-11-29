@@ -3,15 +3,12 @@
 	<head>
 		<title>search</title>
 		<meta charset="utf-8">
-		<link href="css/jquery.dataTables.min.css" rel="stylesheet">
-		<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
-		<script type="text/javascript" src="js/search.js"></script>
 	</head>
 	<body>
 		<div class="col-md-4 col-md-offset-1">
-			<form class="form-inline" role="form">
+			<form class="form-inline" role="form" style="margin: 5px;">
 				<div class="form-group">
-					<label for="search_graph_list" class="control-label">請選擇 Graph</label>
+					<label for="search_graph_list" class="control-label">選擇 Graph</label>
 					<select class="form-control" id="search_graph_list"></select>
 				</div>
 			</form>
@@ -36,26 +33,29 @@
 					<tr id="row2"></tr>
 				</tbody>
 			</table>
-			<button type="button" id="add_row" class="btn btn-default" disabled>
+			<button type="button" id="add_row" class="btn btn-default" style="display:none" disabled>
 				Add Row
 			</button>
-			<button type="button" id="delete_row" class="btn btn-default" disabled>
+			<button type="button" id="delete_row" class="btn btn-default" style="display:none" disabled>
 				Delete Row
 			</button>
 			<button type="button" id="clear_search_text" class="btn btn-default">
 				Clear
 			</button>
-			<button type="button" id="search_submit" class="btn btn-default">
+			<button type="button" id="search_submit" class="btn btn-default search_submit">
 				Search
+			</button>
+			<button type="button" id="fuzzy_search_submit" class="btn btn-default search_submit">
+				Fuzzy Search
 			</button>
 		</div>
 		<div class="col-md-10 col-md-offset-1">
 			<div class="text-center" id="search_loadingIMG" style="display:none"><img src="pic/loading.gif" />
 			</div>
-			<div class="vertex_result search_result" style="margin:5px; display:none;">
+			<div class="vertex_result search_result" style="margin-top:15px; display:none;">
 				<table id="vertex_result" class="display text-center vertex_class" width="100%"></table>
 			</div>
-			<div class="edge_result search_result" style="margin:5px; display:none;">
+			<div class="edge_result search_result" style="margin-top:15px; display:none;">
 				<table id="edge_result" class="display text-center" width="100%"></table>
 			</div>
 		</div>

@@ -1,31 +1,42 @@
-var baseurl = "http://140.119.19.14:8182/graphs/";
-
-function getGraphList(graph_list_id) {
-	$.ajax({
-		url : baseurl,
-		contentType : "application/json; charset=utf-8",
-		dataType : "json",
-		success : function(response) {
-			$.each(response["graphs"], function(key, value) {
-				$(graph_list_id).append("<option value='" + value + "'>" + value + "</option>");
-			});
-		},
-		error : function(xhr) {
-			$(graph_list_id).append("<option>Cannot load graphs.</option>");
-		}
-	});
-}
-
+var vertex_list = ["公司統一編號", "公司名稱", "營業人姓名", "行業代碼", "組織別", "時間戳記", "分支機構", "總機構統一編號"];
+var edge_list = ["買家(統編)", "賣家(統編)", "發票統編", "商品名稱", "時間", "總金額", "數量", "單價", "發票細項序號"];
 
 $(document).ready(function() {
-	$("#information").html("搜尋目前無法多重欄位");
+	$("#t1").load("html/home.html");
 });
 
-$(document).on("click", "#search_proerty", function() {
-	$("#information").hide();
-	$("#tab3").load("html/search.html");
+$(document).on("click", "#menu a", function() {
+	switch($(this).attr("id")) {
+	case "home":
+		$("#t1").load("html/home.html");
+		break;
+	case "pattern":
+		$("#t2").load("html/pattern.html");
+		$.getScript("js/pattern.js");
+		break;
+	case "search_property":
+		$("#t3").load("html/search.html");
+		$.getScript("js/search.js");
+		break;
+	case "gremlin_code":
+		$("#t4").load("html/gremlin.html");
+		$.getScript("js/gremlin.js");
+		break;
+	}
 });
 
 $.ajaxSetup({
 	cache : false
 });
+
+function addGraphList(id) {
+	var func = getGraphList();
+	func.done(function(response) {
+		$.each(response["graphs"], function(key, value) {
+			$(id).append("<option value='" + value + "'>" + value + "</option>");
+		});
+	}).fail(function() {
+		$(id).append("<option>Cannot load graph.</option>");
+	});
+}
+

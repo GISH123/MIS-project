@@ -1,24 +1,21 @@
-var vertex_list = ["公司統一編號", "公司名稱", "營業人姓名", "行業代碼", "組織別", "時間戳記", "分支機構", "總機構統一編號"];
-var edge_list = ["買家(統編)", "賣家(統編)", "發票統編", "商品名稱", "時間", "總金額", "數量", "單價", "發票細項序號"];
-
 $(document).ready(function() {
-	getGraphList($("#search_graph_list"));
+	addGraphList($("#search_graph_list"));
 	makeTable("vertex", vertex_list);
 	makeTable("edge", edge_list);
 });
 
-addSelectProperty("#select_property1");
-
-function addSelectProperty(tag) {
-	$(tag).append("<option disabled>公司</option>");
+function addSelectProperty(select_id) {
+	$(select_id).append("<option disabled>公司</option>");
 	$.each(vertex_list, function(key, value) {
-		$(tag).append("<option class='vertex' value='" + value + "'>&nbsp&nbsp&nbsp&nbsp" + value + "</option>");
+		$(select_id).append("<option class='vertex' value='" + value + "'>&nbsp&nbsp&nbsp&nbsp" + value + "</option>");
 	});
-	$(tag).append("<option disabled>交易關係</option>");
+	$(select_id).append("<option disabled>交易關係</option>");
 	$.each(edge_list, function(key, value) {
-		$(tag).append("<option class='edge' value='" + value + "'>&nbsp&nbsp&nbsp&nbsp" + value + "</option>");
+		$(select_id).append("<option class='edge' value='" + value + "'>&nbsp&nbsp&nbsp&nbsp" + value + "</option>");
 	});
 }
+
+addSelectProperty("#select_property1");
 
 var row = 1;
 
@@ -42,26 +39,39 @@ $("#clear_search_text").on("click", function() {
 
 $("#search_submit").on("click", function() {
 	var i = 1;
-	if ($("#text_property" + i).val().trim() == "") {
-		alert("請重新輸入");
-	} else {
+	if ($("#text_property" + i).val().trim() != "") {
 		var select_property = $("#select_property" + i + " :selected");
 		while (i <= row) {
 			if (select_property.hasClass("vertex")) {
-				search($("#search_graph_list :selected").val(), "vertices", select_property.val(), $("#text_property" + i).val().trim());
+				searchResult($("#search_graph_list :selected").val(), "vertices", select_property.val(), $("#text_property" + i).val().trim(), "equality");
 			} else {
-				search($("#search_graph_list :selected").val(), "edges", select_property.val(), $("#text_property" + i).val().trim());
+				searchResult($("#search_graph_list :selected").val(), "edges", select_property.val(), $("#text_property" + i).val().trim(), "equality");
 			}
 			i++;
 		}
 	}
 });
 
-function makeTable(type, list) {
+$("#fuzzy_search_submit").on("click", function() {
+	var i = 1;
+	if ($("#text_property" + i).val().trim() != "") {
+		var select_property = $("#select_property" + i + " :selected");
+		while (i <= row) {
+			if (select_property.hasClass("vertex")) {
+				searchResult($("#search_graph_list :selected").val(), "vertices", select_property.val(), $("#text_property" + i).val().trim(), "fuzzy");
+			} else {
+				searchResult($("#search_graph_list :selected").val(), "edges", select_property.val(), $("#text_property" + i).val().trim(), "fuzzy");
+			}
+			i++;
+		}
+	}
+});
+
+function makeTable(element_type, list) {
 	var id;
-	if (type == "vertex") {
+	if (element_type == "vertex") {
 		id = $("#vertex_result");
-	} else if (type == "edge") {
+	} else if (element_type == "edge") {
 		id = $("#edge_result");
 	}
 	$(id).append("<thead><tr></tr></thead>");
@@ -73,16 +83,10 @@ function makeTable(type, list) {
 function getColumn(list) {
 	var columns = [];
 	$.each(list, function(key, value) {
-		if (value == "總機構統一編號") {
-			columns.push({
-				"data" : value,
-				"defaultContent" : ""
-			});
-		} else {
-			columns.push({
-				"data" : value
-			});
-		}
+		columns.push({
+			"data" : value,
+			"defaultContent" : ""
+		});
 	});
 	return columns;
 };
@@ -95,32 +99,34 @@ function addTableResult(table, data, columns) {
 	});
 }
 
-function search(graph_name, type, key, value) {
-	$.ajax({
-		url : baseurl + graph_name + "/" + type + "?key=" + key + "&value=" + value,
-		contentType : "application/json; charset=utf-8",
-		dataType : "json",
-		success : function(response) {
-			if (type == "vertices") {
-				$(".vertex_result").show();
-				addTableResult($("#vertex_result"), response["results"], getColumn(vertex_list));
-			} else if (type == "edges") {
-				$(".edge_result").show();
-				addTableResult($("#edge_result"), response["results"], getColumn(edge_list));
-			}
-		},
-		beforeSend : function() {
-			$(".search_result").hide();
-			$("#search_submit").attr("disabled", true);
-			$("#search_loadingIMG").show();
-		},
-		complete : function() {
-			//$(".search_result").show();
-			$("#search_submit").attr("disabled", false);
-			$("#search_loadingIMG").hide();
-		},
-		error : function(xhr) {
-			alert("Wrong");
+function searchResult(graph_name, element_type, key, value, search_type) {
+
+	$(".search_result").hide();
+	$(".search_submit").attr("disabled", true);
+	$("#search_loadingIMG").show();
+	
+	var func;
+	if (search_type == "equality") {
+		var func = getElementValue(graph_name, element_type, key, value);
+	} else {
+		if (element_type == "vertices") {
+			func = getGremlinScript(graph_name, "g.V.has('" + key + "', REGEX , '.*" + value + ".*' )");
+		} else {
+			func = getGremlinScript(graph_name, "g.E.has('" + key + "', REGEX , '.*" + value + ".*' )");
 		}
+	}
+	func.done(function(response) {
+		if (element_type == "vertices") {
+			$(".vertex_result").show();
+			addTableResult($("#vertex_result"), response["results"], getColumn(vertex_list));
+		} else if (element_type == "edges") {
+			$(".edge_result").show();
+			addTableResult($("#edge_result"), response["results"], getColumn(edge_list));
+		}
+	}).fail(function() {
+	}).always(function() {
+		$(".search_submit").attr("disabled", false);
+		$("#search_loadingIMG").hide();
 	});
+
 }

@@ -3,29 +3,28 @@
 	<head>
 		<title>gremlin</title>
 		<meta charset="utf-8">
-		<script type="text/javascript" src="js/gremlin.js"></script>
 	</head>
 	<body>
-		<div class="col-md-12" style="border:solid 1px #EDEDED;border-radius:5px;">
+		<div class="col-md-10 col-md-offset-1">
 			<form class="form-inline" role="form" style="margin: 5px;">
-				<div class="form-group">
-					<label for="gremlin_graph_list">請選擇 Graph</label>
+				<div>
+					<label for="gremlin_graph_list">選擇 Graph</label>
 					<select class="form-control" id="gremlin_graph_list"></select>
 				</div>
-			</form>
+			</form >
 			<form class="form-inline" role="form" style="margin: 5px;">
-				<div class="form-group">
-					<label for="gremlin_code">Gremlin 指令</label>
-					<input type="text" class="form-control" id="gremlin_code_text" placeholder="Enter gremlin code" />
+				<div>
+					<label for="gremlin_code_text">Gremlin 指令</label>
+					<input type="text" class="form-control" id="gremlin_code_text" placeholder="Enter gremlin code" style="width:85%">
 					<button type="button" class="btn btn-default" id="gremlin_code_submit">
 						送出
 					</button>
 				</div>
 			</form>
 		</div>
-		<div class="col-md-12">
+		<div class="col-md-10 col-md-offset-1">
 			<div id="gremlin_result"></div>
-			<div class="text-center" id="gremlin_result_loadingIMG" style="display:none"><img src="images/loading.gif" />
+			<div class="text-center" id="gremlin_result_loadingIMG" style="display:none"><img src="pic/loading.gif"/>
 			</div>
 		</div>
 	</body>
