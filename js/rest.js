@@ -45,7 +45,7 @@ function createVertex(graph_name, element_type, key_value_list) {
 		contentType : "text/html; charset=utf-8",
 		type : "POST",
 		success : function(response) {
-			alert("新增資料成功");
+			console.log("新增資料成功");
 		},
 		error : function(xhr) {
 			alert("新增資料失敗");
@@ -66,7 +66,7 @@ function createEdge(graph_name, element_type, outV, edge_label, inV, key_value_l
 		contentType : "text/html; charset=utf-8",
 		type : "POST",
 		success : function(response) {
-			alert("新增資料成功");
+			console.log("新增資料成功");
 		},
 		error : function(xhr) {
 			alert("新增資料失敗");
@@ -80,7 +80,7 @@ function deleteElement(graph_name, element_type, id) {
 		contentType : "text/html; charset=utf-8",
 		type : "DELETE",
 		success : function(response) {
-			alert("刪除資料成功");
+			console.log("刪除資料成功");
 		},
 		error : function(xhr) {
 			alert("刪除資料失敗");

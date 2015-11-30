@@ -51,6 +51,7 @@ function getTableResult(table_id) {
 function createElementRequest(table_id, graph_name, element_type, edge_label) {
 
 	var obj = getTableResult(table_id);
+	console.log(obj);
 
 	if (!$.isEmptyObject(obj)) {
 		if (element_type == "vertices") {
@@ -126,13 +127,17 @@ $("#show_pattern").on("click", function() {
 	$("#result").empty();
 	$("#g").show();
 
+	readFromDB();
+});
+
+function readFromDB(){
 	var r = {'vertices':[], 'edges':[]};
 	['vertices', 'edges'].forEach(function(element_type) {
 		var func = getAllElement('test', element_type);
 		$.when(func).then(function(response) {
 			$.each(response["results"], function(key, value) {
 				r[element_type].push(value);
-				console.log(value);
+				//console.log(value);
 			});
 		});
 	});
@@ -140,8 +145,8 @@ $("#show_pattern").on("click", function() {
 	setTimeout(function() {
 		$("#result").append(JSON.stringify(r));
 		importJSON();		
-	}, 100);
-});
+	}, 100);	
+}
 
 function showAllElement() {
 	$("#result").empty();

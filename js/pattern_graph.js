@@ -229,17 +229,25 @@ function restart() {
 					商品名稱: gName, 
 					單價: 單價, 
 					數量: q, 
-					發票統編: ban
+					發票統編: ban,
+					時間: "20150326",
+					發票細項序號: "1",
+					'買家(統編)': '',
+					'賣家(統編)': ''
 				};
-				
                 link[direction] = true;
-                links.push(link);
+				
+				link['買家(統編)'] = link.left ? link.source.公司統一編號 : link.target.公司統一編號;
+				link['賣家(統編)'] = link.right ? link.source.公司統一編號 : link.target.公司統一編號;
+		
+				createElement(link, 'test', 'edges', '交易關係');
+
             }
 
             // select new link
             selected_link = link;
             selected_node = null;
-            restart();
+
         });
 
     // show node IDs
@@ -281,15 +289,17 @@ function mousedown() {
 			組織別: type, 
 			公司統一編號: comBan, 
 			行業代碼: typeNo, 
-			營業人姓名:ceoName
+			營業人姓名:ceoName,
+			時間戳記: "20150326",
+			總機構統一編號: "123"
 		};
 		
     node.x = point[0];
     node.y = point[1];
 
-    nodes.push(node);
+	createElement(node, 'test', 'vertices', '');
+    
 
-    restart();
 }
 
 function mousemove() {
@@ -403,7 +413,7 @@ function keyup() {
 svg.on('mousedown', mousedown)
     .on('mousemove', mousemove)
     .on('mouseup', mouseup);
-d3.select(window)
+d3.select('#graph')
     .on('keydown', keydown)
     .on('keyup', keyup);
 restart();
@@ -413,7 +423,7 @@ restart();
 
 function exportJSON() {
 	var n = nodes.map(function(n){
-		return _.pick(n, '_id', '公司名稱', '公司統一編號', '組織別', '行業代碼', '營業人姓名');
+		return _.pick(n, '_id', '公司名稱', '公司統一編號', '組織別', '行業代碼', '營業人姓名', '時間戳記', '總機構統一編號');
 	});
 	var e = links.map(function(l){
 		l._inV = l.left ? l.source._id : l.target._id;
@@ -421,7 +431,7 @@ function exportJSON() {
 		l.單價 = parseInt(l.單價);
 		l.數量 = parseInt(l.數量);
 		l.總金額 = l.單價*l.數量;
-		l = _.pick(l, '_inV', '_outV', '_label', '商品名稱', '單價', '數量', '總金額', '發票統編');
+		l = _.pick(l, '_inV', '_outV', '_label', '商品名稱', '單價', '數量', '總金額', '發票統編', '時間', '發票細項序號',	'買家(統編)', '賣家(統編)');
 
 		return l;
 	});
@@ -433,6 +443,7 @@ function exportJSON() {
 
 function importJSON() {
 	var data = JSON.parse($('#result').text());
+	console.log(data);
 
 	nodes = data.vertices;
 	links = data.edges;
@@ -454,4 +465,43 @@ function importJSON() {
 		.on('tick', tick);
 	
     restart();
+}
+
+function createElement(obj, graph_name, element_type, edge_label) {
+	console.log(obj);
+
+	if (!$.isEmptyObject(obj)) {
+		if (element_type == "vertices") {
+			var tmp =  _.pick(obj, '公司名稱', '公司統一編號', '組織別', '行業代碼', '營業人姓名', '時間戳記', '總機構統一編號');
+			$.when(createVertex(graph_name, element_type, tmp)).done(function() {
+				// readFromDB();
+				nodes.push(obj);
+			    restart();
+			});
+
+		} else if (element_type == "edges") {
+			var tmp = _.pick(obj, '_label', '商品名稱', '單價', '數量', '總金額', '發票統編', '時間', '發票細項序號', '買家(統編)', '賣家(統編)');
+			var outV = obj["賣家(統編)"];
+			var inV = obj["買家(統編)"];
+
+			var func1 = getElementValue("test", "vertices", "公司統一編號", outV);
+			var func2 = getElementValue("test", "vertices", "公司統一編號", inV);
+
+			$.when(func1, func2).done(function(response1, response2) {
+				var inV_ID, outV_ID;
+				$.each(response1[0]["results"], function(key, value) {
+					outV_ID = value["_id"];
+				});
+				$.each(response2[0]["results"], function(key, value) {
+					inV_ID = value["_id"];
+				});
+				$.when(createEdge("test", "edges", outV_ID, edge_label, inV_ID, tmp)).done(function() {
+					// readFromDB();
+					links.push(obj);
+					restart();
+				});
+			});
+		}
+	}
+
 }
