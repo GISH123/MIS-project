@@ -428,9 +428,9 @@ function exportJSON() {
 	var e = links.map(function(l){
 		l._inV = l.left ? l.source._id : l.target._id;
 		l._outV = l.right ? l.source._id : l.target._id;
-		l.單價 = parseInt(l.單價);
-		l.數量 = parseInt(l.數量);
-		l.總金額 = l.單價*l.數量;
+		l.單價 = l.單價;
+		l.數量 = l.數量;
+		l.總金額 = l.總金額;
 		l = _.pick(l, '_inV', '_outV', '_label', '商品名稱', '單價', '數量', '總金額', '發票統編', '時間', '發票細項序號',	'買家(統編)', '賣家(統編)');
 
 		return l;
