@@ -2,7 +2,8 @@
  * Created by telefont on 05/01/15.
  */
 // set up SVG for D3
-var width  = 960,
+var cancel = true;
+var width = 960,
     height = 500,
     colors = d3.scale.category10();
 
@@ -16,13 +17,13 @@ var svg = d3.select('#graph')
 //  - reflexive edges are indicated on the node (as a bold black circle).
 //  - links are always source < target; edge directions are set by 'left' and 'right'.
 var nodes = [
-        {_id: '0', 公司名稱:'大桶', 公司統一編號: '1', 組織別: '食品業', 行業代碼: 'A0', reflexive: false},
-        {_id: '1', 公司名稱:'頂新', 公司統一編號: '2', 組織別: '食品業', 行業代碼: 'A0', reflexive: true },
-        {_id: '2', 公司名稱:'為全', 公司統一編號: '3', 組織別: '食品業', 行業代碼: 'A0', reflexive: false}
-    ],
+	{ _id: '0', 公司名稱: '大桶', 公司統一編號: '1', 組織別: '食品業', 行業代碼: 'A0', reflexive: false },
+	{ _id: '1', 公司名稱: '頂新', 公司統一編號: '2', 組織別: '食品業', 行業代碼: 'A0', reflexive: true },
+	{ _id: '2', 公司名稱: '為全', 公司統一編號: '3', 組織別: '食品業', 行業代碼: 'A0', reflexive: false }
+],
     links = [
-        {source: nodes[0], target: nodes[1], left: false, right: true, _label: '交易關係', 商品名稱: '葡萄糖酸鈣', 單價:'10000', 數量: '2'},
-        {source: nodes[1], target: nodes[2], left: false, right: true, _label: '交易關係', 商品名稱: '葡萄鈣', 單價:'100', 數量: '2'}
+        { source: nodes[0], target: nodes[1], left: false, right: true, _label: '交易關係', 商品名稱: '葡萄糖酸鈣', 單價: '10000', 數量: '2' },
+        { source: nodes[1], target: nodes[2], left: false, right: true, _label: '交易關係', 商品名稱: '葡萄鈣', 單價: '100', 數量: '2' }
     ];
 	
 // init D3 force layout
@@ -82,7 +83,7 @@ function resetMouseVars() {
 // update force layout (called automatically each iteration)
 function tick() {
     // draw directed edges with proper padding from node centers
-    path.attr('d', function(d) {
+    path.attr('d', function (d) {
         var deltaX = d.target.x - d.source.x,
             deltaY = d.target.y - d.source.y,
             dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
@@ -97,7 +98,7 @@ function tick() {
         return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY;
     });
 
-    circle.attr('transform', function(d) {
+    circle.attr('transform', function (d) {
         return 'translate(' + d.x + ',' + d.y + ')';
     });
 }
@@ -108,23 +109,23 @@ function restart() {
     path = path.data(links);
 
     // update existing links
-    path.classed('selected', function(d) { return d === selected_link; })
-        .style('marker-start', function(d) { return d.left ? 'url(#start-arrow)' : ''; })
-        .style('marker-end', function(d) { return d.right ? 'url(#end-arrow)' : ''; });
+    path.classed('selected', function (d) { return d === selected_link; })
+        .style('marker-start', function (d) { return d.left ? 'url(#start-arrow)' : ''; })
+        .style('marker-end', function (d) { return d.right ? 'url(#end-arrow)' : ''; });
 
 
     // add new links
     path.enter().append('svg:path')
         .attr('class', 'link')
-        .classed('selected', function(d) { return d === selected_link; })
-        .style('marker-start', function(d) { return d.left ? 'url(#start-arrow)' : ''; })
-        .style('marker-end', function(d) { return d.right ? 'url(#end-arrow)' : ''; })
-        .on('mousedown', function(d) {
-            if(d3.event.ctrlKey) return;
+        .classed('selected', function (d) { return d === selected_link; })
+        .style('marker-start', function (d) { return d.left ? 'url(#start-arrow)' : ''; })
+        .style('marker-end', function (d) { return d.right ? 'url(#end-arrow)' : ''; })
+        .on('mousedown', function (d) {
+            if (d3.event.ctrlKey) return;
 
             // select link
             mousedown_link = d;
-            if(mousedown_link === selected_link) selected_link = null;
+            if (mousedown_link === selected_link) selected_link = null;
             else selected_link = mousedown_link;
             selected_node = null;
             restart();
@@ -137,12 +138,12 @@ function restart() {
 
     // circle (node) group
     // NB: the function arg is crucial here! nodes are known by id, not by index!
-    circle = circle.data(nodes, function(d) { return d._id; });
+    circle = circle.data(nodes, function (d) { return d._id; });
 
     // update existing nodes (reflexive & selected visual states)
     circle.selectAll('circle')
-        .style('fill', function(d) { return (d === selected_node) ? d3.rgb(colors(d._id)).brighter().toString() : colors(d._id); })
-        .classed('reflexive', function(d) { return d.reflexive; });
+        .style('fill', function (d) { return (d === selected_node) ? d3.rgb(colors(d._id)).brighter().toString() : colors(d._id); })
+        .classed('reflexive', function (d) { return d.reflexive; });
 
     // add new nodes
     var g = circle.enter().append('svg:g');
@@ -150,25 +151,25 @@ function restart() {
     g.append('svg:circle')
         .attr('class', 'node')
         .attr('r', 15)
-        .style('fill', function(d) { return (d === selected_node) ? d3.rgb(colors(d._id)).brighter().toString() : colors(d._id); })
-        .style('stroke', function(d) { return d3.rgb(colors(d._id)).darker().toString(); })
-        .classed('reflexive', function(d) { return d.reflexive; })
-        .on('mouseover', function(d) {
-            if(!mousedown_node || d === mousedown_node) return;
+        .style('fill', function (d) { return (d === selected_node) ? d3.rgb(colors(d._id)).brighter().toString() : colors(d._id); })
+        .style('stroke', function (d) { return d3.rgb(colors(d._id)).darker().toString(); })
+        .classed('reflexive', function (d) { return d.reflexive; })
+        .on('mouseover', function (d) {
+            if (!mousedown_node || d === mousedown_node) return;
             // enlarge target node
             d3.select(this).attr('transform', 'scale(1.1)');
         })
-        .on('mouseout', function(d) {
-            if(!mousedown_node || d === mousedown_node) return;
+        .on('mouseout', function (d) {
+            if (!mousedown_node || d === mousedown_node) return;
             // unenlarge target node
             d3.select(this).attr('transform', '');
         })
-        .on('mousedown', function(d) {
-            if(!d3.event.ctrlKey) return;
+        .on('mousedown', function (d) {
+            if (!d3.event.ctrlKey) return;
 
             // select node
             mousedown_node = d;
-            if(mousedown_node === selected_node) selected_node = null;
+            if (mousedown_node === selected_node) selected_node = null;
             else selected_node = mousedown_node;
             selected_link = null;
 
@@ -180,8 +181,8 @@ function restart() {
 
             restart();
         })
-        .on('mouseup', function(d) {
-            if(!mousedown_node) return;
+        .on('mouseup', function (d) {
+            if (!mousedown_node) return;
 
             // needed by FF
             drag_line
@@ -190,7 +191,7 @@ function restart() {
 
             // check for drag-to-self
             mouseup_node = d;
-            if(mouseup_node === mousedown_node) { resetMouseVars(); return; }
+            if (mouseup_node === mousedown_node) { resetMouseVars(); return; }
 
             // unenlarge target node
             d3.select(this).attr('transform', '');
@@ -198,7 +199,7 @@ function restart() {
             // add link to graph (update if exists)
             // NB: links are strictly source < target; arrows separately specified by booleans
             var source, target, direction;
-            if(mousedown_node._id < mouseup_node._id) {
+            if (mousedown_node._id < mouseup_node._id) {
                 source = mousedown_node;
                 target = mouseup_node;
                 direction = 'right';
@@ -209,45 +210,60 @@ function restart() {
             }
 
             var link;
-            link = links.filter(function(l) {
+            link = links.filter(function (l) {
                 return (l.source === source && l.target === target);
             })[0];
 
-            if(link) {
+            if (link) {
                 link[direction] = true;
             } else {
-                var gName = prompt("交易商品名",'葡萄糖..');
-                var 單價 = prompt("單價",'100');
-                var q = prompt("數量",'10');
-				var ban = prompt("發票統編", "ban123");
-                link = {
-					source: source, 
-					target: target, 
-					left: false, 
-					right: false, 
-					_label: '交易關係', 
-					商品名稱: gName, 
-					單價: 單價, 
-					數量: q, 
-					發票統編: ban,
-					時間: "20150326",
-					發票細項序號: "1",
-					'買家(統編)': '',
-					'賣家(統編)': ''
-				};
-                link[direction] = true;
-				
-				link['買家(統編)'] = link.left ? link.source.公司統一編號 : link.target.公司統一編號;
-				link['賣家(統編)'] = link.right ? link.source.公司統一編號 : link.target.公司統一編號;
-		
-				createElement(link, 'test', 'edges', '交易關係');
+				$('#add-edge').lightbox_me({
+					centered: true,
+					onLoad: function () {
+						$('#add-edge').find('input:first').focus()
+					},
+					onClose: function () {
+						if (!cancel) {
+							var data = {
+								gName: $('#gName').val(),
+								單價: $('#單價').val(),
+								q: $('#q').val(),
+								ban: $('#ban').val(),
+							};
+							console.log(data);
+							cancel = true;
+
+							link = {
+								source: source,
+								target: target,
+								left: false,
+								right: false,
+								_label: '交易關係',
+								商品名稱: data.gName,
+								單價: data.單價,
+								數量: data.q,
+								發票統編: data.ban,
+								時間: "20150326",
+								發票細項序號: "1",
+								'買家(統編)': '',
+								'賣家(統編)': ''
+							};
+							link[direction] = true;
+			
+							link['買家(統編)'] = link.left ? link.source.公司統一編號 : link.target.公司統一編號;
+							link['賣家(統編)'] = link.right ? link.source.公司統一編號 : link.target.公司統一編號;
+			
+							createElement(link, 'test', 'edges', '交易關係');
+						}
+					}
+				});
+
 
             }
 
             // select new link
             selected_link = link;
             selected_node = null;
-
         });
 
     // show node IDs
@@ -255,7 +271,7 @@ function restart() {
         .attr('x', 0)
         .attr('y', 4)
         .attr('class', 'id')
-        .text(function(d) { return d.公司名稱; });
+        .text(function (d) { return d.公司名稱; });
 
     // remove old nodes
     circle.exit().remove();
@@ -272,33 +288,48 @@ function mousedown() {
     // because :active only works in WebKit?
     svg.classed('active', true);
 
-    if(mousedown_node || mousedown_link) return;
-	
-	if(d3.event.ctrlKey) {
+    if (mousedown_node || mousedown_link) return;
+
+	if (d3.event.ctrlKey) {
 		// insert new node at point
-		var name = prompt("公司名稱", "vertex");
-		var comBan = prompt("公司統一編號", "123");
-		var type = prompt("組織別", "食品業");
-		var typeNo = prompt("行業代碼", "A0");
-		var ceoName = prompt("營業人姓名", "許書軒");
-	
-		var point = d3.mouse(this),
-			node = {
-				_id: nodes.length.toString(), 
-				reflexive: false,
-				公司名稱:name, 
-				組織別: type, 
-				公司統一編號: comBan, 
-				行業代碼: typeNo, 
-				營業人姓名:ceoName,
-				時間戳記: "20150326",
-				總機構統一編號: "123"
-			};
-			
-		node.x = point[0];
-		node.y = point[1];
-	
-		createElement(node, 'test', 'vertices', '');
+		var point = d3.mouse(this);
+
+		$('#add-vertex').lightbox_me({
+			centered: true,
+			onLoad: function () {
+				$('#add-vertex').find('input:first').focus()
+			},
+			onClose: function () {
+				if (!cancel) {
+					var data = {
+						name: $('#name').val(),
+						comBan: $('#comBan').val(),
+						type: $('#type').val(),
+						typeNo: $('#typeNo').val(),
+						ceoName: $('#ceoName').val()
+					};
+					console.log(data);
+					cancel = true;
+
+					var node = {
+						_id: nodes.length.toString(),
+						reflexive: false,
+						公司名稱: data.name,
+						組織別: data.type,
+						公司統一編號: data.comBan,
+						行業代碼: data.typeNo,
+						營業人姓名: data.ceoName,
+						時間戳記: "20150326",
+						總機構統一編號: "123"
+					};
+
+					node.x = point[0];
+					node.y = point[1];
+
+					createElement(node, 'test', 'vertices', '');
+				}
+			}
+		});
 	} else {
         circle.call(force.drag);
         svg.classed('ctrl', true);
@@ -307,7 +338,7 @@ function mousedown() {
 }
 
 function mousemove() {
-    if(!mousedown_node) return;
+    if (!mousedown_node) return;
 
     // update drag line
     drag_line.attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + d3.mouse(this)[0] + ',' + d3.mouse(this)[1]);
@@ -316,7 +347,7 @@ function mousemove() {
 }
 
 function mouseup() {
-    if(mousedown_node) {
+    if (mousedown_node) {
         // hide drag line
         drag_line
             .classed('hidden', true)
@@ -326,7 +357,6 @@ function mouseup() {
             .on('mousedown.drag', null)
             .on('touchstart.drag', null);
         svg.classed('ctrl', false);
-
     }
 
     // because :active only works in WebKit?
@@ -337,10 +367,10 @@ function mouseup() {
 }
 
 function spliceLinksForNode(node) {
-    var toSplice = links.filter(function(l) {
+    var toSplice = links.filter(function (l) {
         return (l.source === node || l.target === node);
     });
-    toSplice.map(function(l) {
+    toSplice.map(function (l) {
         links.splice(links.indexOf(l), 1);
     });
 }
@@ -351,19 +381,17 @@ var lastKeyDown = -1;
 function keydown() {
     d3.event.preventDefault();
 
-    if(lastKeyDown !== -1) return;
+    if (lastKeyDown !== -1) return;
     lastKeyDown = d3.event.keyCode;
 
-
-
-    if(!selected_node && !selected_link) return;
-    switch(d3.event.keyCode) {
+    if (!selected_node && !selected_link) return;
+    switch (d3.event.keyCode) {
         case 8: // backspace
         case 46: // delete
-            if(selected_node) {
+            if (selected_node) {
                 nodes.splice(nodes.indexOf(selected_node), 1);
                 spliceLinksForNode(selected_node);
-            } else if(selected_link) {
+            } else if (selected_link) {
                 links.splice(links.indexOf(selected_link), 1);
             }
             selected_link = null;
@@ -371,48 +399,40 @@ function keydown() {
             restart();
             break;
         case 66: // B
-            if(selected_link) {
+            if (selected_link) {
                 // set link direction to both left and right
                 selected_link.left = true;
                 selected_link.right = true;
             }
             restart();
-			
+
             break;
         case 76: // L
-            if(selected_link) {
+            if (selected_link) {
                 // set link direction to left only
                 selected_link.left = true;
                 selected_link.right = false;
             }
             restart();
-			
+
             break;
         case 82: // R
-            if(selected_node) {
+            if (selected_node) {
                 // toggle node reflexivity
                 selected_node.reflexive = !selected_node.reflexive;
-            } else if(selected_link) {
+            } else if (selected_link) {
                 // set link direction to right only
                 selected_link.left = false;
                 selected_link.right = true;
             }
             restart();
-			
+
             break;
     }
 }
 
 function keyup() {
     lastKeyDown = -1;
-
-    // ctrl
-    // if(d3.event.keyCode === 17) {
-    //     circle
-    //         .on('mousedown.drag', null)
-    //         .on('touchstart.drag', null);
-    //     svg.classed('ctrl', false);
-    // }
 }
 
 // app starts here
@@ -428,21 +448,21 @@ restart();
 
 
 function exportJSON() {
-	var n = nodes.map(function(n){
+	var n = nodes.map(function (n) {
 		return _.pick(n, '_id', '公司名稱', '公司統一編號', '組織別', '行業代碼', '營業人姓名', '時間戳記', '總機構統一編號');
 	});
-	var e = links.map(function(l){
+	var e = links.map(function (l) {
 		l._inV = l.left ? l.source._id : l.target._id;
 		l._outV = l.right ? l.source._id : l.target._id;
 		l.單價 = l.單價;
 		l.數量 = l.數量;
 		l.總金額 = l.總金額;
-		l = _.pick(l, '_inV', '_outV', '_label', '商品名稱', '單價', '數量', '總金額', '發票統編', '時間', '發票細項序號',	'買家(統編)', '賣家(統編)');
+		l = _.pick(l, '_inV', '_outV', '_label', '商品名稱', '單價', '數量', '總金額', '發票統編', '時間', '發票細項序號', '買家(統編)', '賣家(統編)');
 
 		return l;
 	});
-	 
-	 var all = {vertex:n, edge:e};
+
+	var all = { vertex: n, edge: e };
 	$('#json').empty();
 	$('#json').append(JSON.stringify(all, null, 4));
 }
@@ -453,14 +473,14 @@ function importJSON() {
 
 	nodes = data.vertices;
 	links = data.edges;
-	links.forEach(function(l){
-		var ids = _.sortBy([l._inV, l._outV], function(n) { return n; });
+	links.forEach(function (l) {
+		var ids = _.sortBy([l._inV, l._outV], function (n) { return n; });
 		l.source = _.find(nodes, '_id', ids[0]);
 		l.target = _.find(nodes, '_id', ids[1]);
 		l.left = l._inV === ids[0];
 		l.right = l._outV === ids[0];
 	});
-	console.log(nodes,links);
+	console.log(nodes, links);
 
 	force = d3.layout.force()
 		.nodes(nodes)
@@ -469,7 +489,7 @@ function importJSON() {
 		.linkDistance(150)
 		.charge(-500)
 		.on('tick', tick);
-	
+
     restart();
 }
 
@@ -478,11 +498,11 @@ function createElement(obj, graph_name, element_type, edge_label) {
 
 	if (!$.isEmptyObject(obj)) {
 		if (element_type == "vertices") {
-			var tmp =  _.pick(obj, '公司名稱', '公司統一編號', '組織別', '行業代碼', '營業人姓名', '時間戳記', '總機構統一編號');
-			$.when(createVertex(graph_name, element_type, tmp)).done(function() {
+			var tmp = _.pick(obj, '公司名稱', '公司統一編號', '組織別', '行業代碼', '營業人姓名', '時間戳記', '總機構統一編號');
+			$.when(createVertex(graph_name, element_type, tmp)).done(function () {
 				// readFromDB();
 				nodes.push(obj);
-			    restart();
+				restart();
 			});
 
 		} else if (element_type == "edges") {
@@ -493,15 +513,15 @@ function createElement(obj, graph_name, element_type, edge_label) {
 			var func1 = getElementValue("test", "vertices", "公司統一編號", outV);
 			var func2 = getElementValue("test", "vertices", "公司統一編號", inV);
 
-			$.when(func1, func2).done(function(response1, response2) {
+			$.when(func1, func2).done(function (response1, response2) {
 				var inV_ID, outV_ID;
-				$.each(response1[0]["results"], function(key, value) {
+				$.each(response1[0]["results"], function (key, value) {
 					outV_ID = value["_id"];
 				});
-				$.each(response2[0]["results"], function(key, value) {
+				$.each(response2[0]["results"], function (key, value) {
 					inV_ID = value["_id"];
 				});
-				$.when(createEdge("test", "edges", outV_ID, edge_label, inV_ID, tmp)).done(function() {
+				$.when(createEdge("test", "edges", outV_ID, edge_label, inV_ID, tmp)).done(function () {
 					// readFromDB();
 					links.push(obj);
 					restart();
@@ -510,4 +530,14 @@ function createElement(obj, graph_name, element_type, edge_label) {
 		}
 	}
 
+}
+
+function closeDialog(type, dialogType) {
+	cancel = (type === 'cancel');
+	
+	if(dialogType === 'e') {
+		$('#add-edge').trigger('close');	
+	} else {
+		$('#add-vertex').trigger('close');		
+	}
 }
