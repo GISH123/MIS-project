@@ -164,7 +164,7 @@ function restart() {
             d3.select(this).attr('transform', '');
         })
         .on('mousedown', function(d) {
-            if(d3.event.ctrlKey) return;
+            if(!d3.event.ctrlKey) return;
 
             // select node
             mousedown_node = d;
@@ -272,33 +272,37 @@ function mousedown() {
     // because :active only works in WebKit?
     svg.classed('active', true);
 
-    if(d3.event.ctrlKey || mousedown_node || mousedown_link) return;
-
-    // insert new node at point
-    var name = prompt("公司名稱", "vertex");
-    var comBan = prompt("公司統一編號", "123");
-    var type = prompt("組織別", "食品業");
-    var typeNo = prompt("行業代碼", "A0");
-    var ceoName = prompt("營業人姓名", "許書軒");
-
-    var point = d3.mouse(this),
-        node = {
-			_id: nodes.length.toString(), 
-			reflexive: false,
-			公司名稱:name, 
-			組織別: type, 
-			公司統一編號: comBan, 
-			行業代碼: typeNo, 
-			營業人姓名:ceoName,
-			時間戳記: "20150326",
-			總機構統一編號: "123"
-		};
-		
-    node.x = point[0];
-    node.y = point[1];
-
-	createElement(node, 'test', 'vertices', '');
-    
+    if(mousedown_node || mousedown_link) return;
+	
+	if(d3.event.ctrlKey) {
+		// insert new node at point
+		var name = prompt("公司名稱", "vertex");
+		var comBan = prompt("公司統一編號", "123");
+		var type = prompt("組織別", "食品業");
+		var typeNo = prompt("行業代碼", "A0");
+		var ceoName = prompt("營業人姓名", "許書軒");
+	
+		var point = d3.mouse(this),
+			node = {
+				_id: nodes.length.toString(), 
+				reflexive: false,
+				公司名稱:name, 
+				組織別: type, 
+				公司統一編號: comBan, 
+				行業代碼: typeNo, 
+				營業人姓名:ceoName,
+				時間戳記: "20150326",
+				總機構統一編號: "123"
+			};
+			
+		node.x = point[0];
+		node.y = point[1];
+	
+		createElement(node, 'test', 'vertices', '');
+	} else {
+        circle.call(force.drag);
+        svg.classed('ctrl', true);
+    }
 
 }
 
@@ -317,6 +321,12 @@ function mouseup() {
         drag_line
             .classed('hidden', true)
             .style('marker-end', '');
+
+        circle
+            .on('mousedown.drag', null)
+            .on('touchstart.drag', null);
+        svg.classed('ctrl', false);
+
     }
 
     // because :active only works in WebKit?
@@ -344,11 +354,7 @@ function keydown() {
     if(lastKeyDown !== -1) return;
     lastKeyDown = d3.event.keyCode;
 
-    // ctrl
-    if(d3.event.keyCode === 17) {
-        circle.call(force.drag);
-        svg.classed('ctrl', true);
-    }
+
 
     if(!selected_node && !selected_link) return;
     switch(d3.event.keyCode) {
@@ -401,12 +407,12 @@ function keyup() {
     lastKeyDown = -1;
 
     // ctrl
-    if(d3.event.keyCode === 17) {
-        circle
-            .on('mousedown.drag', null)
-            .on('touchstart.drag', null);
-        svg.classed('ctrl', false);
-    }
+    // if(d3.event.keyCode === 17) {
+    //     circle
+    //         .on('mousedown.drag', null)
+    //         .on('touchstart.drag', null);
+    //     svg.classed('ctrl', false);
+    // }
 }
 
 // app starts here
