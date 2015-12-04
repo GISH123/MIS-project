@@ -116,7 +116,7 @@ $("#delete_company_vertex").on("click", function() {
 	})
 });
 
-$("#delete_company_vertex").on("click", function() {
+$("#gish_delete_company_vertex").on("click", function() {
         var obj = getTableResult($("#company_vertex_table"));
         var func = getElementValue("gishPattern", "vertices", "公司統一編號", obj["公司統一編號"]);
 
@@ -130,7 +130,7 @@ $("#delete_company_vertex").on("click", function() {
 
 
 
-$("#delete_by_id").on("click", function() {
+$("#gish_delete_by_id").on("click", function() {
 	$("#g").hide();
 	var obj = getTableResult($("#delete_table"));
 	$.when(deleteElement("gishPattern", "vertices", obj["id"])).then(function() {
