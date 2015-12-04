@@ -38,9 +38,15 @@
 		<button type="button" class="btn btn-default new_company_vertex" id="create_company_vertex" style="display:none;margin-bottom:10px">
 			新增公司資料
 		</button>
+
+                <button type="button" class="btn btn-default new_company_vertex" id="gish_delete_company_vertex" style="display:none;margin-bottom:10px">
+                        刪除輸入pattern的公司資料(公司統一編號)
+                </button>
+
 		<button type="button" class="btn btn-default new_company_vertex" id="delete_company_vertex" style="display:none;margin-bottom:10px">
-			刪除公司資料(公司統一編號)
+			刪除執行pattern結果的公司資料(公司統一編號)
 		</button>
+
 		<table class="table table-bordered new_transaction_edge" id="transaction_edge_table" style="display:none;margin-bottom:3px"></table>
 		<button type="button" class="btn btn-default new_transaction_edge" id="create_transaction_edge" style="display:none;margin-bottom:10px">
 			新增交易關係
@@ -59,9 +65,16 @@
 				</tr>
 			</tbody>
 		</table>
-		<button type="button" class="btn btn-default delete_element" id="delete_by_id" style="display:none;margin-bottom:10px">
-			刪除
+		<button type="button" class="btn btn-default delete_element" id="gish_delete_by_id" style="display:none;margin-bottom:10px">
+			刪除輸入pattern的資料
 		</button>
+	
+		<button type="button" class="btn btn-default delete_element" id="delete_by_id" style="display:none;margin-bottom:10px">
+                        刪除執行pattern結果的資料
+                </button>
+
+
+
 		<div id="g" style="display:none;">
 			<div id="graph" tabindex=1></div>
 			<pre id="json"></pre>
