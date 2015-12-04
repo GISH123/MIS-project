@@ -22,6 +22,10 @@ var nodes_ori = [],
 
 console.log('慶昌葯房 正法明藥行 統一');
 
+$(document).ready(function() {
+	activate();
+});
+
 
 function activate() {
 	// define arrow markers for graph links
@@ -54,9 +58,11 @@ function activate() {
 		.attr("stroke-width", "0.1px")
 		.attr("d", "M0,-5L10,0L0,5Z");
 
-	d3.json("../data/5000.json", function (error, graph) {
-		if (error) return;
-
+	d3.json("data/5000.json", function (error, graph) {
+		if (error) {
+			console.error(error);
+			return;
+		}
 		var types = [],
 			nodeHash = {};
 		// assign vertices to nodes array
@@ -120,7 +126,7 @@ function activate() {
 }
 
 function loadGraph(nodes, edges) {
-	var newGEXF = GexfParser.fetch('../data/lm.gexf');
+	var newGEXF = GexfParser.fetch('data/lm.gexf');
 
 	d3.selectAll("svg > g > *").remove();
 
@@ -191,13 +197,13 @@ function zoomed() {
 }
 
 function createControls() {
-	d3.select("#controls").append("button").attr("class", "btn btn-success").html("Force On").on("click", function () {
+	d3.select("#controls").append("button").attr("class", "ui button green").html("Force On").on("click", function () {
 		force.start();
 	});
-	d3.select("#controls").append("button").attr("class", "btn btn-danger").html("Force Off").on("click", function () {
+	d3.select("#controls").append("button").attr("class", "ui button red").html("Force Off").on("click", function () {
 		force.stop();
 	});
-	d3.select("#controls").append("button").attr("class", "btn btn-info").html("Reset Layout").on("click", function () {
+	d3.select("#controls").append("button").attr("class", "ui button blue").html("Reset Layout").on("click", function () {
 		force.stop();
 		gD3.nodes().forEach(function (el) {
 			el.x = el.originalX;
@@ -209,7 +215,7 @@ function createControls() {
 		draw();
 		redrawGraph();
 	});
-	d3.select("#controls").append("button").attr("class", "btn btn-default").html("顯示分支機構關係").on("click", function () {
+	d3.select("#controls").append("button").attr("class", "ui button").html("顯示分支機構關係").on("click", function () {
 		force.stop();
 
 		var n = filtered_nodes.length === 0 ? nodes_ori : filtered_nodes;
@@ -221,7 +227,7 @@ function createControls() {
 
 		reloadForce();
 	});
-	d3.select("#controls").append("button").attr("class", "btn btn-default").html("顯示交易關係").on("click", function () {
+	d3.select("#controls").append("button").attr("class", "ui button").html("顯示交易關係").on("click", function () {
 		force.stop();
 
 		var n = filtered_nodes.length === 0 ? nodes_ori : filtered_nodes;
@@ -232,7 +238,7 @@ function createControls() {
 		loadGraph(n, e);
 		reloadForce();
 	});
-	d3.select("#controls").append("button").attr("class", "btn btn-default").html("顯示全部").on("click", function () {
+	d3.select("#controls").append("button").attr("class", "ui button").html("顯示全部").on("click", function () {
 		force.stop();
 
 		var n = filtered_nodes.length === 0 ? nodes_ori : filtered_nodes;

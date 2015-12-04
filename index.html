@@ -1,65 +1,45 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Project</title>
-		<meta charset="utf-8">
-		<script type="text/javascript" src="lib/jquery-1.11.3.min.js"></script>
-		<script type="text/javascript" src="lib/bootstrap.min.js"></script>		
-		<script type="text/javascript" src="lib/jquery.dataTables.min.js"></script>
-		<script type="text/javascript" src="lib/lodash.min.js"></script>
-		<script type="text/javascript" src="js/rest.js"></script>
-		<script type="text/javascript" src="js/main.js"></script>
-		<link href="lib/bootstrap.min.css" rel="stylesheet" media="screen">
-		<link href="lib/jquery.dataTables.min.css" rel="stylesheet">
 
-	</head>
-	<body style="font-size:16px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-md-12">
-					<nav class="navbar navbar-default" role="navigation">
-						<div class="navbar-header">
-							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
-								<span class="icon-bar"></span>
-								<span class="icon-bar"></span>
-								<span class="icon-bar"></span>
-							</button>
-							<div class="navbar-brand">
-								Project
-							</div>
-						</div>
-						<div class="collapse navbar-collapse" id="navbar-collapse">
-							<ul class="nav navbar-nav" id="menu">
-								<li class="active">
-									<a href="#t1" data-toggle="tab" id="home">首頁</a>
-								</li>
-								<li>
-									<a href="#t2" data-toggle="tab" id="pattern">建立Pattern</a>
-								</li>
-								<li>
-									<a href="#t3" data-toggle="tab" id="search_property">搜尋</a>
-								</li>
-								<li>
-									<a href="#t4" data-toggle="tab" id="gremlin_code">Gremlin</a>
-								</li>
-								<li>
-									<a href="./html/vis.html">視覺化搜尋</a>
-								</li>
-							</ul>
-						</div>
-					</nav>
-				</div>
-			</div>
+<head>
+	<title>Project</title>
+	<meta charset="utf-8">
+	<script type="text/javascript" src="lib/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="lib/semantic.min.js"></script>
+	<script type="text/javascript" src="lib/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="lib/lodash.min.js"></script>
+	<script type="text/javascript" src="js/rest.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+	<link href="lib/semantic.min.css" rel="stylesheet" media="screen">
+	<link href="lib/jquery.dataTables.min.css" rel="stylesheet">
+	<link href="lib/fa/css/font-awesome.min.css" rel="stylesheet" >
+
+</head>
+
+<body style="font-size:16px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+
+	<div class="ui inverted blue button" onclick="$('.ui.labeled.icon.sidebar').sidebar('setting', 'transition', 'overlay').sidebar('toggle');"
+	style="margin-left:10%;">
+		<i class="fa fa-bars"></i> Menu
+	</div>
+
+	<div class="pushable">
+		<div id="menu" class="ui left demo vertical inverted labeled icon sidebar menu push">
+			<a class="item" data-tab="t1" id="home">首頁</a>
+			<a class="item" data-tab="t2" id="pattern">建立Pattern</a>
+			<a class="item" data-tab="t3" id="search_property">搜尋</a>
+			<a class="item" data-tab="t4" id="gremlin_code">Gremlin</a>
+			<a class="item" data-tab="t5" id="vis">視覺化搜尋</a>
 		</div>
-		<div class="container-fluid">
-			<div class="row" style="margin:5px;">
-				<div class="tab-content">
-					<div class="tab-pane active" id="t1"></div>
-					<div class="tab-pane" id="t2"></div>
-					<div class="tab-pane" id="t3"></div>
-					<div class="tab-pane" id="t4"></div>
-				</div>
-			</div>
+
+		<div class="pusher" style="width:80%; margin-left:10%;">
+			<div class="ui tab active" data-tab="t1" id="t1"></div>
+			<div class="ui tab" data-tab="t2" id="t2"></div>
+			<div class="ui tab" data-tab="t3" id="t3"></div>
+			<div class="ui tab" data-tab="t4" id="t4"></div>
+			<div class="ui tab" data-tab="t5" id="t5"></div>
 		</div>
-	</body>
+	</div>
+</body>
+
 </html>

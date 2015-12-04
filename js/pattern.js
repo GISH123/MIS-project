@@ -6,8 +6,8 @@ $(document).ready(function() {
 function newElementTable(table_id, property_list) {
 	$(table_id).append("<thead><tr></tr></thead><tbody><tr></tr></tbody>");
 	$.each(property_list, function(key, value) {
-		$(table_id).find("thead tr").append("<td class='text-center'>" + value + "</td>");
-		$(table_id).find("tbody tr").append("<td class='text-center'><input type='text' class='form-control'></td>");
+		$(table_id).find("thead tr").append("<th>" + value + "</th>");
+		$(table_id).find("tbody tr").append("<td class='ui form'><input type='text' class='field'></td>");
 	});
 }
 

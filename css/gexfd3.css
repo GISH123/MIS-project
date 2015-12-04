@@ -1,8 +1,8 @@
 #modal {
     position:fixed;
-    left:70%;
+    left:60%;
     top:85px;
-    z-index:1;
+    z-index:100;
     background: rgba(173, 189, 245, 0.8);
     border: 1px black solid;
     box-shadow: 10px 10px 5px #888888;
@@ -38,7 +38,7 @@ td {
   font-size: 10px;
 }
 td.data {
-    font-weight: 900;
+    font-weight: 100;
 }
   
 .link {
@@ -108,4 +108,8 @@ rect {
 svg {
     width: 100%;
     height:100%;
+}
+
+body {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; 
 }
