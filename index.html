@@ -12,8 +12,12 @@
 	<script type="text/javascript" src="js/main.js"></script>
 	<link href="lib/semantic.min.css" rel="stylesheet" media="screen">
 	<link href="lib/jquery.dataTables.min.css" rel="stylesheet">
-	<link href="lib/fa/css/font-awesome.min.css" rel="stylesheet" >
-
+	<link href="lib/fa/css/font-awesome.min.css" rel="stylesheet">
+	<style>
+		.ui.icon.menu .item {
+			text-align: left;
+		}
+	</style>
 </head>
 
 <body style="font-size:16px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
@@ -25,11 +29,11 @@
 
 	<div class="pushable">
 		<div id="menu" class="ui left demo vertical inverted labeled icon sidebar menu push">
-			<a class="item" data-tab="t1" id="home">首頁</a>
-			<a class="item" data-tab="t2" id="pattern">建立Pattern</a>
-			<a class="item" data-tab="t3" id="search_property">搜尋</a>
-			<a class="item" data-tab="t4" id="gremlin_code">Gremlin</a>
-			<a class="item" data-tab="t5" id="vis">視覺化搜尋</a>
+			<a class="item" data-tab="t1" id="home"><i class="fa fa-home"></i>　首頁</a>
+			<a class="item" data-tab="t2" id="pattern"><i class="fa fa-bullseye"></i>　建立Pattern</a>
+			<a class="item" data-tab="t3" id="search_property"><i class="fa fa-search"></i>　搜尋</a>
+			<a class="item" data-tab="t4" id="gremlin_code"><i class="fa fa-terminal"></i>　Gremlin</a>
+			<a class="item" data-tab="t5" id="vis"><i class="fa fa-eye"></i>　視覺化搜尋</a>
 		</div>
 
 		<div class="pusher" style="width:80%; margin-left:10%;">
