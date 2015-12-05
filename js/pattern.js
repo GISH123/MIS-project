@@ -133,7 +133,7 @@ $("#gish_delete_company_vertex").on("click", function() {
 $("#gish_delete_by_id").on("click", function() {
 	$("#g").hide();
 	var obj = getTableResult($("#delete_table"));
-	$.when(deleteElement("gishPattern", "vertices", obj["id"])).then(function() {
+	$.when(deleteElement("gishPattern", "vertices", obj["ID"])).then(function() {
 		showAllElement();
 	});
 });
@@ -142,7 +142,7 @@ $("#gish_delete_by_id").on("click", function() {
 $("#delete_by_id").on("click", function() {
         $("#g").hide();
         var obj = getTableResult($("#delete_table"));
-        $.when(deleteElement("test", "vertices", obj["id"])).then(function() {
+        $.when(deleteElement("test", "vertices", obj["ID"])).then(function() {
                 showAllElement();
         });
 });
