@@ -464,7 +464,7 @@ function exportJSON() {
 
 	var all = { vertex: n, edge: e };
 	$('#json').empty();
-	$('#json').append(JSON.stringify(all, null, 4));
+	$('#json').append(JSON.stringify(all, null, '\t'));
 }
 
 function importJSON() {
