@@ -31,7 +31,7 @@ function getTableResult(table_id) {
 	var key_list = [];
 	var value_list = [];
 
-	$(table_id).find("thead td").each(function() {
+	$(table_id).find("thead th").each(function() {
 		key_list.push($(this).text());
 	});
 
