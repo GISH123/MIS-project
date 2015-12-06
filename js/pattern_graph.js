@@ -400,6 +400,7 @@ function keydown() {
 				deleteElement($('#g').attr('db_name'), 'vertices', selected_node._id);
                 spliceLinksForNode(selected_node);
             } else if (selected_link) {
+				deleteElement($('#g').attr('db_name'), 'edges', selected_link._id);
                 links.splice(links.indexOf(selected_link), 1);
             }
             selected_link = null;
