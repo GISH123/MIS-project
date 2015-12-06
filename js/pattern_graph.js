@@ -3,7 +3,7 @@
  */
 // set up SVG for D3
 var cancel = true;
-var width = 960,
+var width = 1440,
     height = 500,
     colors = d3.scale.category10();
 
