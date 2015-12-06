@@ -1,152 +1,153 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-	<title>pattern</title>
-	<meta charset="utf-8">
+	<head>
+		<title>pattern</title>
+		<meta charset="utf-8">
 
-	<link rel="stylesheet" href="css/pattern.css">
-	<script src="lib/jquery.lightbox_me.js" charset="utf-8"></script>
-	<script src="lib/d3.min.js" charset="utf-8"></script>
-	<script src="js/pattern_graph.js"></script>
+		<link rel="stylesheet" href="css/pattern.css">
+		<script src="lib/jquery.lightbox_me.js" charset="utf-8"></script>
+		<script src="lib/d3.min.js" charset="utf-8"></script>
+		<script src="js/pattern_graph.js"></script>
 
-</head>
+	</head>
 
-<body>
-	<div class="ui buttons teal">
-		<button class="ui button" id="show_create_company_vertex" style="margin-top:5px;">
-			新增公司資料
-		</button>
-		<button class="ui button" id="show_create_transaction_edge" style="margin-top:5px;">
-			新增交易關係
-		</button>
-                <!--
-		<button class="ui button" id="show_create_branch_edge" style="margin-top:5px;" disabled>
+	<body>
+		<div class="ui buttons teal" style="margin-top:5px">
+			<button class="ui button" id="show_create_company_vertex">
+				新增公司資料
+			</button>
+			<button class="ui button" id="show_create_transaction_edge">
+				新增交易關係
+			</button>
+			<!--
+			<button class="ui button" id="show_create_branch_edge" style="margin-top:5px;" disabled>
 			新增分支關係
-		</button>
-		-->
-		<button class="ui button" id="show_delete_by_id" style="margin-top:5px;">
-			刪除公司資料(id)
-		</button>
-		<button class="ui button" id="gishshow_pattern" style="margin-top:5px;">
-			顯示Pattern
-		</button>
-		<button class="ui button" id="show_pattern" style="margin-top:5px;">
-			執行Pattern
-		</button>
-	</div>
+			</button>
+			-->
+			<button class="ui button" id="show_delete_by_id">
+				刪除公司資料(id)
+			</button>
+			<button class="ui button" id="gishshow_pattern">
+				顯示Pattern
+			</button>
+			<button class="ui button" id="show_pattern">
+				執行Pattern
+			</button>
+		</div>
 
-	<div>
-		<table class="ui small celled table new_company_vertex" id="company_vertex_table" style="display:none;margin-bottom:3px"></table>
-		<button type="button" class="ui button green new_company_vertex" id="create_company_vertex" style="display:none;margin-bottom:10px">
-			新增公司資料
-		</button>
-		<button type="button" class="ui button red new_company_vertex" id="gish_delete_company_vertex" style="display:none;margin-bottom:10px">
-			刪除輸入pattern的公司資料(公司統一編號)
-		</button>
-		<button type="button" class="ui button red new_company_vertex" id="delete_company_vertex" style="display:none;margin-bottom:10px">
-			刪除執行pattern結果的公司資料(公司統一編號)
-		</button>
-		<table class="ui small celled table new_transaction_edge" id="transaction_edge_table" style="display:none;margin-bottom:3px"></table>
-		<button type="button" class="ui button green new_transaction_edge" id="create_transaction_edge" style="display:none;margin-bottom:10px">
-			新增交易關係
-		</button>
-		<table class="ui small celled table delete_element" id="delete_table" style="display:none;margin-bottom:3px;width:15%;">
-			<thead>
-				<tr>
-					<th>ID</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td class="ui form">
+		<div style="margin-top:5px">
+			<table class="ui small celled table new_company_vertex" id="company_vertex_table" style="display:none; text-align:center; margin-top:15px"></table>
+			<button type="button" class="ui button green new_company_vertex" id="create_company_vertex" style="display:none;">
+				新增公司資料
+			</button>
+			<button type="button" class="ui button red new_company_vertex" id="gish_delete_company_vertex" style="display:none;">
+				刪除輸入pattern的公司資料(公司統一編號)
+			</button>
+			<button type="button" class="ui button red new_company_vertex" id="delete_company_vertex" style="display:none;">
+				刪除執行pattern結果的公司資料(公司統一編號)
+			</button>
+			<table class="ui small celled table new_transaction_edge" id="transaction_edge_table" style="display:none; text-align:center"></table>
+			<button type="button" class="ui button green new_transaction_edge" id="create_transaction_edge" style="display:none;">
+				新增交易關係
+			</button>
+			<table class="ui small celled table delete_element" id="delete_table" style="display:none; width:15%; text-align:center">
+				<thead>
+					<tr>
+						<th>ID</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="ui form">
 						<input type='text' class='field'>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 
-		<button type="button" class="ui button red delete_element" id="gish_delete_by_id" style="display:none;margin-bottom:10px">
-			刪除輸入pattern的資料
-		</button>
+			<button type="button" class="ui button red delete_element" id="gish_delete_by_id" style="display:none;">
+				刪除輸入pattern的資料
+			</button>
 
-		<button type="button" class="ui button red delete_element" id="delete_by_id" style="display:none;margin-bottom:10px">
-			刪除執行pattern結果的資料
-		</button>
+			<button type="button" class="ui button red delete_element" id="delete_by_id" style="display:none;">
+				刪除執行pattern結果的資料
+			</button>
 
+			<div id="g" style="display:none; margin-top:10px">
+				<div id="graph" tabindex=1></div>
+				<div class="ui ignored info message" id="json" style="white-space: pre; font-size:14px;"></div>
+			</div>
+			<div id="result" style="display:none;"></div>
+		</div>
 
+		<div id="add-vertex" class="ui form" role="form" style="display:none;font-size:13px;width:60%;background:#FFF;padding:20px;">
+			<div class="field">
+				<label>公司名稱</label>
+				<input id="name" placeholder="abc">
+			</div>
+			<div class="field">
+				<label>公司統一編號</label>
+				<input id="comBan" placeholder="公司統一編號">
+			</div>
+			<div class="field">
+				<label>總機構統一編號</label>
+				<input id="pcomBan" placeholder="總機構統一編號">
+			</div>
+			<div class="field">
+				<label>組織別</label>
+				<input id="type" placeholder="食品業">
+			</div>
+			<div class="field">
+				<label>行業代碼</label>
+				<input id="typeNo" placeholder="A0">
+			</div>
+			<div class="field">
+				<label>營業人姓名</label>
+				<input id="ceoName" placeholder="許書軒">
+			</div>
+			<div class="field">
+				<label>時間</label>
+				<input id="vtime" placeholder="20150602">
+			</div>
+			<div class="field">
+				<button onclick="closeDialog('ok', 'v')" class="ui button green">
+					新增點
+				</button>
+			</div>
+		</div>
+		<div id="add-edge" class="ui form" role="form" style="display:none;font-size:13px;width:60%;background:#FFF;padding:20px;">
+			<div class="field">
+				<label>交易商品名</label>
+				<input id="gName" placeholder="葡萄糖">
+			</div>
+			<div class="field">
+				<label>單價</label>
+				<input id="單價" placeholder="100">
+			</div>
+			<div class="field">
+				<label>數量</label>
+				<input id="q" placeholder="10">
+			</div>
+			<div class="field">
+				<label>發票統編</label>
+				<input id="ban" placeholder="ban123">
+			</div>
+			<div class="field">
+				<label>發票細項序號</label>
+				<input id="ser" placeholder="1">
+			</div>
+			<div class="field">
+				<label>時間</label>
+				<input id="etime" placeholder="20150203">
+			</div>
+			<div class="field">
+				<button onclick="closeDialog('ok','e')" class="ui button green">
+					新增點
+				</button>
+			</div>
+		</div>
 
-		<div id="g" style="display:none;">
-			<div id="graph" tabindex=1></div>
-			<div class="ui ignored info message" id="json" style="white-space: pre; font-size:14px;"></div>
-		</div>
-		<div id="result" style="display:none;"></div>
-	</div>
-
-	<div id="add-vertex" class="ui form" role="form" style="display:none;font-size:13px;width:60%;background:#FFF;padding:20px;">
-		<div class="field">
-			<label>公司名稱</label>
-			<input id="name" placeholder="abc">
-		</div>
-		<div class="field">
-			<label>公司統一編號</label>
-			<input id="comBan" placeholder="公司統一編號">
-		</div>
-		<div class="field">
-			<label>總機構統一編號</label>
-			<input id="pcomBan" placeholder="總機構統一編號">
-		</div>
-		<div class="field">
-			<label>組織別</label>
-			<input id="type" placeholder="食品業">
-		</div>
-		<div class="field">
-			<label>行業代碼</label>
-			<input id="typeNo" placeholder="A0">
-		</div>
-		<div class="field">
-			<label>營業人姓名</label>
-			<input id="ceoName" placeholder="許書軒">
-		</div>
-		<div class="field">
-			<label>時間</label>
-			<input id="vtime" placeholder="20150602">
-		</div>
-		<div class="field">
-			<button onclick="closeDialog('ok', 'v')" class="ui button green">新增點</button>
-		</div>
-	</div>
-	<div id="add-edge" class="ui form" role="form" style="display:none;font-size:13px;width:60%;background:#FFF;padding:20px;">
-		<div class="field">
-			<label>交易商品名</label>
-			<input id="gName" placeholder="葡萄糖">
-		</div>
-		<div class="field">
-			<label>單價</label>
-			<input id="單價" placeholder="100">
-		</div>
-		<div class="field">
-			<label>數量</label>
-			<input id="q" placeholder="10">
-		</div>
-		<div class="field">
-			<label>發票統編</label>
-			<input id="ban" placeholder="ban123">
-		</div>
-		<div class="field">
-			<label>發票細項序號</label>
-			<input id="ser" placeholder="1">
-		</div>
-		<div class="field">
-			<label>時間</label>
-			<input id="etime" placeholder="20150203">
-		</div>
-		<div class="field">
-			<button onclick="closeDialog('ok','e')" class="ui button green">新增點</button>
-		</div>
-	</div>
-
-
-</body>
+	</body>
 
 </html>
