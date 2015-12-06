@@ -304,7 +304,7 @@ function mousedown() {
 						typeNo: $('#typeNo').val(),
 						ceoName: $('#ceoName').val(),
 						time: $('#vtime').val(),
-						pcomBan: $('#pcomName').val()
+						pcomBan: $('#pcomBan').val()
 					};
 					console.log(data);
 					cancel = true;
