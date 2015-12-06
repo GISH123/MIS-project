@@ -372,11 +372,13 @@ function mouseup() {
 }
 
 function spliceLinksForNode(node) {
+	var db =$('#g').attr('db_name');
     var toSplice = links.filter(function (l) {
         return (l.source === node || l.target === node);
     });
     toSplice.map(function (l) {
         links.splice(links.indexOf(l), 1);
+		deleteElement(db, 'edges', l._id);
     });
 }
 
@@ -395,6 +397,7 @@ function keydown() {
         case 46: // delete
             if (selected_node) {
                 nodes.splice(nodes.indexOf(selected_node), 1);
+				deleteElement($('#g').attr('db_name'), 'vertices', selected_node._id);
                 spliceLinksForNode(selected_node);
             } else if (selected_link) {
                 links.splice(links.indexOf(selected_link), 1);
