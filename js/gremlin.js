@@ -14,20 +14,17 @@ $("#gremlin_code_submit").on("click", function(e) {
 		
 		$("#gremlin_result").empty();
 		$("#gremlin_code_submit").attr("disabled", true);
+		$("#gremlin_result").hide();
 		$("#gremlin_result_loading").show();
 
 		var func = getGremlinScript($("#gremlin_graph_list").val(), $("#gremlin_code_text").val());
 		func.done(function(response) {
 			$("#gremlin_result").append(JSON.stringify(response["results"], null, "\t"));
 		}).fail(function() {
-			$("#gremlin_result").append("Input wrong.");
+			$("#gremlin_result").append("Wrong.");
 		}).always(function() {
-			$("#gremlin_result").parent().css({
-				"border" : "solid 1px #EDEDED",
-				"border-radius" : "5px",
-				"margin-top" : "10px"
-			});
 			$("#gremlin_code_submit").attr("disabled", false);
+			$("#gremlin_result").show();
 			$("#gremlin_result_loading").hide();
 		});
 	}
