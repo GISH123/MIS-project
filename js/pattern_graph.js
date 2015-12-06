@@ -229,8 +229,10 @@ function restart() {
 								單價: $('#單價').val(),
 								q: $('#q').val(),
 								ban: $('#ban').val(),
+								time: $('#etime').val(),
+								serialNo: $('#ser').val()
 							};
-							console.log(data);
+							// console.log(data);
 							cancel = true;
 
 							link = {
@@ -242,9 +244,10 @@ function restart() {
 								商品名稱: data.gName,
 								單價: data.單價,
 								數量: data.q,
+								總金額: parseFloat(data.q)*parseFloat(data.單價),
 								發票統編: data.ban,
-								時間: "20150326",
-								發票細項序號: "1",
+								時間: data.time,
+								發票細項序號: data.serialNo,
 								'買家(統編)': '',
 								'賣家(統編)': ''
 							};
@@ -306,7 +309,9 @@ function mousedown() {
 						comBan: $('#comBan').val(),
 						type: $('#type').val(),
 						typeNo: $('#typeNo').val(),
-						ceoName: $('#ceoName').val()
+						ceoName: $('#ceoName').val(),
+						time: $('#vtime').val(),
+						pcomBan: $('#pcomName').val()
 					};
 					console.log(data);
 					cancel = true;
@@ -319,8 +324,8 @@ function mousedown() {
 						公司統一編號: data.comBan,
 						行業代碼: data.typeNo,
 						營業人姓名: data.ceoName,
-						時間戳記: "20150326",
-						總機構統一編號: "123"
+						時間戳記: data.time,
+						總機構統一編號: data.pcomBan
 					};
 
 					node.x = point[0];
@@ -499,9 +504,9 @@ function createElement(obj, graph_name, element_type, edge_label) {
 	if (!$.isEmptyObject(obj)) {
 		if (element_type == "vertices") {
 			var tmp = _.pick(obj, '公司名稱', '公司統一編號', '組織別', '行業代碼', '營業人姓名', '時間戳記', '總機構統一編號');
-			$.when(createVertex(graph_name, element_type, tmp)).done(function () {
-				// readFromDB();
-				nodes.push(obj);
+			$.when(createVertex(graph_name, element_type, tmp)).done(function (res) {
+				res.results.reflexive = false;
+				nodes.push(res.results);
 				restart();
 			});
 
@@ -521,8 +526,8 @@ function createElement(obj, graph_name, element_type, edge_label) {
 				$.each(response2[0]["results"], function (key, value) {
 					inV_ID = value["_id"];
 				});
-				$.when(createEdge("test", "edges", outV_ID, edge_label, inV_ID, tmp)).done(function () {
-					// readFromDB();
+				$.when(createEdge("test", "edges", outV_ID, edge_label, inV_ID, tmp)).done(function (res) {
+					obj._id = res.results._id;
 					links.push(obj);
 					restart();
 				});

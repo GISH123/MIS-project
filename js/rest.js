@@ -45,7 +45,8 @@ function createVertex(graph_name, element_type, key_value_list) {
 		contentType : "text/html; charset=utf-8",
 		type : "POST",
 		success : function(response) {
-			console.log("新增資料成功");
+			console.log("新增資料成功", response);
+			return response;
 		},
 		error : function(xhr) {
 			alert("新增資料失敗");
@@ -66,7 +67,8 @@ function createEdge(graph_name, element_type, outV, edge_label, inV, key_value_l
 		contentType : "text/html; charset=utf-8",
 		type : "POST",
 		success : function(response) {
-			console.log("新增資料成功");
+			console.log("新增資料成功", response);
+			return response;
 		},
 		error : function(xhr) {
 			alert("新增資料失敗");
