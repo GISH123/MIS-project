@@ -17,10 +17,14 @@
 		.ui.icon.menu .item {
 			text-align: left;
 		}
+		
+		body.pushable>.pusher {
+			background: #F5F5F5;
+		}
 	</style>
 </head>
 
-<body style="font-size:16px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+<body style="font-size:16px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color:#F5F5F5;">
 
 	<div class="ui inverted blue button" onclick="$('.ui.labeled.icon.sidebar').sidebar('setting', 'transition', 'overlay').sidebar('toggle');"
 	style="margin-left:10%;">
@@ -36,7 +40,7 @@
 			<a class="item" data-tab="t5" id="vis"><i class="fa fa-eye"></i>　視覺化搜尋</a>
 		</div>
 
-		<div class="pusher" style="width:80%; margin-left:10%;">
+		<div class="pusher" style="width:80%; margin-left:10%; background-color:#F5F5F5;">
 			<div class="ui tab active" data-tab="t1" id="t1"></div>
 			<div class="ui tab" data-tab="t2" id="t2"></div>
 			<div class="ui tab" data-tab="t3" id="t3"></div>
