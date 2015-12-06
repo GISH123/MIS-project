@@ -500,11 +500,12 @@ function importJSON() {
 
 function createElement(obj, graph_name, element_type, edge_label) {
 	console.log(obj);
+	var db = $('#g').attr('db_name');
 
 	if (!$.isEmptyObject(obj)) {
 		if (element_type == "vertices") {
 			var tmp = _.pick(obj, '公司名稱', '公司統一編號', '組織別', '行業代碼', '營業人姓名', '時間戳記', '總機構統一編號');
-			$.when(createVertex(graph_name, element_type, tmp)).done(function (res) {
+			$.when(createVertex(db, element_type, tmp)).done(function (res) {
 				res.results.reflexive = false;
 				nodes.push(res.results);
 				restart();
@@ -515,8 +516,8 @@ function createElement(obj, graph_name, element_type, edge_label) {
 			var outV = obj["賣家(統編)"];
 			var inV = obj["買家(統編)"];
 
-			var func1 = getElementValue("test", "vertices", "公司統一編號", outV);
-			var func2 = getElementValue("test", "vertices", "公司統一編號", inV);
+			var func1 = getElementValue(db, "vertices", "公司統一編號", outV);
+			var func2 = getElementValue(db, "vertices", "公司統一編號", inV);
 
 			$.when(func1, func2).done(function (response1, response2) {
 				var inV_ID, outV_ID;
@@ -526,7 +527,7 @@ function createElement(obj, graph_name, element_type, edge_label) {
 				$.each(response2[0]["results"], function (key, value) {
 					inV_ID = value["_id"];
 				});
-				$.when(createEdge("test", "edges", outV_ID, edge_label, inV_ID, tmp)).done(function (res) {
+				$.when(createEdge(db, "edges", outV_ID, edge_label, inV_ID, tmp)).done(function (res) {
 					obj._id = res.results._id;
 					links.push(obj);
 					restart();
