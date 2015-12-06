@@ -256,7 +256,7 @@ function restart() {
 							link['買家(統編)'] = link.left ? link.source.公司統一編號 : link.target.公司統一編號;
 							link['賣家(統編)'] = link.right ? link.source.公司統一編號 : link.target.公司統一編號;
 			
-							createElement(link, 'test', 'edges', '交易關係');
+							createElement(link, 'input_graph', 'edges', '交易關係');
 						}
 					}
 				});
@@ -331,7 +331,7 @@ function mousedown() {
 					node.x = point[0];
 					node.y = point[1];
 
-					createElement(node, 'test', 'vertices', '');
+					createElement(node, 'input_graph', 'vertices', '');
 				}
 			}
 		});

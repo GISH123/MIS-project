@@ -63,8 +63,8 @@ function createElementRequest(table_id, graph_name, element_type, edge_label) {
 			var outV = obj["賣家(統編)"];
 			var inV = obj["買家(統編)"];
 
-			var func1 = getElementValue("gishPattern", "vertices", "公司統一編號", outV);
-			var func2 = getElementValue("gishPattern", "vertices", "公司統一編號", inV);
+			var func1 = getElementValue("target_graph", "vertices", "公司統一編號", outV);
+			var func2 = getElementValue("target_graph", "vertices", "公司統一編號", inV);
 
 			$.when(func1, func2).done(function (response1, response2) {
 				var inV_ID, outV_ID;
@@ -74,7 +74,7 @@ function createElementRequest(table_id, graph_name, element_type, edge_label) {
 				$.each(response2[0]["results"], function (key, value) {
 					inV_ID = value["_id"];
 				});
-				$.when(createEdge("gishPattern", "edges", outV_ID, edge_label, inV_ID, obj)).done(function () {
+				$.when(createEdge("target_graph", "edges", outV_ID, edge_label, inV_ID, obj)).done(function () {
 					showAllElement();
 				});
 			});
@@ -86,12 +86,12 @@ function createElementRequest(table_id, graph_name, element_type, edge_label) {
 
 $("#create_company_vertex").on("click", function () {
 	$("#g").hide();
-	createElementRequest($("#company_vertex_table"), "gishPattern", "vertices", "");
+	createElementRequest($("#company_vertex_table"), "target_graph", "vertices", "");
 });
 
 $("#create_transaction_edge").on("click", function () {
 	$("#g").hide();
-	createElementRequest($("#transaction_edge_table"), "gishPattern", "edges", "交易關係");
+	createElementRequest($("#transaction_edge_table"), "target_graph", "edges", "交易關係");
 });
 
 function insertAllElement(graph_name, element_type) {
@@ -106,11 +106,11 @@ function insertAllElement(graph_name, element_type) {
 
 $("#delete_company_vertex").on("click", function () {
 	var obj = getTableResult($("#company_vertex_table"));
-	var func = getElementValue("test", "vertices", "公司統一編號", obj["公司統一編號"]);
+	var func = getElementValue("input_graph", "vertices", "公司統一編號", obj["公司統一編號"]);
 
 	$("#g").hide();
 	$.when(func).then(function (response) {
-		return deleteElement("test", "vertices", response["results"][0]["_id"]);
+		return deleteElement("input_graph", "vertices", response["results"][0]["_id"]);
 	}).then(function () {
 		showAllElement();
 	})
@@ -118,11 +118,11 @@ $("#delete_company_vertex").on("click", function () {
 
 $("#gish_delete_company_vertex").on("click", function () {
 	var obj = getTableResult($("#company_vertex_table"));
-	var func = getElementValue("gishPattern", "vertices", "公司統一編號", obj["公司統一編號"]);
+	var func = getElementValue("target_graph", "vertices", "公司統一編號", obj["公司統一編號"]);
 
 	$("#g").hide();
 	$.when(func).then(function (response) {
-		return deleteElement("gishPattern", "vertices", response["results"][0]["_id"]);
+		return deleteElement("target_graph", "vertices", response["results"][0]["_id"]);
 	}).then(function () {
 		showAllElement();
 	})
@@ -133,7 +133,7 @@ $("#gish_delete_company_vertex").on("click", function () {
 $("#gish_delete_by_id").on("click", function () {
 	$("#g").hide();
 	var obj = getTableResult($("#delete_table"));
-	$.when(deleteElement("gishPattern", "vertices", obj["ID"])).then(function () {
+	$.when(deleteElement("target_graph", "vertices", obj["ID"])).then(function () {
 		showAllElement();
 	});
 });
@@ -142,7 +142,7 @@ $("#gish_delete_by_id").on("click", function () {
 $("#delete_by_id").on("click", function () {
 	$("#g").hide();
 	var obj = getTableResult($("#delete_table"));
-	$.when(deleteElement("test", "vertices", obj["ID"])).then(function () {
+	$.when(deleteElement("input_graph", "vertices", obj["ID"])).then(function () {
 		showAllElement();
 	});
 });
@@ -166,10 +166,10 @@ $("#gishshow_pattern").on("click", function () {
 
 
 function readFromDB() {
-	$('#g').attr('db_name', 'test');
+	$('#g').attr('db_name', 'input_graph');
 	var r = { 'vertices': [], 'edges': [] };
 	['vertices', 'edges'].forEach(function (element_type) {
-		var func = getAllElement('test', element_type);
+		var func = getAllElement('input_graph', element_type);
 		$.when(func).then(function (response) {
 			$.each(response["results"], function (key, value) {
 				r[element_type].push(value);
@@ -185,10 +185,10 @@ function readFromDB() {
 }
 
 function readFromGISHDB() {
-	$('#g').attr('db_name', 'gishPattern');
+	$('#g').attr('db_name', 'target_graph');
 	var r = { 'vertices': [], 'edges': [] };
 	['vertices', 'edges'].forEach(function (element_type) {
-		var func = getAllElement('gishPattern', element_type);
+		var func = getAllElement('target_graph', element_type);
 		$.when(func).then(function (response) {
 			$.each(response["results"], function (key, value) {
 				r[element_type].push(value);
@@ -213,6 +213,6 @@ function readFromGISHDB() {
 
 function showAllElement() {
 	$("#result").empty();
-	insertAllElement("gishPattern", "vertices");
-	insertAllElement("gishPattern", "edges");
+	insertAllElement("target_graph", "vertices");
+	insertAllElement("target_graph", "edges");
 }
