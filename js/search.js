@@ -21,7 +21,7 @@ var row = 1;
 
 $("#add_row").on("click", function() {
 	row++;
-	$("#row" + row).html("<td class='text-center' style='vertical-align: middle'>" + row + "</td><td><select class='form-control' id='select_property" + row + "'></select></td><td><input type='text' class='form-control' id='property" + row + "'></td>");
+	$("#row" + row).html("<td>" + row + "</td><td><select class='form-control' id='select_property" + row + "'></select></td><td><input type='text' class='form-control' id='property" + row + "'></td>");
 	addSelectProperty("#select_property" + row);
 	$("#table_property").append("<tr id='row" + (row + 1) + "'></tr>");
 });
@@ -52,15 +52,15 @@ $("#search_submit").on("click", function() {
 	}
 });
 
-$("#fuzzy_search_submit").on("click", function() {
+$("#similar_word_search_submit").on("click", function() {
 	var i = 1;
 	if ($("#text_property" + i).val().trim() != "") {
 		var select_property = $("#select_property" + i + " :selected");
 		while (i <= row) {
 			if (select_property.hasClass("vertex")) {
-				searchResult($("#search_graph_list :selected").val(), "vertices", select_property.val(), $("#text_property" + i).val().trim(), "fuzzy");
+				searchResult($("#search_graph_list :selected").val(), "vertices", select_property.val(), $("#text_property" + i).val().trim(), "similar");
 			} else {
-				searchResult($("#search_graph_list :selected").val(), "edges", select_property.val(), $("#text_property" + i).val().trim(), "fuzzy");
+				searchResult($("#search_graph_list :selected").val(), "edges", select_property.val(), $("#text_property" + i).val().trim(), "similar");
 			}
 			i++;
 		}
@@ -76,7 +76,7 @@ function makeTable(element_type, list) {
 	}
 	$(id).append("<thead><tr></tr></thead>");
 	$.each(list, function(key, value) {
-		$(id).find("thead tr").append("<th class='text-center'>" + value + "</th>");
+		$(id).find("thead tr").append("<th>" + value + "</th>");
 	});
 }
 
@@ -103,16 +103,16 @@ function searchResult(graph_name, element_type, key, value, search_type) {
 
 	$(".search_result").hide();
 	$(".search_submit").attr("disabled", true);
-	$("#search_loadingIMG").show();
+	$("#search_loading").show();
 	
 	var func;
 	if (search_type == "equality") {
 		var func = getElementValue(graph_name, element_type, key, value);
 	} else {
 		if (element_type == "vertices") {
-			func = getGremlinScript(graph_name, "g.V.has('" + key + "', REGEX , '.*" + value + ".*' )");
+			func = getGremlinScript(graph_name, "g.V.has('" + key + "', REGEX , '.*(" + value + ").*' )");
 		} else {
-			func = getGremlinScript(graph_name, "g.E.has('" + key + "', REGEX , '.*" + value + ".*' )");
+			func = getGremlinScript(graph_name, "g.E.has('" + key + "', REGEX , '.*(" + value + ").*' )");
 		}
 	}
 	func.done(function(response) {
@@ -126,7 +126,7 @@ function searchResult(graph_name, element_type, key, value, search_type) {
 	}).fail(function() {
 	}).always(function() {
 		$(".search_submit").attr("disabled", false);
-		$("#search_loadingIMG").hide();
+		$("#search_loading").hide();
 	});
 
 }

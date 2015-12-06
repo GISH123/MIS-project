@@ -4,6 +4,7 @@ var edge_list = ["買家(統編)", "賣家(統編)", "發票統編", "商品名�
 $(document).on("click", function () {
 	$('.menu .item').tab();
 });
+
 $(document).on("click", '.menu .item', function () {
 	$('.ui.labeled.icon.sidebar')
 		.sidebar('setting', 'transition', 'overlay')
@@ -47,11 +48,11 @@ $.ajaxSetup({
 function addGraphList(id) {
 	var func = getGraphList();
 	func.done(function (response) {
-		$.each(response["graphs"], function (key, value) {
+		$.each(response["graphs"].reverse(), function (key, value) {
 			$(id).append("<option value='" + value + "'>" + value + "</option>");
 		});
 	}).fail(function () {
-		$(id).append("<option>Cannot load graph.</option>");
+		$(id).append("<option>Error loading.</option>");
 	});
 }
 
