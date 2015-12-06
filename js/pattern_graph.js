@@ -209,60 +209,53 @@ function restart() {
                 direction = 'left';
             }
 
-            var link;
-            link = links.filter(function (l) {
-                return (l.source === source && l.target === target);
-            })[0];
 
-            if (link) {
-                link[direction] = true;
-            } else {
-				$('#add-edge').lightbox_me({
-					centered: true,
-					onLoad: function () {
-						$('#add-edge').find('input:first').focus()
-					},
-					onClose: function () {
-						if (!cancel) {
-							var data = {
-								gName: $('#gName').val(),
-								單價: $('#單價').val(),
-								q: $('#q').val(),
-								ban: $('#ban').val(),
-								time: $('#etime').val(),
-								serialNo: $('#ser').val()
-							};
-							// console.log(data);
-							cancel = true;
+			$('#add-edge').lightbox_me({
+				centered: true,
+				onLoad: function () {
+					$('#add-edge').find('input:first').focus()
+				},
+				onClose: function () {
+					if (!cancel) {
+						var data = {
+							gName: $('#gName').val(),
+							單價: $('#單價').val(),
+							q: $('#q').val(),
+							ban: $('#ban').val(),
+							time: $('#etime').val(),
+							serialNo: $('#ser').val()
+						};
+						// console.log(data);
+						cancel = true;
 
-							link = {
-								source: source,
-								target: target,
-								left: false,
-								right: false,
-								_label: '交易關係',
-								商品名稱: data.gName,
-								單價: data.單價,
-								數量: data.q,
-								總金額: parseFloat(data.q)*parseFloat(data.單價),
-								發票統編: data.ban,
-								時間: data.time,
-								發票細項序號: data.serialNo,
-								'買家(統編)': '',
-								'賣家(統編)': ''
-							};
-							link[direction] = true;
-			
-							link['買家(統編)'] = link.left ? link.source.公司統一編號 : link.target.公司統一編號;
-							link['賣家(統編)'] = link.right ? link.source.公司統一編號 : link.target.公司統一編號;
-			
-							createElement(link, 'input_graph', 'edges', '交易關係');
-						}
+						link = {
+							source: source,
+							target: target,
+							left: false,
+							right: false,
+							_label: '交易關係',
+							商品名稱: data.gName,
+							單價: data.單價,
+							數量: data.q,
+							總金額: parseFloat(data.q) * parseFloat(data.單價),
+							發票統編: data.ban,
+							時間: data.time,
+							發票細項序號: data.serialNo,
+							'買家(統編)': '',
+							'賣家(統編)': ''
+						};
+						link[direction] = true;
+
+						link['買家(統編)'] = link.left ? link.source.公司統一編號 : link.target.公司統一編號;
+						link['賣家(統編)'] = link.right ? link.source.公司統一編號 : link.target.公司統一編號;
+
+						createElement(link, 'input_graph', 'edges', '交易關係');
 					}
-				});
+				}
+			});
 
 
-            }
+
 
             // select new link
             selected_link = link;
@@ -372,7 +365,7 @@ function mouseup() {
 }
 
 function spliceLinksForNode(node) {
-	var db =$('#g').attr('db_name');
+	var db = $('#g').attr('db_name');
     var toSplice = links.filter(function (l) {
         return (l.source === node || l.target === node);
     });
@@ -544,10 +537,10 @@ function createElement(obj, graph_name, element_type, edge_label) {
 
 function closeDialog(type, dialogType) {
 	cancel = (type === 'cancel');
-	
-	if(dialogType === 'e') {
-		$('#add-edge').trigger('close');	
+
+	if (dialogType === 'e') {
+		$('#add-edge').trigger('close');
 	} else {
-		$('#add-vertex').trigger('close');		
+		$('#add-vertex').trigger('close');
 	}
 }
