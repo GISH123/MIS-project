@@ -1,35 +1,31 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-	<title>gremlin</title>
-	<meta charset="utf-8">
-</head>
+	<head>
+		<title>gremlin</title>
+		<meta charset="utf-8">
+	</head>
 
-<body>
-	<div class="col-md-10 col-md-offset-1">
-		<form class="ui form" role="form" style="margin: 5px;">
-			<div>
-				<label for="gremlin_graph_list">選擇 Graph</label>
-				<select class="ui fluid dropdown" id="gremlin_graph_list"></select>
-			</div>
-		</form>
-		<form class="ui form" role="form" style="margin: 5px;">
-			<div>
-				<label for="gremlin_code_text">Gremlin 指令</label>
-				<input type="text" class="field" id="gremlin_code_text" placeholder="Enter gremlin code" style="width:85%">
-				<button type="button" class="ui button green" id="gremlin_code_submit">
-					送出
-				</button>
-			</div>
-		</form>
-	</div>
-	<div class="col-md-10 col-md-offset-1">
-		<div id="gremlin_result"></div>
-		<div class="text-center" id="gremlin_result_loadingIMG" style="display:none">
-			<div class="ui text loader active">Loading</div>
+	<body>
+		<div>
+			<form class="ui form" style="margin-top:10px;">
+				<div class="fields">
+					<select class="ui fluid dropdown" id="gremlin_graph_list" style="width:15%"></select>
+					<input type="text" class="field" id="gremlin_code_text" placeholder="Enter gremlin code" style="width:75%">
+					<button type="button" class="ui button green" id="gremlin_code_submit" style="width:10%">
+						送出
+					</button>
+				</div>
+			</form>
 		</div>
-	</div>
-</body>
+		<div>
+			<pre id="gremlin_result" style="margin:10px;"></pre>
+		</div>
+		<div id="gremlin_result_loading" style="display:none">
+			<div class="ui text loader active">
+				Loading
+			</div>
+		</div>
+	</body>
 
 </html>
