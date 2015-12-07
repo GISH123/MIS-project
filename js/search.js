@@ -33,10 +33,6 @@ $("#delete_row").on("click", function() {
 	}
 });
 
-$("#clear_search_text").on("click", function() {
-	$("input[type=text]").val("");
-});
-
 $("#search_submit").on("click", function() {
 	var i = 1;
 	if ($("#text_property" + i).val().trim() != "") {
@@ -104,15 +100,15 @@ function searchResult(graph_name, element_type, key, value, search_type) {
 	$(".search_result").hide();
 	$(".search_submit").attr("disabled", true);
 	$("#search_loading").show();
-	
+
 	var func;
 	if (search_type == "equality") {
 		var func = getElementValue(graph_name, element_type, key, value);
 	} else {
 		if (element_type == "vertices") {
-			func = getGremlinScript(graph_name, "g.V.has('" + key + "', REGEX , '.*(" + value + ").*' )");
+			func = executeGremlinScript(graph_name, "g.V.has('" + key + "', REGEX , '.*(" + value + ").*' )");
 		} else {
-			func = getGremlinScript(graph_name, "g.E.has('" + key + "', REGEX , '.*(" + value + ").*' )");
+			func = executeGremlinScript(graph_name, "g.E.has('" + key + "', REGEX , '.*(" + value + ").*' )");
 		}
 	}
 	func.done(function(response) {

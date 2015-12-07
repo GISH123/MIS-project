@@ -24,7 +24,7 @@ function getElementValue(graph_name, element_type, key, value) {
 	});
 }
 
-function getGremlinScript(graph_name, script) {
+function executeGremlinScript(graph_name, script) {
 	return $.ajax({
 		url : baseurl + graph_name + "/tp/gremlin?script=" + script,
 		contentType : "application/json; charset=utf-8",
