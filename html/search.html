@@ -23,35 +23,37 @@
 						<th>Value</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody class="ui form">
 					<tr id="row1">
 						<td>1</td>
-						<td><select class="ui fluid dropdown" id="select_property1"></select></td>
-						<td class="ui form">
-						<input type="text" class="field" id="text_property1" />
+						<td><select id="select_property1"></select></td>
+						<td >
+						<input type="text" id="text_property1">
 						</td>
 					</tr>
 					<tr id="row2"></tr>
 				</tbody>
 			</table>
-			<button type="button" id="add_row" class="btn btn-default" style="display:none" disabled>
-				Add Row
+			<!--
+			<button type="button" id="add_row" class="ui button brown">
+			Add Row
 			</button>
-			<button type="button" id="delete_row" class="btn btn-default" style="display:none" disabled>
-				Delete Row
+			<button type="button" id="delete_row" class="ui button orange">
+			Delete Row
 			</button>
-			<button type="button" id="clear_search_text" class="ui button blue">
+			-->
+			<button type="button" class="clear_text ui button blue">
 				Clear
 			</button>
-			<button type="button" id="search_submit" class="ui button green search_submit">
+			<button type="button" class="ui button green search_submit">
 				Search
 			</button>
-			<button type="button" id="similar_word_search_submit" class="ui button yellow search_submit">
+			<button type="button" class="ui button yellow search_submit">
 				Similar Word Search
 			</button>
 		</div>
 		<div>
-			<div id="search_loading" style="display:none">
+			<div id="search_loading" style="display:none; margin:250px">
 				<div class="ui text loader active">
 					Loading
 				</div>
