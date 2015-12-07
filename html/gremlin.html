@@ -12,14 +12,16 @@
 				<div class="fields">
 					<select class="ui fluid dropdown" id="gremlin_graph_list" style="width:15%"></select>
 					<input type="text" class="field" id="gremlin_code_text" placeholder="Enter gremlin code" style="width:75%">
-					<button type="button" class="ui button green" id="gremlin_code_submit" style="width:10%">
-						送出
+					<button type="button" class="ui button blue clear_text">
+						Clear
+					</button>
+					<button type="button" class="ui button green" id="gremlin_code_submit">
+						Submit
 					</button>
 				</div>
 			</form>
 		</div>
-		<div id="gremlin_result" class="ui ignored info message" style="white-space: pre; font-size:14px; display:none;">
-		</div>
+		<div id="gremlin_result" class="ui ignored info message" style="white-space: pre; font-size:14px; display:none;"></div>
 		<div id="gremlin_result_loading" style="display:none; margin:30px;">
 			<div class="ui text loader active">
 				Loading
