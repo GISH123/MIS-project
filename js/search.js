@@ -21,7 +21,7 @@ function addSelectProperty(selector) {
 
  $("#add_row").on("click", function() {
  row++;
- $("#row" + row).html("<td>" + row + "</td><td><select id='select_property" + row + "'></select></td><td><input type='text' id='property" + row + "'></td>");
+ $("#row" + row).html("<td><select id='select_property" + row + "'></select></td><td><input type='text' id='property" + row + "'></td>");
  addSelectProperty("#select_property" + row);
  $("#table_property").append("<tr id='row" + (row + 1) + "'></tr>");
  });
@@ -58,9 +58,10 @@ function buildTable(element_type, list) {
 	} else {
 		selector = $("#edge_result");
 	}
-	$(selector).append("<thead><tr></tr></thead>");
+	$(selector).append("<thead><tr></tr></thead>").append("<tfoot><tr></tr></tfoot>");
 	$.each(list, function(key, value) {
 		$(selector).find("thead tr").append("<th>" + value + "</th>");
+		$(selector).find("tfoot tr").append("<th>" + value + "</th>");
 	});
 }
 
@@ -79,7 +80,19 @@ function addTableResult(selector, data, columns) {
 	$(selector).DataTable({
 		destroy : true,
 		data : data,
-		columns : columns
+		columns : columns,
+		initComplete : function() {
+			this.api().columns().every(function() {
+				var column = this;
+				var select = $('<select><option value=""></option></select>').appendTo($(column.footer()).empty()).on('change', function() {
+					var val = $.fn.dataTable.util.escapeRegex($(this).val());
+					column.search( val ? '^' + val + '$' : '', true, false).draw();
+				});
+				column.data().unique().sort().each(function(d, j) {
+					select.append('<option value="' + d + '">' + d + '</option>')
+				});
+			});
+		}
 	});
 }
 
