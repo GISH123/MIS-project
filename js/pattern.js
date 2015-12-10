@@ -168,20 +168,19 @@ function readFromDB() {
 		'vertices' : [],
 		'edges' : []
 	};
-	['vertices', 'edges'].forEach(function(element_type) {
-		var func = getAllElement('input_graph', element_type);
-		$.when(func).then(function(response) {
-			$.each(response["results"], function(key, value) {
-				r[element_type].push(value);
-				//console.log(value);
+	var func1 = getAllElement('input_graph', 'vertices');
+	var func2 = getAllElement('input_graph', 'edges');
+	$.when(func1, func2)
+		.done(function(response1, response2) {
+			$.each(response1[0]["results"], function(key, value) {
+				r['vertices'].push(value);
 			});
+			$.each(response2[0]["results"], function(key, value) {
+				r['edges'].push(value);
+			});
+			$("#result").append(JSON.stringify(r));
+			importJSON();
 		});
-	});
-
-	setTimeout(function() {
-		$("#result").append(JSON.stringify(r));
-		importJSON();
-	}, 100);
 }
 
 function readFromGISHDB() {
@@ -190,20 +189,19 @@ function readFromGISHDB() {
 		'vertices' : [],
 		'edges' : []
 	};
-	['vertices', 'edges'].forEach(function(element_type) {
-		var func = getAllElement('target_graph', element_type);
-		$.when(func).then(function(response) {
-			$.each(response["results"], function(key, value) {
-				r[element_type].push(value);
-				//console.log(value);
+	var func1 = getAllElement('target_graph', 'vertices');
+	var func2 = getAllElement('target_graph', 'edges');
+	$.when(func1, func2)
+		.done(function(response1, response2) {
+			$.each(response1[0]["results"], function(key, value) {
+				r['vertices'].push(value);
 			});
+			$.each(response2[0]["results"], function(key, value) {
+				r['edges'].push(value);
+			});
+			$("#result").append(JSON.stringify(r));
+			importJSON();
 		});
-	});
-
-	setTimeout(function() {
-		$("#result").append(JSON.stringify(r));
-		importJSON();
-	}, 100);
 
 	$(".delete_pattern").show();
 }
