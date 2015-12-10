@@ -307,6 +307,7 @@ function mousedown() {
 						pcomBan: $('#pcomBan').val()
 					};
 					console.log(data);
+
 					cancel = true;
 
 					var node = {
@@ -451,7 +452,12 @@ restart();
 
 function exportJSON() {
 	var n = nodes.map(function (n) {
-		return _.pick(n, '_id', '公司名稱', '公司統一編號', '組織別', '行業代碼', '營業人姓名', '時間戳記', '總機構統一編號');
+		var tmp = _.pick(n, '_id', '公司名稱', '公司統一編號', '組織別', '行業代碼', '營業人姓名', '時間戳記', '總機構統一編號');
+
+		Object.keys(tmp).forEach(function (k) {
+			if (!tmp[k] || tmp[k].length === 0) delete tmp[k];
+		});
+		return tmp;
 	});
 	var e = links.map(function (l) {
 		l._inV = l.left ? l.source._id : l.target._id;
@@ -460,6 +466,11 @@ function exportJSON() {
 		l.數量 = l.數量;
 		l.總金額 = l.總金額;
 		l = _.pick(l, '_inV', '_outV', '_label', '商品名稱', '單價', '數量', '總金額', '發票統編', '時間', '發票細項序號', '買家(統編)', '賣家(統編)');
+
+
+		Object.keys(l).forEach(function (k) {
+			if (!l[k] || l[k].length === 0) delete l[k];
+		});
 
 		return l;
 	});
@@ -502,8 +513,8 @@ function createElement(obj, graph_name, element_type, edge_label) {
 	if (!$.isEmptyObject(obj)) {
 		if (element_type == "vertices") {
 			var tmp = _.pick(obj, '公司名稱', '公司統一編號', '組織別', '行業代碼', '營業人姓名', '時間戳記', '總機構統一編號');
-			Object.keys(tmp).forEach(function(k) {
-				if(!tmp[k] || tmp[k].length === 0) delete tmp[k];
+			Object.keys(tmp).forEach(function (k) {
+				if (!tmp[k] || tmp[k].length === 0) delete tmp[k];
 			});
 			$.when(createVertex(db, element_type, tmp)).done(function (res) {
 				res.results.reflexive = false;
@@ -515,8 +526,8 @@ function createElement(obj, graph_name, element_type, edge_label) {
 			var tmp = _.pick(obj, '_label', '商品名稱', '單價', '數量', '總金額', '發票統編', '時間', '發票細項序號', '買家(統編)', '賣家(統編)');
 			var outV = obj["賣家(統編)"];
 			var inV = obj["買家(統編)"];
-			Object.keys(tmp).forEach(function(k) {
-				if(!tmp[k] || tmp[k].length === 0) delete tmp[k];
+			Object.keys(tmp).forEach(function (k) {
+				if (!tmp[k] || tmp[k].length === 0) delete tmp[k];
 			});
 
 			var func1 = getElementValue(db, "vertices", "公司統一編號", outV);
@@ -547,6 +558,11 @@ function closeDialog(type, dialogType) {
 	if (dialogType === 'e') {
 		$('#add-edge').trigger('close');
 	} else {
-		$('#add-vertex').trigger('close');
+		if (!$('#comBan').val() && !cancel) {
+			$('#comBanF').addClass('error');
+		} else {
+			$('#comBanF').removeClass('error');
+			$('#add-vertex').trigger('close');
+		}
 	}
 }
