@@ -502,6 +502,9 @@ function createElement(obj, graph_name, element_type, edge_label) {
 	if (!$.isEmptyObject(obj)) {
 		if (element_type == "vertices") {
 			var tmp = _.pick(obj, '公司名稱', '公司統一編號', '組織別', '行業代碼', '營業人姓名', '時間戳記', '總機構統一編號');
+			Object.keys(tmp).forEach(function(k) {
+				if(!tmp[k] || tmp[k].length === 0) delete tmp[k];
+			});
 			$.when(createVertex(db, element_type, tmp)).done(function (res) {
 				res.results.reflexive = false;
 				nodes.push(res.results);
@@ -512,6 +515,9 @@ function createElement(obj, graph_name, element_type, edge_label) {
 			var tmp = _.pick(obj, '_label', '商品名稱', '單價', '數量', '總金額', '發票統編', '時間', '發票細項序號', '買家(統編)', '賣家(統編)');
 			var outV = obj["賣家(統編)"];
 			var inV = obj["買家(統編)"];
+			Object.keys(tmp).forEach(function(k) {
+				if(!tmp[k] || tmp[k].length === 0) delete tmp[k];
+			});
 
 			var func1 = getElementValue(db, "vertices", "公司統一編號", outV);
 			var func2 = getElementValue(db, "vertices", "公司統一編號", inV);
