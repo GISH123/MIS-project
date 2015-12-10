@@ -160,9 +160,9 @@ $("#gishshow_pattern").on("click", function() {
 });
 
 function readFromDB() {
-	
+
 	$(".delete_pattern").hide();
-	
+
 	$('#g').attr('db_name', 'input_graph');
 	var r = {
 		'vertices' : [],
@@ -170,17 +170,16 @@ function readFromDB() {
 	};
 	var func1 = getAllElement('input_graph', 'vertices');
 	var func2 = getAllElement('input_graph', 'edges');
-	$.when(func1, func2)
-		.done(function(response1, response2) {
-			$.each(response1[0]["results"], function(key, value) {
-				r['vertices'].push(value);
-			});
-			$.each(response2[0]["results"], function(key, value) {
-				r['edges'].push(value);
-			});
-			$("#result").append(JSON.stringify(r));
-			importJSON();
+	$.when(func1, func2).done(function(response1, response2) {
+		$.each(response1[0]["results"], function(key, value) {
+			r['vertices'].push(value);
 		});
+		$.each(response2[0]["results"], function(key, value) {
+			r['edges'].push(value);
+		});
+		$("#result").append(JSON.stringify(r));
+		importJSON();
+	});
 }
 
 function readFromGISHDB() {
@@ -191,40 +190,43 @@ function readFromGISHDB() {
 	};
 	var func1 = getAllElement('target_graph', 'vertices');
 	var func2 = getAllElement('target_graph', 'edges');
-	$.when(func1, func2)
-		.done(function(response1, response2) {
-			$.each(response1[0]["results"], function(key, value) {
-				r['vertices'].push(value);
-			});
-			$.each(response2[0]["results"], function(key, value) {
-				r['edges'].push(value);
-			});
-			$("#result").append(JSON.stringify(r));
-			importJSON();
+	$.when(func1, func2).done(function(response1, response2) {
+		$.each(response1[0]["results"], function(key, value) {
+			r['vertices'].push(value);
 		});
+		$.each(response2[0]["results"], function(key, value) {
+			r['edges'].push(value);
+		});
+		$("#result").append(JSON.stringify(r));
+		importJSON();
+	});
 
 	$(".delete_pattern").show();
 }
 
 
 $("#delete_vertex").on("click", function() {
-	var func = executeGremlinScript("target_graph", "g.V.remove()");
-	$.when(func).then(function() {
-		$("#g").hide();
-		$("#result").empty();
-		$("#g").show();
-		readFromGISHDB();
-	});
+	var confirm_delete = confirm("確認是否清除所有Vertex");
+	if (confirm_delete) {
+		var func = executeGremlinScript("target_graph", "g.V.remove()");
+		$.when(func).then(function() {
+			$("#result").empty();
+			$("#g").show();
+			readFromGISHDB();
+		});
+	}
 });
 
 $("#delete_edge").on("click", function() {
-	var func = executeGremlinScript("target_graph", "g.E.remove()");
-	$.when(func).then(function() {
-		$("#g").hide();
-		$("#result").empty();
-		$("#g").show();
-		readFromGISHDB();
-	});
+	var confirm_delete = confirm("確認是否清除所有Edge");
+	if (confirm_delete) {
+		var func = executeGremlinScript("target_graph", "g.E.remove()");
+		$.when(func).then(function() {
+			$("#result").empty();
+			$("#g").show();
+			readFromGISHDB();
+		});
+	}
 });
 
 function showAllElement() {
