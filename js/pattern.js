@@ -155,13 +155,18 @@ $("#show_pattern").on("click", function() {
 $("#gishshow_pattern").on("click", function() {
 	$("#result").empty();
 	$("#g").show();
-
 	readFromGISHDB();
+});
+
+$("#match_graph").on("click", function() {
+	$("#result").empty();
+	$("#g").show();
+	readGraph("match_graph");
 });
 
 function readFromDB() {
 
-	$(".delete_pattern").hide();
+	$(".pattern").hide();
 
 	$('#g').attr('db_name', 'input_graph');
 	var r = {
@@ -201,7 +206,30 @@ function readFromGISHDB() {
 		importJSON();
 	});
 
-	$(".delete_pattern").show();
+	$(".pattern").show();
+}
+
+function readGraph(graph_name) {
+
+	$('#g').attr('db_name', graph_name);
+	var r = {
+		'vertices' : [],
+		'edges' : []
+	};
+	var func1 = getAllElement(graph_name, 'vertices');
+	var func2 = getAllElement(graph_name, 'edges');
+	$.when(func1, func2).done(function(response1, response2) {
+		$.each(response1[0]["results"], function(key, value) {
+			r['vertices'].push(value);
+		});
+		$.each(response2[0]["results"], function(key, value) {
+			r['edges'].push(value);
+		});
+		$("#result").append(JSON.stringify(r));
+		importJSON();
+	});
+
+	$(".pattern").show();
 }
 
 
@@ -227,6 +255,18 @@ $("#delete_edge").on("click", function() {
 			readFromGISHDB();
 		});
 	}
+});
+
+$("#match").on("click", function() {
+	$("#match_graph").attr("disabled", true);
+	var func = executeGremlinScript("match_graph", "g.V.remove()");
+	$.when(func).then(function() {
+		$("#match_loading").show();
+		return executeGremlinScript("match_graph", "matchGraph(graph('cht_5000'),graph('target_graph'),g)");
+	}).then(function() {
+		$("#match_loading").hide();
+		$("#match_graph").attr("disabled", false);
+	});
 });
 
 function showAllElement() {
