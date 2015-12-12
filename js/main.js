@@ -18,6 +18,7 @@ $(document).ready(function() {
 });
 
 $(document).on("click", "#menu a", function() {
+	$(".tab").empty();
 	switch ($(this).attr("id")) {
 	case "home":
 		$("#t1").load("html/home.html");
