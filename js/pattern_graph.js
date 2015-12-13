@@ -267,7 +267,7 @@ function restart() {
         .attr('x', 0)
         .attr('y', 4)
         .attr('class', 'id')
-        .text(function (d) { return d.公司名稱; });
+        .text(function (d) { return d.公司統一編號; });
 
     // remove old nodes
     circle.exit().remove();
