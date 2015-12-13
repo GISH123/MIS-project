@@ -81,6 +81,8 @@ function addTableResult(selector, data, columns) {
 		destroy : true,
 		data : data,
 		columns : columns,
+		sScrollX : "100%",
+		sScrollXInner : "105%",
 		initComplete : function() {
 			this.api().columns().every(function() {
 				var column = this;
@@ -94,6 +96,7 @@ function addTableResult(selector, data, columns) {
 			});
 		}
 	});
+
 }
 
 function searchResult(graph_name, element_type, key, value, search_type) {

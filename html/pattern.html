@@ -13,6 +13,7 @@
 	</head>
 
 	<body>
+
 		<div class="ui buttons teal" style="margin-top:5px">
 			<button class="ui button" id="show_create_company_vertex">
 				新增公司資料
@@ -63,14 +64,13 @@
 				</button>
 			</div>
 		</div>
+
 		<div id="g" style="display:none; margin-top:10px;">
-			<div id="match_loading" style="display:none;">
-				<div class="ui text loader active">
-					Loading
-				</div>
+			<div class="ui text larger loader active"  id="match_loading" style="display:none;">
+				Loading
 			</div>
 			<div>
-				<button type="button" class="ui button red pattern" id="delete_vertex" style="display:none; margin-bottom:10px; ">
+				<button type="button" class="ui button red pattern" id="delete_vertex" style="display:none; margin-bottom:10px;">
 					清除所有Vertex
 				</button>
 				<button type="button" class="ui button red pattern" id="delete_edge" style="display:none; margin-bottom:10px;">
@@ -78,6 +78,9 @@
 				</button>
 				<button type="button" class="ui button blue pattern" id="match" style="display:none; margin-bottom:10px;">
 					Match
+				</button>
+				<button type="button" class="ui button blue match" id="match_all" style="display:none; margin-bottom:10px;">
+					所有上下游
 				</button>
 			</div>
 			<div id="graph" tabindex=1></div>

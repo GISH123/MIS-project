@@ -122,12 +122,28 @@ $("#show_pattern").on("click", function() {
 	$("#set_target_graph").show();
 	readGraph("target_graph");
 	$(".pattern").show();
+	$(".match").hide();
 });
 
 $("#match_graph").on("click", function() {
 	$("#set_target_graph").hide();
 	$(".pattern").hide();
+	$(".match").show();
 	readGraph("match_graph");
+});
+
+$("#match_all").on("click", function() {
+	//$("#match_graph").attr("disabled", true);
+	//$("#g").hide();
+	var func = executeGremlinScript("match_graph", "g.V.remove()");
+	$.when(func).then(function() {
+		$("#match_loading").show();
+		return executeGremlinScript("match_graph", "traversalResult(graph('cht_5000'),graph('target_graph'),g)");
+	}).then(function() {
+		$("#match_loading").hide();
+		readGraph("match_graph");
+		//$("#match_graph").attr("disabled", false);
+	});
 });
 
 function readGraph(graph_name) {
