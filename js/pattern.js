@@ -147,7 +147,7 @@ $("#match_all").on("click", function() {
 });
 
 $("#match_all_vis").on("click", function() {
-	var func = executeGremlinScript("match_graph", "g.saveGrapSON('/home/gish/CHT/data/5000.json')");
+	var func = executeGremlinScript("match_graph", "g.saveGraphSON('/home/gish/CHT/data/5000.json')");
 	$("#match_loading").show();
 	$.when(func).then(function() {
 		$("#match_loading").hide();
