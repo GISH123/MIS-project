@@ -135,14 +135,22 @@ $("#match_graph").on("click", function() {
 $("#match_all").on("click", function() {
 	//$("#match_graph").attr("disabled", true);
 	//$("#g").hide();
+	$("#match_loading").show();
 	var func = executeGremlinScript("match_graph", "g.V.remove()");
 	$.when(func).then(function() {
-		$("#match_loading").show();
 		return executeGremlinScript("match_graph", "traversalResult(graph('cht_5000'),graph('target_graph'),g)");
 	}).then(function() {
 		$("#match_loading").hide();
 		readGraph("match_graph");
 		//$("#match_graph").attr("disabled", false);
+	});
+});
+
+$("#match_all_vis").on("click", function() {
+	var func = executeGremlinScript("match_graph", "g.saveGrapSON('/home/gish/CHT/data/5000.json')");
+	$("#match_loading").show();
+	$.when(func).then(function() {
+		$("#match_loading").hide();
 	});
 });
 
