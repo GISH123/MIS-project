@@ -3,7 +3,7 @@
  */
 // set up SVG for D3
 var cancel = true;
-var width = 1440,
+var width = 1280,
     height = 500,
     colors = d3.scale.category10();
 
@@ -33,7 +33,7 @@ var force = d3.layout.force()
     .size([width, height])
     .linkDistance(150)
     .charge(-500)
-    .on('tick', tick)
+    .on('tick', tick);
 
 // define arrow markers for graph links
 svg.append('svg:defs').append('svg:marker')
@@ -330,8 +330,8 @@ function mousedown() {
 			}
 		});
 	} else {
-        circle.call(force.drag);
-        svg.classed('ctrl', true);
+        //circle.call(force.drag);
+        //svg.classed('ctrl', true);
     }
 
 }
