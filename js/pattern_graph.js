@@ -1,21 +1,32 @@
-/**
- * Created by telefont on 05/01/15.
- */
-// set up SVG for D3
-var cancel = true;
-var width = 1280,
-  height = 500,
-  colors = d3.scale.category10();
+var w = window,
+    d = document,
+    e = d.documentElement,
+    g = d.getElementsByTagName('body')[0],
+    x = w.innerWidth || e.clientWidth || g.clientWidth,
+    y = w.innerHeight|| e.clientHeight|| g.clientHeight,
+	cancel = true,
+	width = x*0.8,
+	height = 500,
+	colors = d3.scale.category10();
+	
+var svg = d3.select('#graph')
+  .append('svg')
+  .attr('width', width)
+  .attr('height', height);
+
+function updateWindow(){
+    x = w.innerWidth || e.clientWidth || g.clientWidth;
+    y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+    
+    svg.attr("width", x*0.8).attr("height", y);
+}
+window.onresize = updateWindow;
 
 // Define the div for the tooltip
 var tooltip = d3.select("body").append("div")
   .attr("class", "tooltip")
   .style("opacity", 0);
 
-var svg = d3.select('#graph')
-  .append('svg')
-  .attr('width', width)
-  .attr('height', height);
 
 // set up initial nodes and links
 //  - nodes are known by 'id', not by index in array.
@@ -62,6 +73,8 @@ var nodes = [{
     單價: '100',
     數量: '2'
   }];
+  
+
 
 // init D3 force layout
 var force = d3.layout.force()
