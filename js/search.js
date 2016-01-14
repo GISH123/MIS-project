@@ -69,8 +69,8 @@ function setColumn(list) {
 	var columns = [];
 	$.each(list, function(key, value) {
 		columns.push({
-			"data" : value,
-			"defaultContent" : ""
+			data : value,
+			defaultContent : ""
 		});
 	});
 	return columns;
@@ -82,7 +82,7 @@ function addTableResult(selector, data, columns) {
 		data : data,
 		columns : columns,
 		sScrollX : "100%",
-		sScrollXInner : "105%",
+		sScrollXInner : "100%",
 		initComplete : function() {
 			this.api().columns().every(function() {
 				var column = this;

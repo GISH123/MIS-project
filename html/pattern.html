@@ -76,16 +76,39 @@
 				<button type="button" class="ui button red pattern" id="delete_edge" style="display:none; margin-bottom:10px;">
 					清除所有Edge
 				</button>
-				<button type="button" class="ui button blue pattern" id="match" style="display:none; margin-bottom:10px;">
-					Match
-				</button>
-				<button type="button" class="ui button blue match" id="match_all" style="display:none; margin-bottom:10px;">
-					所有上下游
-				</button>
-				<button type="button" class="ui button blue match" id="match_all_vis" style="display:none; margin-bottom:10px;">
-					視覺化搜尋
-				</button>
 			</div>
+			<div>
+				<div class="field pattern">
+					<form class="ui form">
+						<div class="two fields">
+							<div class="three wide field">
+								<label>Input_Graph</label>
+								<select class="ui fluid dropdown graph_list" id="input_graph"> 
+								</select>
+							</div>
+							<div class="three wide field">
+								<label>Target_Graph</label>
+								<select class="ui fluid dropdown graph_list" id="target_graph"></select>
+							</div>
+							<div class="three wide field">
+								<label>Pattern Match</label>
+								<button type="button" class="ui button blue pattern" id="match" style="margin-bottom:10px;">
+									Match
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<!--	<div>
+			<button type="button" class="ui button blue match" id="match_all" style="display:none; margin-bottom:10px;">
+			所有上下游
+			</button>
+			<button type="button" class="ui button blue match" id="match_all_vis" style="display:none; margin-bottom:10px;">
+			視覺化搜尋
+			</button>
+			</div> -->
+
 			<div id="graph" tabindex=1></div>
 			<div class="ui ignored info message" id="json" style="white-space: pre; font-size:14px;"></div>
 		</div>

@@ -1,4 +1,5 @@
 var baseurl = "http://140.119.19.14:8182/graphs/";
+//var baseurl = "http://localhost:8182/graphs/";
 
 function getGraphList() {
 	return $.ajax({
@@ -27,6 +28,14 @@ function getElementValue(graph_name, element_type, key, value) {
 function executeGremlinScript(graph_name, script) {
 	return $.ajax({
 		url : baseurl + graph_name + "/tp/gremlin?script=" + script,
+		contentType : "application/json; charset=utf-8",
+		dataType : "json"
+	});
+}
+
+function executeGremlinScriptAndTotal(graph_name, script) {
+	return $.ajax({
+		url : baseurl + graph_name + "/tp/gremlin?returnTotal=true&script=" + script,
 		contentType : "application/json; charset=utf-8",
 		dataType : "json"
 	});
@@ -88,5 +97,25 @@ function deleteElement(graph_name, element_type, id) {
 			alert("刪除資料失敗");
 		}
 	});
+}
 
+function replaceElementValue(graph_name, element_type, id, key_value_list) {
+
+	var script = "";
+	$.each(key_value_list, function(key, value) {
+		script += (key + "=" + value + "&");
+	});
+	script = script.substring(0, script.length - 1).trim();
+
+	return $.ajax({
+		url : baseurl + graph_name + "/" + element_type + "/" + id + "?" + script,
+		contentType : "text/html; charset=utf-8",
+		type : "PUT",
+		success : function(response) {
+			console.log("修改資料成功");
+		},
+		error : function(xhr) {
+			alert("修改資料失敗");
+		}
+	});
 }
