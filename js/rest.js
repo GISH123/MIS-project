@@ -115,7 +115,7 @@ function replaceElementValue(graph_name, element_type, id, key_value_list) {
 			console.log("修改資料成功");
 		},
 		error : function(xhr) {
-			alert("修改資料失敗");
+			alert("修改資料失敗", xhr);
 		}
 	});
 }
