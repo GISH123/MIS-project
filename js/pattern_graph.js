@@ -705,21 +705,17 @@ function editElement(obj, graph_name, element_type, edge_label) {
           總機構統一編號: data.pcomBan
         };
 
-        //node.x = point[0];
-        //node.y = point[1];
-
         var tmp = _.pick(node, '公司名稱', '公司統一編號', '組織別', '行業代碼', '營業人姓名', '時間戳記', '總機構統一編號');
         Object.keys(tmp).forEach(function(k) {
           if (!tmp[k] || tmp[k].length === 0) delete tmp[k];
         });
         $.when(replaceElementValue(graph_name, element_type, obj._id, tmp)).done(function(res) {
-          res.results.reflexive = false;
-          console.log(res);
-          nodes.splice(_.findIndex(nodes, function(n) {
-            return n._id === obj._id;
-          }), 1); //] = res.results;
-          nodes.push(res.results);
-          //restart();
+		  var idx = _.findIndex(nodes, function(n) { return n._id === obj._id; }) 
+          for (var attr in node) {
+		    if(node[attr]) {
+			  nodes[idx][attr] = node[attr];
+			}
+		  }
         });
 
       }
