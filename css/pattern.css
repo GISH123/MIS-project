@@ -60,10 +60,10 @@ div.tooltip {
   position: absolute;
   width: 240px;
   height: 100px;
-  padding: 15px;
+  padding: 5px;
+  background-color: lightsteelblue;
   font: 14px sans-serif;
   line-height: 18px;
-  background: lightsteelblue;
   border: 0px;
   border-radius: 8px;
   pointer-events: none;

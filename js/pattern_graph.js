@@ -182,6 +182,29 @@ function restart() {
     .style('marker-end', function(d) {
       return d.right ? 'url(#end-arrow)' : '';
     })
+	.on('mouseover', function(d) {
+      var tmp = _.pick(d, '_inV', '_outV', '_label', '商品名稱', '單價', '數量', '發票統編', '時間', '發票細項序號', '買家(統編)', '賣家(統編)');
+      var htmlText = '<table class="ui celled table" style="background: lightsteelblue;"><tbody>';
+      var lines = 0;
+      for (var a in tmp) {
+        lines++;
+        htmlText += '<tr><td style="padding:5px;">' + a + '</td><td style="padding:5px;">' + tmp[a] + '</td></tr>';
+      }
+	  htmlText +='</tbody></table>';
+
+      tooltip.transition()
+        .duration(200)
+        .style("opacity", 0.9);
+      tooltip.html(htmlText)
+        .style("height", (lines * 29.1 + 10) + 'px')
+        .style("left", (d3.event.pageX + 30) + "px")
+        .style("top", (d3.event.pageY - 58) + "px");
+    })
+    .on('mouseout', function(d) {
+      tooltip.transition()
+        .duration(500)
+        .style("opacity", 0);
+    })
     .on('mousedown', function(d) {
       if (d3.event.ctrlKey) return;
 
@@ -230,18 +253,19 @@ function restart() {
     })
     .on('mouseover', function(d) {
       var tmp = _.pick(d, '_id', '公司名稱', '公司統一編號', '組織別', '行業代碼', '營業人姓名', '時間戳記', '總機構統一編號');
-      var htmlText = '';
+      var htmlText = '<table class="ui celled table" style="background: lightsteelblue;"><tbody>';
       var lines = 0;
       for (var a in tmp) {
         lines++;
-        htmlText += a + ': ' + tmp[a] + '</br>';
+        htmlText += '<tr><td style="padding:5px;">' + a + '</td><td style="padding:5px;">' + tmp[a] + '</td></tr>';
       }
+	  htmlText +='</tbody></table>';
 
       tooltip.transition()
         .duration(200)
         .style("opacity", 0.9);
       tooltip.html(htmlText)
-        .style("height", (lines * 18 + 30) + 'px')
+        .style("height", (lines * 29.1 + 10) + 'px')
         .style("left", (d3.event.pageX + 30) + "px")
         .style("top", (d3.event.pageY - 58) + "px");
 
@@ -278,7 +302,7 @@ function restart() {
       } else {
         var db = $('#g').attr('db_name');
         editElement(mousedown_node, db, 'vertices', ' vfgbh.');
-        //editElement(obj, graph_name, element_type, edge_label) {
+
       }
     })
     .on('mouseup', function(d) {
@@ -716,6 +740,7 @@ function editElement(obj, graph_name, element_type, edge_label) {
 			  nodes[idx][attr] = node[attr];
 			}
 		  }
+		  restart();
         });
 
       }
