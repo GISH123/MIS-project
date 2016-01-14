@@ -7,6 +7,11 @@ var width = 1280,
   height = 500,
   colors = d3.scale.category10();
 
+// Define the div for the tooltip
+var tooltip = d3.select("body").append("div")
+  .attr("class", "tooltip")
+  .style("opacity", 0);
+
 var svg = d3.select('#graph')
   .append('svg')
   .attr('width', width)
@@ -211,11 +216,31 @@ function restart() {
       return d.reflexive;
     })
     .on('mouseover', function(d) {
+      var tmp = _.pick(d, '_id', '公司名稱', '公司統一編號', '組織別', '行業代碼', '營業人姓名', '時間戳記', '總機構統一編號');
+      var htmlText = '';
+      var lines = 0;
+      for (var a in tmp) {
+        lines++;
+        htmlText += a + ': ' + tmp[a] + '</br>';
+      }
+
+      tooltip.transition()
+        .duration(200)
+        .style("opacity", 0.9);
+      tooltip.html(htmlText)
+        .style("height", (lines * 18 + 30) + 'px')
+        .style("left", (d3.event.pageX + 30) + "px")
+        .style("top", (d3.event.pageY - 58) + "px");
+
       if (!mousedown_node || d === mousedown_node) return;
       // enlarge target node
       d3.select(this).attr('transform', 'scale(1.1)');
     })
     .on('mouseout', function(d) {
+      tooltip.transition()
+        .duration(500)
+        .style("opacity", 0);
+
       if (!mousedown_node || d === mousedown_node) return;
       // unenlarge target node
       d3.select(this).attr('transform', '');
@@ -239,7 +264,7 @@ function restart() {
         restart();
       } else {
         var db = $('#g').attr('db_name');
-        editElement(mousedown_node, db, 'vertices', ' vfgbh.'  );
+        editElement(mousedown_node, db, 'vertices', ' vfgbh.');
         //editElement(obj, graph_name, element_type, edge_label) {
       }
     })
@@ -640,15 +665,17 @@ function editElement(obj, graph_name, element_type, edge_label) {
     },
     onClose: function() {
       if (!cancel) {
-        var nn = nodes[_.findIndex(nodes, function(n) { return n._id === obj._id; })];
+        var nn = nodes[_.findIndex(nodes, function(n) {
+          return n._id === obj._id;
+        })];
         var data = {
-          name    : $('#name').val() || nn.公司名稱,
-          comBan  : nn.公司統一編號,
-          type    : $('#type').val() || nn.組織別,
-          typeNo  : $('#typeNo').val() || nn.行業代碼,
-          ceoName : $('#ceoName').val() || nn.營業人姓名,
-          time    : $('#vtime').val() || nn.時間戳記,
-          pcomBan : $('#pcomBan').val() || nn.總機構統一編號
+          name: $('#name').val() || nn.公司名稱,
+          comBan: nn.公司統一編號,
+          type: $('#type').val() || nn.組織別,
+          typeNo: $('#typeNo').val() || nn.行業代碼,
+          ceoName: $('#ceoName').val() || nn.營業人姓名,
+          time: $('#vtime').val() || nn.時間戳記,
+          pcomBan: $('#pcomBan').val() || nn.總機構統一編號
         };
         console.log(data);
 
@@ -675,7 +702,9 @@ function editElement(obj, graph_name, element_type, edge_label) {
         $.when(replaceElementValue(graph_name, element_type, obj._id, tmp)).done(function(res) {
           res.results.reflexive = false;
           console.log(res);
-          nodes.splice(_.findIndex(nodes, function(n) { return n._id === obj._id; }), 1);//] = res.results;
+          nodes.splice(_.findIndex(nodes, function(n) {
+            return n._id === obj._id;
+          }), 1); //] = res.results;
           nodes.push(res.results);
           //restart();
         });
