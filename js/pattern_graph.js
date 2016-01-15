@@ -207,13 +207,17 @@ function restart() {
     })
     .on('mousedown', function(d) {
       if (d3.event.ctrlKey) return;
-
-      // select link
-      mousedown_link = d;
-      if (mousedown_link === selected_link) selected_link = null;
-      else selected_link = mousedown_link;
-      selected_node = null;
-      restart();
+	  if (d3.event.shiftKey) {
+		var db = $('#g').attr('db_name');
+		editElement(d, db, 'edges', '交易關係');
+	  } else {
+		// select link
+		mousedown_link = d;
+		if (mousedown_link === selected_link) selected_link = null;
+		else selected_link = mousedown_link;
+		selected_node = null;
+		restart();		  
+	  }
     });
 
 
@@ -300,9 +304,8 @@ function restart() {
 
         restart();
       } else {
-        var db = $('#g').attr('db_name');
-        editElement(mousedown_node, db, 'vertices', ' vfgbh.');
-
+		var db = $('#g').attr('db_name');
+        editElement(mousedown_node, db, 'vertices', ' blabla.');
       }
     })
     .on('mouseup', function(d) {
@@ -692,60 +695,102 @@ function editElement(obj, graph_name, element_type, edge_label) {
 
   console.log(obj);
 
-  $('#comBan').hide();
-  $('#comBanF').hide();
-  $('#comBan').val('a');
-  $('#add-vertex').lightbox_me({
-    centered: true,
-    onLoad: function() {
-      $('#add-vertex').find('input:first').focus()
-    },
-    onClose: function() {
-      if (!cancel) {
-        var nn = nodes[_.findIndex(nodes, function(n) {
-          return n._id === obj._id;
-        })];
-        var data = {
-          name: $('#name').val() || nn.公司名稱,
-          comBan: nn.公司統一編號,
-          type: $('#type').val() || nn.組織別,
-          typeNo: $('#typeNo').val() || nn.行業代碼,
-          ceoName: $('#ceoName').val() || nn.營業人姓名,
-          time: $('#vtime').val() || nn.時間戳記,
-          pcomBan: $('#pcomBan').val() || nn.總機構統一編號
-        };
-        console.log(data);
+  if(element_type === 'vertices') {
+	  $('#comBan').hide();
+	  $('#comBanF').hide();
+	  $('#comBan').val('a');
+	  $('#add-vertex').lightbox_me({
+		  centered: true,
+		  onLoad: function () {
+			  $('#add-vertex').find('input:first').focus()
+		  },
+		  onClose: function () {
+			  if (!cancel) {
+				  var nn = nodes[_.findIndex(nodes, function (n) { return n._id === obj._id; })];
+				  var data = {
+					  name: $('#name').val() || nn.公司名稱,
+					  comBan: nn.公司統一編號,
+					  type: $('#type').val() || nn.組織別,
+					  typeNo: $('#typeNo').val() || nn.行業代碼,
+					  ceoName: $('#ceoName').val() || nn.營業人姓名,
+					  time: $('#vtime').val() || nn.時間戳記,
+					  pcomBan: $('#pcomBan').val() || nn.總機構統一編號
+				  };
+				  console.log(data);
 
-        cancel = true;
+				  cancel = true;
 
-        var node = {
-          reflexive: false,
-          公司名稱: data.name,
-          組織別: data.type,
-          公司統一編號: data.comBan,
-          行業代碼: data.typeNo,
-          營業人姓名: data.ceoName,
-          時間戳記: data.time,
-          總機構統一編號: data.pcomBan
-        };
+				  var node = {
+					  reflexive: false,
+					  公司名稱: data.name,
+					  組織別: data.type,
+					  公司統一編號: data.comBan,
+					  行業代碼: data.typeNo,
+					  營業人姓名: data.ceoName,
+					  時間戳記: data.time,
+					  總機構統一編號: data.pcomBan
+				  };
 
-        var tmp = _.pick(node, '公司名稱', '公司統一編號', '組織別', '行業代碼', '營業人姓名', '時間戳記', '總機構統一編號');
-        Object.keys(tmp).forEach(function(k) {
-          if (!tmp[k] || tmp[k].length === 0) delete tmp[k];
-        });
-        $.when(replaceElementValue(graph_name, element_type, obj._id, tmp)).done(function(res) {
-		  var idx = _.findIndex(nodes, function(n) { return n._id === obj._id; }) 
-          for (var attr in node) {
-		    if(node[attr]) {
-			  nodes[idx][attr] = node[attr];
-			}
+				  var tmp = _.pick(node, '公司名稱', '公司統一編號', '組織別', '行業代碼', '營業人姓名', '時間戳記', '總機構統一編號');
+				  Object.keys(tmp).forEach(function (k) {
+					  if (!tmp[k] || tmp[k].length === 0) delete tmp[k];
+				  });
+				  $.when(replaceElementValue(graph_name, element_type, obj._id, tmp)).done(function (res) {
+					  var idx = _.findIndex(nodes, function (n) { return n._id === obj._id; })
+					  for (var attr in node) {
+						  if (node[attr]) {
+							  nodes[idx][attr] = node[attr];
+						  }
+					  }
+					  restart();
+				  });
+			  }
 		  }
-		  restart();
-        });
+	  });
+  } else if(element_type === 'edges') {
+	 $('#add-edge').lightbox_me({
+        centered: true,
+        onLoad: function() {
+          $('#add-edge').find('input:first').focus()
+        },
+        onClose: function() {
+          if (!cancel) {
+            var data = {
+              gName: $('#gName').val(),
+              單價: $('#單價').val(),
+              q: $('#q').val(),
+              ban: $('#ban').val(),
+              time: $('#etime').val(),
+              serialNo: $('#ser').val()
+            };
+            // console.log(data);
+            cancel = true;
 
-      }
-    }
-  });
+            var link = {
+              商品名稱: data.gName,
+              單價: data.單價,
+              數量: data.q,
+              總金額: parseFloat(data.q) * parseFloat(data.單價),
+              發票統編: data.ban,
+              時間: data.time,
+              發票細項序號: data.serialNo,
+            };
+
+			$.when(replaceElementValue(graph_name, element_type, obj._id, link)).done(function (res) {
+				var idx = _.findIndex(links, function (l) { return l._id === obj._id; })
+				for (var attr in link) {
+					if (link[attr]) {
+						links[idx][attr] = link[attr];
+					}
+				}
+				restart();
+			});
+			}
+        }
+      });
+
+  }
+
 
 }
 
