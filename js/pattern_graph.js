@@ -187,6 +187,7 @@ function restart() {
       var htmlText = '<table class="ui celled table" style="background: lightsteelblue;"><tbody>';
       var lines = 0;
       for (var a in tmp) {
+		if(!tmp[a]) continue;
         lines++;
         htmlText += '<tr><td style="padding:5px;">' + a + '</td><td style="padding:5px;">' + tmp[a] + '</td></tr>';
       }
@@ -260,6 +261,7 @@ function restart() {
       var htmlText = '<table class="ui celled table" style="background: lightsteelblue;"><tbody>';
       var lines = 0;
       for (var a in tmp) {
+		if(!tmp[a]) continue;
         lines++;
         htmlText += '<tr><td style="padding:5px;">' + a + '</td><td style="padding:5px;">' + tmp[a] + '</td></tr>';
       }
