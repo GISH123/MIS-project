@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	addGraphList($("#search_graph_list"));
-	addSelectProperty("#select_property1");
+	addSelectProperty("#select_property");
 	buildTable("vertices", vertex_list);
 	buildTable("edges", edge_list);
 });
@@ -16,28 +16,10 @@ function addSelectProperty(selector) {
 	});
 }
 
-/*
- var row = 1;
-
- $("#add_row").on("click", function() {
- row++;
- $("#row" + row).html("<td><select id='select_property" + row + "'></select></td><td><input type='text' id='property" + row + "'></td>");
- addSelectProperty("#select_property" + row);
- $("#table_property").append("<tr id='row" + (row + 1) + "'></tr>");
- });
-
- $("#delete_row").on("click", function() {
- if (row > 1) {
- $("#row" + row).empty();
- row--;
- }
- });
- */
-
 $(".search_submit").on("click", function() {
-	if ($("#text_property1").val().trim() != "") {
+	if ($("#text_property").val().trim() != "") {
 		var element_type, search_type;
-		if ($("#select_property1 :selected").hasClass("vertex")) {
+		if ($("#select_property :selected").hasClass("vertex")) {
 			element_type = "vertices";
 		} else {
 			element_type = "edges";
@@ -47,16 +29,16 @@ $(".search_submit").on("click", function() {
 		} else {
 			search_type = "similar";
 		}
-		searchResult($("#search_graph_list :selected").val(), element_type, $("#select_property1 :selected").val(), $("#text_property1").val().trim(), search_type);
+		searchResult($("#search_graph_list :selected").val(), element_type, $("#select_property :selected").val(), $("#text_property").val().trim(), search_type);
 	}
 });
 
 function buildTable(element_type, list) {
 	var selector;
 	if (element_type == "vertices") {
-		selector = $("#vertex_result");
+		selector = $("#vertex_result table");
 	} else {
-		selector = $("#edge_result");
+		selector = $("#edge_result table");
 	}
 	$(selector).append("<thead><tr></tr></thead>").append("<tfoot><tr></tr></tfoot>");
 	$.each(list, function(key, value) {
@@ -81,8 +63,6 @@ function addTableResult(selector, data, columns) {
 		destroy : true,
 		data : data,
 		columns : columns,
-		sScrollX : "100%",
-		sScrollXInner : "100%",
 		initComplete : function() {
 			this.api().columns().every(function() {
 				var column = this;
@@ -103,7 +83,7 @@ function searchResult(graph_name, element_type, key, value, search_type) {
 
 	$("button").attr("disabled", true);
 	$(".search_result").hide();
-	$("#search_loading").show();
+	$(".loading").show();
 
 	var func;
 	if (search_type == "equal") {
@@ -117,15 +97,15 @@ function searchResult(graph_name, element_type, key, value, search_type) {
 	}
 	func.done(function(response) {
 		if (element_type == "vertices") {
-			$(".vertex_result").show();
-			addTableResult($("#vertex_result"), response["results"], setColumn(vertex_list));
+			$("#vertex_result").show();
+			addTableResult($("#vertex_result table"), response["results"], setColumn(vertex_list));
 		} else if (element_type == "edges") {
-			$(".edge_result").show();
-			addTableResult($("#edge_result"), response["results"], setColumn(edge_list));
+			$("#edge_result").show();
+			addTableResult($("#edge_result table"), response["results"], setColumn(edge_list));
 		}
 	}).always(function() {
 		$("button").attr("disabled", false);
-		$("#search_loading").hide();
+		$(".loading").hide();
 	});
 
 }

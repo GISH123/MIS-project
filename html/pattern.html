@@ -32,7 +32,7 @@
 			</button>
 		</div>
 
-		<div id ="set_target_graph">
+		<div class ="pattern">
 			<div style="margin-top:5px">
 				<table class="ui small celled table new_company_vertex" id="company_vertex_table" style="display:none; text-align:center; margin-top:15px"></table>
 				<button type="button" class="ui button green new_company_vertex" id="create_company_vertex" style="display:none;">
@@ -65,15 +65,12 @@
 			</div>
 		</div>
 
-		<div id="g" style="display:none; margin-top:10px;">
-			<div class="ui text larger loader active"  id="match_loading" style="display:none;">
-				Loading
-			</div>
+		<div id="g" style="margin-top:10px;">
 			<div>
-				<button type="button" class="ui button red pattern" id="delete_vertex" style="display:none; margin-bottom:10px;">
+				<button type="button" class="ui button red pattern" id="delete_vertex" style="margin-bottom:10px;">
 					清除所有Vertex
 				</button>
-				<button type="button" class="ui button red pattern" id="delete_edge" style="display:none; margin-bottom:10px;">
+				<button type="button" class="ui button red pattern" id="delete_edge" style="margin-bottom:10px;">
 					清除所有Edge
 				</button>
 			</div>
@@ -82,12 +79,11 @@
 					<form class="ui form">
 						<div class="two fields">
 							<div class="three wide field">
-								<label>Input_Graph</label>
-								<select class="ui fluid dropdown graph_list" id="input_graph"> 
-								</select>
+								<label>Input Graph</label>
+								<select class="ui fluid dropdown graph_list" id="input_graph"></select>
 							</div>
 							<div class="three wide field">
-								<label>Target_Graph</label>
+								<label>Target Graph</label>
 								<select class="ui fluid dropdown graph_list" id="target_graph"></select>
 							</div>
 							<div class="three wide field">
@@ -101,9 +97,6 @@
 				</div>
 			</div>
 			<!--	<div>
-			<button type="button" class="ui button blue match" id="match_all" style="display:none; margin-bottom:10px;">
-			所有上下游
-			</button>
 			<button type="button" class="ui button blue match" id="match_all_vis" style="display:none; margin-bottom:10px;">
 			視覺化搜尋
 			</button>
@@ -177,7 +170,7 @@
 			</div>
 			<div class="field">
 				<button onclick="closeDialog('ok','e')" class="ui button green">
-					新增點
+					確定～！
 				</button>
 			</div>
 		</div>

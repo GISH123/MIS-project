@@ -9,13 +9,10 @@ $("#gremlin_code_text").keydown(function(e) {
 });
 
 $("#gremlin_code_submit").on("click", function(e) {
-
 	if ($("#gremlin_code_text").val().trim() != "") {
-
 		$("button").attr("disabled", true);
 		$("#gremlin_result").empty().hide();
-		$("#gremlin_result_loading").show();
-
+		$(".loading").show();
 		var func = executeGremlinScript($("#gremlin_graph_list").val(), $("#gremlin_code_text").val());
 		func.done(function(response) {
 			$("#gremlin_result").append(JSON.stringify(response["results"], null, "\t"));
@@ -24,7 +21,7 @@ $("#gremlin_code_submit").on("click", function(e) {
 		}).always(function() {
 			$("button").attr("disabled", false);
 			$("#gremlin_result").show();
-			$("#gremlin_result_loading").hide();
+			$(".loading").hide();
 		});
 	}
 });

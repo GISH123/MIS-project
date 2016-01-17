@@ -2,6 +2,7 @@ $(document).ready(function() {
 	addGraphList($(".graph_list"));
 	newElementTable($("#company_vertex_table"), vertex_list);
 	newElementTable($("#transaction_edge_table"), edge_list);
+	readGraph("target_graph");
 });
 
 function newElementTable(table_id, property_list) {
@@ -14,20 +15,17 @@ function newElementTable(table_id, property_list) {
 
 
 $("#show_create_company_vertex").on("click", function() {
-	$("#set_target_graph").show();
-	//$("#g").hide();
+	$(".pattern").show();
 	$(".new_company_vertex").toggle();
 });
 
 $("#show_create_transaction_edge").on("click", function() {
-	$("#set_target_graph").show();
-	//$("#g").hide();
+	$(".pattern").show();
 	$(".new_transaction_edge").toggle();
 });
 
 $("#show_delete_by_id").on("click", function() {
-	$("#set_target_graph").show();
-	//$("#g").hide();
+	$(".pattern").show();
 	$(".delete_element").toggle();
 });
 
@@ -89,12 +87,10 @@ function createElementRequest(table_id, graph_name, element_type, edge_label) {
 
 
 $("#create_company_vertex").on("click", function() {
-	//$("#g").hide();
 	createElementRequest($("#company_vertex_table"), "target_graph", "vertices", "");
 });
 
 $("#create_transaction_edge").on("click", function() {
-	//$("#g").hide();
 	createElementRequest($("#transaction_edge_table"), "target_graph", "edges", "交易關係");
 });
 
@@ -102,7 +98,6 @@ $("#delete_company_vertex").on("click", function() {
 	var obj = getTableResult($("#company_vertex_table"));
 	var func = getElementValue("target_graph", "vertices", "公司統一編號", obj["公司統一編號"]);
 
-	//$("#g").hide();
 	$.when(func).then(function(response) {
 		return deleteElement("target_graph", "vertices", response["results"][0]["_id"]);
 	}).then(function() {
@@ -111,7 +106,6 @@ $("#delete_company_vertex").on("click", function() {
 });
 
 $("#delete_by_id").on("click", function() {
-	//	$("#g").hide();
 	var obj = getTableResult($("#delete_table"));
 	$.when(deleteElement("target_graph", "vertices", obj["ID"])).then(function() {
 		readGraph("target_graph");
@@ -119,34 +113,15 @@ $("#delete_by_id").on("click", function() {
 });
 
 $("#show_pattern").on("click", function() {
-	$("#set_target_graph").show();
 	readGraph("target_graph");
 	$(".pattern").show();
 	$(".match").hide();
 });
 
 $("#match_graph").on("click", function() {
-	$("#set_target_graph").hide();
 	$(".pattern").hide();
 	$(".match").show();
 	readGraph("match_graph");
-});
-
-$("#match_all").on("click", function() {
-	//$("#match_graph").attr("disabled", true);
-	//$("#g").hide();
-	$("#match_loading").show();
-	$(".match").attr("disabled", true);
-	var func = executeGremlinScript("match_graph", "g.V.remove()");
-	$.when(func).then(function() {
-		return executeGremlinScript("match_graph", "traversalResult(graph('cht_5000'),graph('target_graph'),g)");
-	}).then(function() {
-		$("#match_loading").hide();
-		$(".match").attr("disabled", false);
-		readGraph("match_graph");
-
-		//$("#match_graph").attr("disabled", false);
-	});
 });
 
 $("#match_all_vis").on("click", function() {
@@ -208,19 +183,14 @@ $("#delete_edge").on("click", function() {
 $("#match").on("click", function() {
 	$("#match_graph").attr("disabled", true);
 	$(".pattern").attr("disabled", true);
-	var func = executeGremlinScript("match_graph", "g.V.remove()");
-	$.when(func).then(function() {
-		$("#match_loading").show();
-		//	replaceElementValue("target_graph", "vertices", '2304', {'公司統一編號':'0100'});
-		return executeGremlinScript("match_graph", "matchGraph(graph('" + $("#input_graph").val() + "')" + ",graph('" + $("#target_graph").val() + "'),g)");
-	}).then(function(response) {
-		$("#match_loading").hide();
-		$(".pattern").attr("disabled", false);
-		$("#match_graph").attr("disabled", false);
-		alert("Success");
-	}, function() {
-		alert("Wrong");
-		$("#match_loading").hide();
+	$(".loading").show();
+	var func = executeGremlinScript("match_graph", "matchGraph(graph('" + $("#input_graph").val() + "')" + ",graph('" + $("#target_graph").val() + "'),g)");
+	func.done(function() {
+		alert("Success.");
+	}).fail(function() {
+		alert("Wrong.");
+	}).always(function() {
+		$(".loading").hide();
 		$(".pattern").attr("disabled", false);
 		$("#match_graph").attr("disabled", false);
 	});
