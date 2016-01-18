@@ -23,7 +23,7 @@ function updateWindow(){
 window.onresize = updateWindow;
 
 // Define the div for the tooltip
-var tooltip = d3.select("body").append("div")
+var tooltip = d3.select(".pusher").append("div")
   .attr("class", "tooltip")
   .style("opacity", 0);
 

@@ -16,6 +16,7 @@ function addSelectProperty(selector) {
 	});
 }
 
+
 $(".search_submit").on("click", function() {
 	if ($("#text_property").val().trim() != "") {
 		var element_type, search_type;
@@ -63,6 +64,9 @@ function addTableResult(selector, data, columns) {
 		destroy : true,
 		data : data,
 		columns : columns,
+		sScrollX : "100%",
+		sScrollXInner : "120%",
+		bScrollCollapse : true,
 		initComplete : function() {
 			this.api().columns().every(function() {
 				var column = this;
