@@ -1,3 +1,9 @@
+/**
+ * ### 視覺化搜尋工具
+ *
+ * @class Visualization
+ */
+
 var width = window.innerWidth - 10,
 	height = window.innerHeight - 20,
 	color = d3.scale.category10();
