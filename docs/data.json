@@ -1,0 +1,402 @@
+{
+    "project": {
+        "name": "MIS project",
+        "description": "提供前端網頁架構函式功能及說明",
+        "version": "0.1",
+        "url": "localhost:3000/"
+    },
+    "files": {
+        "js\\force_direct.js": {
+            "name": "js\\force_direct.js",
+            "modules": {},
+            "classes": {
+                "Visualization": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "js\\pattern_graph.js": {
+            "name": "js\\pattern_graph.js",
+            "modules": {},
+            "classes": {
+                "Graph-Editor": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "js\\rest.js": {
+            "name": "js\\rest.js",
+            "modules": {},
+            "classes": {
+                "Restful-API-method": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {},
+    "classes": {
+        "Visualization": {
+            "name": "Visualization",
+            "shortname": "Visualization",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js\\force_direct.js",
+            "line": 1,
+            "description": "### 視覺化搜尋工具"
+        },
+        "Graph-Editor": {
+            "name": "Graph-Editor",
+            "shortname": "Graph-Editor",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js\\pattern_graph.js",
+            "line": 1,
+            "description": "### 提供一 GUI 編輯 Graph 的工具\n\n基本操作:\n- `ctrl + left_click`: 新增**點**\n- Hold `ctrl` and drag line from one vertex to another one: 修改**線**\n- `shift + left_click`: 修改**點/線**\n- `left_click`: 選取**點/線**\n- Select vertex/edge and `DELETE`: 刪除**點/線**"
+        },
+        "Restful-API-method": {
+            "name": "Restful-API-method",
+            "shortname": "Restful-API-method",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js\\rest.js",
+            "line": 1,
+            "description": "### 提供與 Titan 溝通的一些方法"
+        }
+    },
+    "elements": {},
+    "classitems": [
+        {
+            "file": "js\\pattern_graph.js",
+            "line": 105,
+            "description": "update force layout (called automatically each iteration)",
+            "itemtype": "method",
+            "name": "tick",
+            "class": "Graph-Editor"
+        },
+        {
+            "file": "js\\pattern_graph.js",
+            "line": 133,
+            "description": "Update force_graph (called when needed)\n- Show tooltips when mouseover\n- Handle create/edit/delete of element",
+            "itemtype": "method",
+            "name": "restart",
+            "class": "Graph-Editor"
+        },
+        {
+            "file": "js\\pattern_graph.js",
+            "line": 387,
+            "description": "mousedown function",
+            "itemtype": "method",
+            "name": "mousedown",
+            "class": "Graph-Editor"
+        },
+        {
+            "file": "js\\pattern_graph.js",
+            "line": 453,
+            "description": "mousemove function",
+            "itemtype": "method",
+            "name": "mousemove",
+            "class": "Graph-Editor"
+        },
+        {
+            "file": "js\\pattern_graph.js",
+            "line": 467,
+            "description": "mouseup function",
+            "itemtype": "method",
+            "name": "mouseup",
+            "class": "Graph-Editor"
+        },
+        {
+            "file": "js\\pattern_graph.js",
+            "line": 576,
+            "description": "export editor graph to json",
+            "itemtype": "method",
+            "name": "exportJSON",
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "example": [
+                "\n```json\n{\n   vertices: [{\n       公司統一編號: \"22\",\n       公司名稱: \"123456\",\n       _id: 30721280,\n       _type: \"vertex\"\n   }, {\n       公司統一編號: \"!2\",\n       _id: \"30721024\",\n       _type: \"vertex\"\n   }, {\n       公司統一編號: \"!1\",\n       _id: 30720768,\n       _type: \"vertex\"\n   }],\n   edges: [{\n       商品名稱: \"11\",\n       賣家(統編): \"22\",\n       買家(統編): \"!2\",\n       _id: syjk0-iagow-abdh-iaghs,\n       _type: \"edge\",\n       _outV: 30721280,\n       _inV: 30721024,\n       _label: \"交易關係\"\n   }, {\n       賣家(統編): \"!1\",\n       買家(統編): \"!2\",\n       _id: syjgg-iagao-abdh-iaghs,\n       _type: \"edge\",\n       _outV: 30720768,\n       _inV: 30721024,\n       _label: \"交易關係\"\n   }]\n}\n```"
+            ],
+            "class": "Graph-Editor"
+        },
+        {
+            "file": "js\\rest.js",
+            "line": 9,
+            "description": "取得 Titan Graph DataBase 列表",
+            "itemtype": "method",
+            "name": "getGraphList",
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "example": [
+                "\n```json\n{\n\tversion: \"2.6.0\",\n\tname: \"Rexster: A Graph Server\",\n\tgraphs: [\n\t\t\"cht_5000\",\n\t\t\"target_graph\",\n\t\t\"match_graph\"\n\t],\n\tqueryTime: 0.231863,\n\tupTime: \"0[d]:10[h]:35[m]:20[s]\"\n}\n```"
+            ],
+            "class": "Restful-API-method"
+        },
+        {
+            "file": "js\\rest.js",
+            "line": 37,
+            "description": "取得某 Titan Graph DataBase 全部的元素",
+            "itemtype": "method",
+            "name": "getAllElement",
+            "params": [
+                {
+                    "name": "graph_name",
+                    "description": "Name of graph",
+                    "type": "String"
+                },
+                {
+                    "name": "element_type",
+                    "description": "Can only be \"vertices\" or \"edges\"",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "example": [
+                " getAllElement(graph_name, \"edges\")\n```json\n{\n \"version\": \"2.6.0\",\n \"results\": [\n   {\n     \"賣家(統編)\": \"!1\",\n     \"買家(統編)\": \"!2\",\n     \"_id\": \"syjgg-iagao-abdh-iaghs\",\n     \"_type\": \"edge\",\n     \"_outV\": 30720768,\n     \"_inV\": 30721024,\n     \"_label\": \"交易關係\"\n   }\n ],\n \"totalSize\": 1,\n \"queryTime\": 5.19161\n}\n``` ",
+                " getAllElement(graph_name, \"vertices\")\n```json\n{\n \"version\": \"2.6.0\",\n \"results\": [\n   {\n     \"公司統一編號\": \"!2\",\n     \"_id\": 30721024,\n     \"_type\": \"vertex\"\n   },\n   {\n     \"公司統一編號\": \"!1\",\n     \"_id\": 30720768,\n     \"_type\": \"vertex\"\n   }\n ],\n \"totalSize\": 2,\n \"queryTime\": 5.239591\n}\n```"
+            ],
+            "class": "Restful-API-method"
+        },
+        {
+            "file": "js\\rest.js",
+            "line": 92,
+            "description": "用特定 key-value 取得某 Graph DataBase 的元素",
+            "itemtype": "method",
+            "name": "getElementValue",
+            "params": [
+                {
+                    "name": "graph_name",
+                    "description": "Name of graph",
+                    "type": "String"
+                },
+                {
+                    "name": "element_type",
+                    "description": "Can only be \"vertices\" or \"edges\"",
+                    "type": "String"
+                },
+                {
+                    "name": "key",
+                    "description": "key of element",
+                    "type": "String"
+                },
+                {
+                    "name": "value",
+                    "description": "value of element",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "example": [
+                " getElementValue(graph_name, \"vertices\", \"公司統一編號\", \"!2\")\n```json\n{\n   \"version\": \"2.6.0\",\n   \"results\": [{\n       \"公司統一編號\": \"!2\",\n       \"_id\": 30721024,\n       \"_type\": \"vertex\"\n   }],\n   \"totalSize\": 1,\n   \"queryTime\": 1.879381\n}\n``` "
+            ],
+            "class": "Restful-API-method"
+        },
+        {
+            "file": "js\\rest.js",
+            "line": 123,
+            "description": "在特定 Graph DataBase 執行 GremlinScript",
+            "itemtype": "method",
+            "name": "executeGremlinScript",
+            "params": [
+                {
+                    "name": "graph_name",
+                    "description": "Name of graph",
+                    "type": "String"
+                },
+                {
+                    "name": "GremlinScript",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "example": [
+                " executeGremlinScript(graph_name, \"g.V\")\n```json\n{\n   \"version\": \"2.6.0\",\n   \"results\": [{\n\t\t// 以這例子而言，執行 g.V 會列出這個 graph 的所有 vertices\n   }],\n   \"totalSize\": 1,\n   \"queryTime\": 1.879381\n}\n``` "
+            ],
+            "class": "Restful-API-method"
+        },
+        {
+            "file": "js\\rest.js",
+            "line": 150,
+            "description": "在特定 Graph DataBase 執行 GremlinScript, 包含 results 的個數",
+            "itemtype": "method",
+            "name": "executeGremlinScriptAndTotal",
+            "params": [
+                {
+                    "name": "graph_name",
+                    "description": "Name of graph",
+                    "type": "String"
+                },
+                {
+                    "name": "GremlinScript",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "example": [
+                " executeGremlinScriptAndTotal(graph_name, \"g.V\")\n```json\n{\n   \"version\": \"2.6.0\",\n\t\"count\": 10,\n   \"results\": [{\n\t\t// 以這例子而言，執行 g.V 會列出這個 graph 的所有 vertices\n   }],\n   \"totalSize\": 1,\n   \"queryTime\": 1.879381\n}\n``` "
+            ],
+            "class": "Restful-API-method"
+        },
+        {
+            "file": "js\\rest.js",
+            "line": 178,
+            "description": "在特定 Graph DataBase 新增 vertices",
+            "itemtype": "method",
+            "name": "createVertex",
+            "params": [
+                {
+                    "name": "graph_name",
+                    "description": "Name of graph",
+                    "type": "String"
+                },
+                {
+                    "name": "element_type",
+                    "description": "should be \"vertices\"",
+                    "type": "String"
+                },
+                {
+                    "name": "new_vertex",
+                    "description": "A key-value pairs json that contain all infomations of new vertiex",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "example": [
+                " createVertex(graph_name, \"vertices\", {new_vertex})\n```json\n{\n   \"version\": \"2.6.0\",\n   \"results\": {\n       \"公司統一編號\": \"14789632\",\n       \"公司名稱\": \"123\",\n       \"_id\": 30721792,\n       \"_type\": \"vertex\"\n   },\n   \"queryTime\": 171.914932\n}\n``` "
+            ],
+            "class": "Restful-API-method"
+        },
+        {
+            "file": "js\\rest.js",
+            "line": 220,
+            "description": "在特定 Graph DataBase 新增 edge",
+            "itemtype": "method",
+            "name": "createEdge",
+            "params": [
+                {
+                    "name": "graph_name",
+                    "description": "Name of graph",
+                    "type": "String"
+                },
+                {
+                    "name": "element_type",
+                    "description": "should be \"edges\"",
+                    "type": "String"
+                },
+                {
+                    "name": "new_edge",
+                    "description": "A key-value pairs json that contain all infomations of new edge",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "example": [
+                " createEdge(graph_name, \"edges\", {new_edge})\n```json\n{\n   \"version\": \"2.6.0\",\n   \"results\": {\n       \"發票統編\": \"ban1412\",\n       \"單價\": \"10\",\n       \"商品名稱\": \"123\",\n       \"總金額\": \"1000\",\n       \"發票細項序號\": \"1\",\n       \"賣家(統編)\": \"14789632\",\n       \"數量\": \"100\",\n       \"買家(統編)\": \"!2\",\n       \"_id\": \"syjpc-iah34-abdh-iaghs\",\n       \"_type\": \"edge\",\n       \"_outV\": 30721792,\n       \"_inV\": 30721024,\n       \"_label\": \"交易關係\"\n   },\n   \"queryTime\": 71.084928\n}\n``` "
+            ],
+            "class": "Restful-API-method"
+        },
+        {
+            "file": "js\\rest.js",
+            "line": 271,
+            "description": "在特定 Graph DataBase 新增 vertex/edge",
+            "itemtype": "method",
+            "name": "deleteElement",
+            "params": [
+                {
+                    "name": "graph_name",
+                    "description": "Name of graph",
+                    "type": "String"
+                },
+                {
+                    "name": "element_type",
+                    "description": "should be \"edges\"/\"vertices\"",
+                    "type": "String"
+                },
+                {
+                    "name": "id",
+                    "description": "element id",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "example": [
+                " deleteElement(graph_name, \"vertices\", \"30721792\")\n```json\n{\n   \"version\": \"2.6.0\",\n   \"queryTime\": 118.707009\n}\n``` "
+            ],
+            "class": "Restful-API-method"
+        },
+        {
+            "file": "js\\rest.js",
+            "line": 301,
+            "description": "在特定 Graph DataBase 更新 vertex/edge",
+            "itemtype": "method",
+            "name": "replaceElementValue",
+            "params": [
+                {
+                    "name": "graph_name",
+                    "description": "Name of graph",
+                    "type": "String"
+                },
+                {
+                    "name": "element_type",
+                    "description": "should be \"edges\"/\"vertices\"",
+                    "type": "String"
+                },
+                {
+                    "name": "id",
+                    "description": "element id",
+                    "type": "Object"
+                },
+                {
+                    "name": "new_element",
+                    "description": "A key-value pairs json that contain all infomations of new element",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "example": [
+                " replaceElementValue(graph_name, \"vertices\", \"30721280\", {new_value})\n```json\n{\n   \"version\": \"2.6.0\",\n   \"results\": {\n       \"公司統一編號\": \"22\",\n       \"公司名稱\": \"123456\",\n       \"_id\": 30721280,\n       \"_type\": \"vertex\"\n   },\n   \"queryTime\": 143.11009\n}\n``` "
+            ],
+            "class": "Restful-API-method"
+        }
+    ],
+    "warnings": []
+}
