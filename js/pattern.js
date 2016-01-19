@@ -123,14 +123,6 @@ $("#match_graph").on("click", function() {
 	readGraph("match_graph");
 });
 
-$("#match_all_vis").on("click", function() {
-	var func = executeGremlinScript("match_graph", "g.saveGraphSON('/home/gish/CHT/data/5000.json')");
-	$("#match_loading").show();
-	$.when(func).then(function() {
-		$("#match_loading").hide();
-	});
-});
-
 function readGraph(graph_name) {
 
 	$("#result").empty();
