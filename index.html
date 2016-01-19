@@ -1,58 +1,77 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-	<title>Project</title>
-	<meta charset="utf-8">
-	<script type="text/javascript" src="lib/jquery-1.11.3.min.js"></script>
-	<script type="text/javascript" src="lib/semantic.min.js"></script>
-	<script type="text/javascript" src="lib/jquery.dataTables.min.js"></script>
-	<script type="text/javascript" src="lib/lodash.min.js"></script>
-	<script type="text/javascript" src="js/rest.js"></script>
-	<script type="text/javascript" src="js/main.js"></script>
-	<link href="lib/semantic.min.css" rel="stylesheet" media="screen">
-	<link href="lib/jquery.dataTables.min.css" rel="stylesheet">
-	<link href="lib/fa/css/font-awesome.min.css" rel="stylesheet">
-	<style>
-		.ui.icon.menu .item {
-			text-align: left;
-		}
-		
-		body.pushable > .pusher {
-			background: #F5F5F5;
-		}
-	</style>
+    <meta charset="utf-8">
+    <title>MIS project</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.8.0pr2/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="./assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="./assets/css/main.css" id="site_styles">
+    <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
 </head>
+<body class="yui3-skin-sam">
 
-<body style="font-size:16px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color:#F5F5F5;">
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            <h1><a href="./index.html"><img src="./assets/css/logo.png" width="117" height="52">MIS project</a></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.1</em>
+        </div>
+    </div>
+    <div class="yui3-g">
 
-	<div class="loading" style="display:none;">
-		<div class="ui text loader active">
-			Loading
-		</div>
-	</div>
+        <div id="sidebar" class="yui3-u">
+            <div id="modules" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Modules</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="classes" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Classes</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="./classes/Graph-Editor.html">Graph-Editor</a></li>
+                            <li><a href="./classes/Restful-API-method.html">Restful-API-method</a></li>
+                            <li><a href="./classes/Visualization.html">Visualization</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="elements" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Elements</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                    </ul>
+                </div>
+            </div>
+            
+            
+            
+            
+            
+            
+        </div>
 
-	<div class="ui inverted blue button" onclick="$('.ui.labeled.icon.sidebar').sidebar('setting', 'transition', 'overlay').sidebar('toggle');"	style="margin-left:10%;">
-		<i class="fa fa-bars"></i> Menu
-	</div>
-
-	<div class="pushable">
-		<div id="menu" class="ui left demo vertical inverted labeled icon sidebar menu push">
-			<!--<a class="item" data-tab="t1" id="home"><i class="fa fa-home"></i> 　首頁</a>-->
-			<a class="item" data-tab="t2" id="pattern"><i class="fa fa-bullseye"></i> 　建立Pattern</a>
-			<a class="item" data-tab="t3" id="search_property"><i class="fa fa-search"></i> 　搜尋</a>
-			<a class="item" data-tab="t4" id="gremlin_code"><i class="fa fa-terminal"></i> 　Gremlin</a>
-			<a class="item" data-tab="t5" id="vis"><i class="fa fa-eye"></i> 　視覺化搜尋</a>
-		</div>
-
-		<div class="pusher" style="width:80%; margin-left:10%; background-color:#F5F5F5;">
-			<div class="ui tab" data-tab="t1" id="t1"></div>
-			<div class="ui tab active" data-tab="t2" id="t2"></div>
-			<div class="ui tab" data-tab="t3" id="t3"></div>
-			<div class="ui tab" data-tab="t4" id="t4"></div>
-			<div class="ui tab" data-tab="t5" id="t5"></div>
-		</div>
-	</div>
+        <div id="main" class="yui3-u">
+            <div class="content"><h3>API Docs - Main Index</h3>
+<p>Something smart and pretty should probably go here.</p>
+</div>
+        </div>
+    </div>
+</div>
+<script src="./assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="./assets/js/yui-prettify.js"></script>
+<script src="./assets/js/tabs.js"></script>
 </body>
-
 </html>
