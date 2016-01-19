@@ -97,7 +97,6 @@ $("#create_transaction_edge").on("click", function() {
 $("#delete_company_vertex").on("click", function() {
 	var obj = getTableResult($("#company_vertex_table"));
 	var func = getElementValue("target_graph", "vertices", "公司統一編號", obj["公司統一編號"]);
-
 	$.when(func).then(function(response) {
 		return deleteElement("target_graph", "vertices", response["results"][0]["_id"]);
 	}).then(function() {
@@ -122,14 +121,6 @@ $("#match_graph").on("click", function() {
 	$(".pattern").hide();
 	$(".match").show();
 	readGraph("match_graph");
-});
-
-$("#match_all_vis").on("click", function() {
-	var func = executeGremlinScript("match_graph", "g.saveGraphSON('/home/gish/CHT/data/5000.json')");
-	$("#match_loading").show();
-	$.when(func).then(function() {
-		$("#match_loading").hide();
-	});
 });
 
 function readGraph(graph_name) {
@@ -181,17 +172,16 @@ $("#delete_edge").on("click", function() {
 });
 
 $("#match").on("click", function() {
-	$("#match_graph").attr("disabled", true);
 	$(".pattern").attr("disabled", true);
 	$(".loading").show();
 	var func = executeGremlinScript("match_graph", "matchGraph(graph('" + $("#input_graph").val() + "')" + ",graph('" + $("#target_graph").val() + "'),g)");
 	func.done(function() {
+		$("#match_graph").attr("disabled", false);
 		alert("Success.");
 	}).fail(function() {
 		alert("Wrong.");
 	}).always(function() {
 		$(".loading").hide();
 		$(".pattern").attr("disabled", false);
-		$("#match_graph").attr("disabled", false);
 	});
 });

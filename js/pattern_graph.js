@@ -36,9 +36,10 @@ function updateWindow() {
 window.onresize = updateWindow;
 
 // Define the div for the tooltip
-var tooltip = d3.select("body").append("div")
-	.attr("class", "tooltip")
-	.style("opacity", 0);
+var tooltip = d3.select(".pusher").append("div")
+  .attr("class", "tooltip")
+  .style("opacity", 0);
+
 
 // set up initial nodes and links
 //  - nodes are known by 'id', not by index in array.
