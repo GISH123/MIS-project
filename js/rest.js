@@ -4,7 +4,8 @@
  * @class Restful-API-method
  */
 
-var baseurl = "http://140.119.19.14:8182/graphs/";
+var baseurl = "http://140.119.19.200:8182/graphs/";
+
 
 /**
  * 取得 Titan Graph DataBase 列表

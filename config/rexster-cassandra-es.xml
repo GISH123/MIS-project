@@ -2,8 +2,8 @@
 <rexster>
 	<http>
 		<server-port>8182</server-port>
-		<server-host>140.119.19.14</server-host>
-		<base-uri>http://140.119.19.14</base-uri>
+		<server-host>140.119.19.200</server-host>
+		<base-uri>http://140.119.19.200</base-uri>
 		<web-root>public</web-root>
 		<character-set>UTF-8</character-set>
 		<enable-jmx>false</enable-jmx>
@@ -90,50 +90,13 @@
 	</metrics>
 	<graphs>
 		<graph>
-			<graph-name>cht_5000</graph-name>
-			<graph-type>com.thinkaurelius.titan.tinkerpop.rexster.TitanGraphConfiguration</graph-type>
-			<graph-read-only>false</graph-read-only>
-			<graph-enabled>true</graph-enabled>
-			<properties>
-				<storage.backend>cassandra</storage.backend>
-				<storage.cassandra.keyspace>cht_5000</storage.cassandra.keyspace>
-				<index.search.backend>elasticsearch</index.search.backend>
-				<index.search.hostname>127.0.0.1</index.search.hostname>
-				<index.search.elasticsearch.client-only>true</index.search.elasticsearch.client-only>
-			</properties>
-			<extensions>
-				<allows>
-					<allow>tp:gremlin</allow>
-				</allows>
-			</extensions>
-		</graph>
-		<graph>
-			<graph-name>cht_10000</graph-name>
+			<graph-name>input_graph</graph-name>
 			<graph-type>com.thinkaurelius.titan.tinkerpop.rexster.TitanGraphConfiguration</graph-type>
 			<graph-read-only>false</graph-read-only>
 			<graph-enabled>false</graph-enabled>
 			<properties>
 				<storage.backend>cassandra</storage.backend>
-				<storage.cassandra.keyspace>cht_10000</storage.cassandra.keyspace>
-				<storage.cassandra.thrift.frame-size>200</storage.cassandra.thrift.frame-size>
-				<index.search.backend>elasticsearch</index.search.backend>
-				<index.search.hostname>127.0.0.1</index.search.hostname>
-				<index.search.elasticsearch.client-only>true</index.search.elasticsearch.client-only>
-			</properties>
-			<extensions>
-				<allows>
-					<allow>tp:gremlin</allow>
-				</allows>
-			</extensions>
-		</graph>
-		<graph>
-			<graph-name>cht_all</graph-name>
-			<graph-type>com.thinkaurelius.titan.tinkerpop.rexster.TitanGraphConfiguration</graph-type>
-			<graph-read-only>true</graph-read-only>
-			<graph-enabled>false</graph-enabled>
-			<properties>
-				<storage.backend>cassandra</storage.backend>
-				<storage.cassandra.keyspace>cht_all</storage.cassandra.keyspace>
+				<storage.cassandra.keyspace>input_graph</storage.cassandra.keyspace>
 				<storage.cassandra.thrift.frame-size>200</storage.cassandra.thrift.frame-size>
 				<index.search.backend>elasticsearch</index.search.backend>
 				<index.search.hostname>127.0.0.1</index.search.hostname>
