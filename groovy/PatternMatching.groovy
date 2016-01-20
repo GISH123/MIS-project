@@ -75,7 +75,7 @@ static def setProperties(TitanGraph g, def script, def element_type, def id){
 static def setComparison(def script, def key, def value){
 
 	if(value.matches('[0-9]+(\\.[0-9]+)?')){
-		return script.has(key, value)
+		return script.has(key, value.toDouble())
 	}else{
 		def comparison = value.replaceAll('[0-9]+(\\.[0-9]+)?','')
 		def number = value.replaceAll('([><!]{0,2}={0,2})','')
