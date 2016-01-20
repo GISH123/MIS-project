@@ -81,22 +81,22 @@ static def setComparison(def script, def key, def value){
 		def number = value.replaceAll('([><!]{0,2}={0,2})','')
 		switch (comparison){
 			case ['>>', '>']:
-				script = script.has(key, T.gt, number)
+				script = script.has(key, T.gt, number.toDouble())
 				break
 			case ['>=']:
-				script = script.has(key, T.gte, number)
+				script = script.has(key, T.gte, number.toDouble())
 				break
 			case ['=', '==']:
-				script = script.has(key, T.eq, number)
+				script = script.has(key, T.eq, number.toDouble())
 				break
 			case ['!=', '!==']:
-				script = script.has(key, T.neq, number)
+				script = script.has(key, T.neq, number.toDouble())
 				break
 			case ['<=']:
-				script = script.has(key, T.lte, number)
+				script = script.has(key, T.lte, number.toDouble())
 				break
 			case ['<<', '<']:
-				script = script.has(key, T.lt, number)
+				script = script.has(key, T.lt, number.toDouble())
 				break
 			default:
 				break
