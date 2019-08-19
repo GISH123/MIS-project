@@ -14,6 +14,6 @@ To generate doc, do following steps:
 2. `yuidoc --theme simple js`
 3. Done. the document will in `docs/`
 
-# Pattern Matching
-under groovy file folder
+# Pattern Matching  
+under groovy file folder  
 程式檔在groovy資料夾下
